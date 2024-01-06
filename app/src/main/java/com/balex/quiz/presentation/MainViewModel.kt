@@ -1,22 +1,12 @@
 package com.balex.quiz.presentation
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.room.Room
 import com.balex.quiz.data.QuizRepositoryImpl
-import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.data.database.CountriesDatabase
-import com.balex.quiz.data.pojo.Country
-import com.balex.quiz.domain.GetCountriesListRepositoryUseCase
-import com.balex.quiz.domain.QuizRepository
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import com.balex.quiz.domain.GetCountriesFullListRepositoryUseCase
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application, isUserLogged: Boolean) :
     AndroidViewModel(application) {
@@ -25,7 +15,7 @@ class MainViewModel(application: Application, isUserLogged: Boolean) :
     private val TAG = "MainViewModel"
 
     private val repository = QuizRepositoryImpl
-    private val getCountriesList = GetCountriesListRepositoryUseCase(repository)
+    private val getCountriesList = GetCountriesFullListRepositoryUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
     val countriesDatabase = Room.databaseBuilder(
