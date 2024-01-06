@@ -7,14 +7,14 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "countries")
 data class Country(
     @PrimaryKey
-    @SerializedName("ID")
+    @SerializedName("id")
     val id: Int,
-    @SerializedName("COUNTRY_NAME")
+    @SerializedName("countryName")
     val countryName: String,
-    @SerializedName("CAPITAL_NAME")
+    @SerializedName("capitalName")
     val capitalName: String,
-    @SerializedName("DIFFICULT_LVL")
+    @SerializedName("diffLvl")
     val difficultLevel: Int,
-    @SerializedName("IMAGE_NAME")
+    @SerializedName("imageName")
     val imageName: String
 )

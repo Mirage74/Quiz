@@ -7,11 +7,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.balex.quiz.data.pojo.Country
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface CountriesDao {
     @Query("SELECT * FROM countries")
-    fun getAllCountries(): List<Country>
+    fun getAllCountries(): Single<List<Country>>
 
     @Query("SELECT * FROM countries_not_used_in_quiz")
     fun getAllCountriesNotUseInQuiz(): LiveData<List<Country>>
@@ -19,8 +20,8 @@ interface CountriesDao {
     @Query("SELECT * FROM countries_not_used_in_quiz WHERE id = :countryId")
     fun getCountry(countryId: Int): Country
 
-//    @Query("INSERT  ")
-//    fun fillNotUsedCountryTable(): Completable
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun fillCountriesTable(countries: List<Country>)
 
     @Query("DELETE FROM countries_not_used_in_quiz WHERE id = :countryId")
     fun removeCountryFromNotUsed(countryId: Int): Completable

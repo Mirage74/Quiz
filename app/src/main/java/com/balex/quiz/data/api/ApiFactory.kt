@@ -23,6 +23,7 @@ object ApiFactory {
         .build()
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL).client(client)
+        //.baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()

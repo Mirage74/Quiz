@@ -9,7 +9,7 @@ import retrofit2.http.POST
 
 interface ApiService {
     @GET("get")
-    fun loadCountries(): Single<CountriesResponse>
+    fun loadCountries(): Single <CountriesResponse>
 
     @POST("userScore")
     fun auth(@Body username: String): Single<UserScore>
