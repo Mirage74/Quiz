@@ -37,32 +37,28 @@ class MainViewModel(application: Application, isUserLogged: Boolean) :
     val dbDAO = countriesDatabase.countriesDao()
 
 
-    fun loadCountriesListFromBackend() {
-        CoroutineScope(Dispatchers.IO).launch {
-            compositeDisposable.add(
-            getCountriesList.getCountriesList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    Log.d(TAG, "fun getCountriesListRepository() .subscribe: + ${it.countries}")
-                    Log.d(TAG, "fun getCountriesListRepository() .size: + ${it.countries.size}")
-                    //saveCountriesListInROOM(it.countries)
-                    val list = it.countries
-                    CoroutineScope(Dispatchers.IO).launch {
-                        dbDAO.fillCountriesTable(list)
-                    }
-                }) {
-                    Log.d(TAG, "fun loadMovies() .subscribe exeption: + $it")
-                })
-        }
+//    fun loadCountriesListFromBackend() {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            compositeDisposable.add(
+//            getCountriesList.getCountriesList()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({
+//                    Log.d(TAG, "fun getCountriesListRepository() .subscribe: + ${it.countries}")
+//                    Log.d(TAG, "fun getCountriesListRepository() .size: + ${it.countries.size}")
+//                    //saveCountriesListInROOM(it.countries)
+//                    val list = it.countries
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        dbDAO.fillCountriesTable(list)
+//                    }
+//                }) {
+//                    Log.d(TAG, "fun loadMovies() .subscribe exeption: + $it")
+//                })
+//        }
+//
+//    }
 
-    }
 
-    fun saveCountriesListInROOM(countiesList: List<Country>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dbDAO.fillCountriesTable(countiesList)
-        }
-    }
 
     override fun onCleared() {
         super.onCleared()

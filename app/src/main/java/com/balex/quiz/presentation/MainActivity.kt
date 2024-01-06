@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(application, isUserLogged))[MainViewModel::class.java]
 
-        viewModel.loadCountriesListFromBackend()
+        //viewModel.loadCountriesListFromBackend()
     }
 
     companion object {

@@ -1,43 +1,59 @@
 package com.balex.quiz.data
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.room.Room
+import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.data.api.ApiFactory
-import com.balex.quiz.data.database.CountriesDao
-import com.balex.quiz.data.database.CountriesDatabase
-import com.balex.quiz.data.pojo.CountriesResponse
 import com.balex.quiz.data.pojo.Country
 import com.balex.quiz.domain.QuizRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.stream.Collectors
 
 object QuizRepositoryImpl : QuizRepository {
-    private val TAG = "QuizRepositoryImpl"
+    init {
+        getCountriesListFromBackend()
+    }
+
+
+    private val countriesListFull_LD = MutableLiveData<List<Country>>()
+    private val countriesListNotUsedInQuiz_LD = MutableLiveData<List<Country>>()
+    private val compositeDisposable = CompositeDisposable()
+    private const val TAG = "QuizRepositoryImpl"
 
 
 
-    @SuppressLint("CheckResult")
-    override fun getCountriesListRepository(): Single<CountriesResponse> {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            ApiFactory.apiService.loadCountries()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//                    Log.d(TAG, "fun getCountriesListRepository() .subscribe: + ${it.countries}")
-//                }) {
-//                    Log.d(TAG, "fun loadMovies() .subscribe exeption: + $it")
-//                }
-//        }
-            return ApiFactory.apiService.loadCountries()
+    private fun getCountriesListFromBackend() {
+        CoroutineScope(Dispatchers.IO).launch {
+            compositeDisposable.add(
+                ApiFactory.apiService.loadCountries()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        countriesListFull_LD.value =
+                            it.countries.stream().sorted { o1, o2 -> o1.id.compareTo(o2.id) }
+                                .collect(
+                                    Collectors.toList()
+                                )
+                        countriesListNotUsedInQuiz_LD.value = countriesListFull_LD.value
+                    }) {
+                        Log.d(TAG, "Error get countries list from server: + $it")
+                    })
+        }
 
     }
-    override fun getCountriesListNotUsedRepository(dbDAO: CountriesDao): LiveData<List<Country>> {
-        TODO("Not yet implemented")
+
+
+
+    override fun getCountriesListFullRepository(): LiveData<List<Country>> {
+        return countriesListFull_LD
+    }
+
+    override fun getCountriesListNotUsedRepository(): LiveData<List<Country>> {
+        return countriesListNotUsedInQuiz_LD
     }
 }
