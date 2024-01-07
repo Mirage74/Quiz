@@ -40,15 +40,19 @@ class MainActivity : ComponentActivity() {
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(application, isUserLogged))[MainViewModel::class.java]
 
-        //viewModel.loadCountriesListFromBackend()
+        viewModel.countriesListNotUsed.observe(this) {
+            Log.d(TAG, it[0].toString())
+            if (it[0].id < 3) {
+                viewModel.deleteCountryFromNotUsedListRepositoryUseCase.deleteCountryFromNotUsedList(it[0])
+            }
+
+        }
     }
 
     companion object {
         fun loadDataUser(activity: Activity) : String {
             val sharedPreferences = activity.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
-            var s = NOT_LOGGED_USER
-            s = sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER).toString()
-            return s
+            return sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER).toString()
         }
     }
 

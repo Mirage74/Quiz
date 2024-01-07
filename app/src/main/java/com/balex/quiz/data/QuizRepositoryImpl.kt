@@ -12,6 +12,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
+import java.util.function.Predicate
 import java.util.stream.Collectors
 
 object QuizRepositoryImpl : QuizRepository {
@@ -24,7 +26,6 @@ object QuizRepositoryImpl : QuizRepository {
     private val countriesListNotUsedInQuiz_LD = MutableLiveData<List<Country>>()
     private val compositeDisposable = CompositeDisposable()
     private const val TAG = "QuizRepositoryImpl"
-
 
 
     private fun getCountriesListFromBackend() {
@@ -48,12 +49,19 @@ object QuizRepositoryImpl : QuizRepository {
     }
 
 
-
     override fun getCountriesListFullRepository(): LiveData<List<Country>> {
         return countriesListFull_LD
     }
 
     override fun getCountriesListNotUsedRepository(): LiveData<List<Country>> {
         return countriesListNotUsedInQuiz_LD
+    }
+
+    override fun deleteCountryFromNotUsedListRepository(country: Country) {
+        countriesListNotUsedInQuiz_LD.value =
+            countriesListNotUsedInQuiz_LD.value?.stream()?.filter { e ->
+                e != country
+            }?.collect(Collectors.toList())
+
     }
 }

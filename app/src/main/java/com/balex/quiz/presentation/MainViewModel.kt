@@ -5,7 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.room.Room
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.database.CountriesDatabase
+import com.balex.quiz.data.pojo.Country
+import com.balex.quiz.domain.DeleteCountryFromNotUsedListRepositoryUseCase
 import com.balex.quiz.domain.GetCountriesFullListRepositoryUseCase
+import com.balex.quiz.domain.GetCountriesListNotUsedRepositoryUseCase
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class MainViewModel(application: Application, isUserLogged: Boolean) :
@@ -15,8 +18,14 @@ class MainViewModel(application: Application, isUserLogged: Boolean) :
     private val TAG = "MainViewModel"
 
     private val repository = QuizRepositoryImpl
-    private val getCountriesList = GetCountriesFullListRepositoryUseCase(repository)
+    private val getCountriesListFullUseCase = GetCountriesFullListRepositoryUseCase(repository)
+    private val getCountriesListNotUsedUseCase = GetCountriesListNotUsedRepositoryUseCase(repository)
+    val deleteCountryFromNotUsedListRepositoryUseCase = DeleteCountryFromNotUsedListRepositoryUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
+
+    val countriesListFull = getCountriesListFullUseCase.getCountriesFullList()
+    val countriesListNotUsed = getCountriesListNotUsedUseCase.getCountriesListNotUsed()
+
 
     val countriesDatabase = Room.databaseBuilder(
         application,
@@ -26,27 +35,6 @@ class MainViewModel(application: Application, isUserLogged: Boolean) :
 
     val dbDAO = countriesDatabase.countriesDao()
 
-
-//    fun loadCountriesListFromBackend() {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            compositeDisposable.add(
-//            getCountriesList.getCountriesList()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//                    Log.d(TAG, "fun getCountriesListRepository() .subscribe: + ${it.countries}")
-//                    Log.d(TAG, "fun getCountriesListRepository() .size: + ${it.countries.size}")
-//                    //saveCountriesListInROOM(it.countries)
-//                    val list = it.countries
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        dbDAO.fillCountriesTable(list)
-//                    }
-//                }) {
-//                    Log.d(TAG, "fun loadMovies() .subscribe exeption: + $it")
-//                })
-//        }
-//
-//    }
 
 
 
