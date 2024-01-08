@@ -38,7 +38,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-        compose = true
+        viewBinding = true
         dataBinding = true
     }
     composeOptions {
@@ -80,11 +80,7 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
 
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.20-1.0.14")
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-rxjava3:$room_version")
+
 
     val appcompat_version = "1.6.1"
 

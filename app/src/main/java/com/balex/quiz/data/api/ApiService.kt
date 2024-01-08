@@ -11,6 +11,8 @@ interface ApiService {
     @GET("get")
     fun loadCountries(): Single <CountriesResponse>
 
-    @POST("userScore")
-    fun auth(@Body username: String): Single<UserScore>
+    @POST("login")
+    //fun login(@Body authRequest: AuthRequest): Single<UserScore>
+    fun login(@Body authRequest: AuthRequest): Single<UserScore>
+
 }

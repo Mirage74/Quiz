@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Quiz</string>
+    <string name="username">username</string>
+    <string name="start">Start</string>
+    <string name="info">Info</string>
+    <string name="about">About</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="register">Register</string>
+    <string name="test_rules">Test rules</string>
+    <string name="password">Password</string>
+    <string name="visible_password_on_off">Visible password on/off</string>
+    <string name="login_uppercase">LOGIN</string>
+    <string name="back_uppercase">BACK</string>
 </resources>
