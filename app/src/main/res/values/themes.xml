@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Quiz" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Base.Theme.Quiz" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Customize your light theme here. -->
+    <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="buttonStyle">@style/Widget.Material3.Button</item>
+</style>
+
+<style name="Theme.Quiz" parent="Base.Theme.Quiz" />
+
 </resources>

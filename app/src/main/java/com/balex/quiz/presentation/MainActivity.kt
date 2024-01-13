@@ -5,15 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
+import com.balex.quiz.data.pojo.UserScore
 import com.balex.quiz.databinding.ActivityMainBinding
+import com.balex.quiz.presentation.LoginUserActivity.Companion.saveDataUser
 
 
 const val SHARED_PREFS = "shared_prefs"
 const val SHARED_PREFS_USERNAME = "shared_prefs_username"
+const val SHARED_PREFS_BEST_RES_POINTS = "shared_prefs_best_res_points"
+const val SHARED_PREFS_BEST_RES_CONTENT = "shared_prefs_best_res_content"
+const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
 const val NOT_LOGGED_USER = "notLoggedUser"
 
 
@@ -21,7 +26,8 @@ private const val LOGGED_USER_FALSE = false
 private const val LOGGED_USER_TRUE = true
 
 
-class MainActivity : ComponentActivity() {
+//class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
@@ -29,6 +35,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        assignButtonWithClickListeners()
+
         val isUserLogged = if (loadDataUser(this) == NOT_LOGGED_USER) {
             with (binding) {
                 username?.visibility = View.GONE
@@ -45,16 +54,64 @@ class MainActivity : ComponentActivity() {
             }
             LOGGED_USER_TRUE
         }
-        val intent = Intent(this, LoginUserActivity::class.java)
-        startActivity(intent)
+
 
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(application, isUserLogged))[MainViewModel::class.java]
 
         viewModel.countriesListNotUsed.observe(this) {
-            //Log.d(TAG, it[0].toString())
+            Log.d(TAG, it[0].toString())
 
         }
+    }
+
+    var onClickListener =
+        View.OnClickListener { v: View ->
+            if (v.id == R.id.login) {
+                val intent = Intent(this@MainActivity, LoginUserActivity::class.java)
+                startActivity(intent)
+            } else if (v.id == R.id.register) {
+
+            } else if (v.id == R.id.testRules) {
+
+            } else if (v.id == R.id.about) {
+
+            } else if (v.id == R.id.start_test) {
+
+            } else if (v.id == R.id.info) {
+
+            } else if (v.id == R.id.logout) {
+                val userClear = UserScore(NOT_LOGGED_USER, 0, "", "")
+                saveDataUser(this@MainActivity, userClear)
+                val intent = Intent(this@MainActivity, MainActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+
+    fun assignButtonWithClickListeners() {
+        with(binding) {
+            login.setOnClickListener(onClickListener)
+            register.setOnClickListener(onClickListener)
+            testRules.setOnClickListener(onClickListener)
+            about.setOnClickListener(onClickListener)
+            startTest.setOnClickListener(onClickListener)
+            info.setOnClickListener(onClickListener)
+            logout.setOnClickListener(onClickListener)
+        }
+    }
+
+
+
+
+    fun setupClickListeners(buttonID: Int) {
+        with(binding) {
+            if (buttonID == R.id.login) {
+                val intent = Intent(this@MainActivity, LoginUserActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
     }
 
     companion object {

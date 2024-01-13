@@ -10,6 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiFactory {
     private const val BASE_URL = "https://balexvic.com/api/"
+    //private const val BASE_URL = "https://10.0.2.2:4000/api/"
+    //private const val BASE_URL = "http://localhost:4000/api/"
     private val interceptor = InitInterceptor()
 
     private fun InitInterceptor(): HttpLoggingInterceptor {
