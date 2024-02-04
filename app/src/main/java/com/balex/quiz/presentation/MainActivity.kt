@@ -1,9 +1,8 @@
-package com.balex.quiz.presentation
+package com.balex .quiz.presentation
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -22,8 +21,7 @@ const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
 const val NOT_LOGGED_USER = "notLoggedUser"
 
 
-private const val LOGGED_USER_FALSE = false
-private const val LOGGED_USER_TRUE = true
+private const val USER_IS_LOGGED = true
 
 
 //class MainActivity : ComponentActivity() {
@@ -31,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
+    private var isListFromBackendLoaded = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,29 +38,43 @@ class MainActivity : AppCompatActivity() {
 
         assignButtonWithClickListeners()
 
-        val isUserLogged = if (loadDataUser(this) == NOT_LOGGED_USER) {
+        val userName = loadDataUser(this)
+        val isUserLogged = if (userName == NOT_LOGGED_USER) {
             with (binding) {
                 username?.visibility = View.GONE
                 startTest.visibility = View.GONE
                 info.visibility = View.GONE
                 logout.visibility = View.GONE
             }
-            LOGGED_USER_FALSE
+            !USER_IS_LOGGED
         } else {
             with (binding) {
                 login.visibility = View.GONE
                 register.visibility = View.GONE
                 testRules.visibility = View.GONE
+                username?.text = userName
+                startTest.isEnabled= false
             }
-            LOGGED_USER_TRUE
+            USER_IS_LOGGED
         }
+
 
 
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(application, isUserLogged))[MainViewModel::class.java]
 
-        viewModel.countriesListNotUsed.observe(this) {
-            Log.d(TAG, it[0].toString())
+
+
+        viewModel.countriesListFull_LD.observe(this) {
+            if (it.isNotEmpty()) {
+                binding.startTest.isEnabled = true
+            }
+            //Log.d(TAG, it[0].toString())
+
+        }
+
+        viewModel.countriesListNotUsedInQuiz_LD.observe(this) {
+            //Log.d(TAG, it[0].toString())
 
         }
     }
@@ -87,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+
 
 
     fun assignButtonWithClickListeners() {

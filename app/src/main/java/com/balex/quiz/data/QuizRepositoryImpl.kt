@@ -12,8 +12,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Locale
-import java.util.function.Predicate
 import java.util.stream.Collectors
 
 object QuizRepositoryImpl : QuizRepository {

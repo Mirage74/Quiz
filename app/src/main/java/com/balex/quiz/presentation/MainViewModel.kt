@@ -9,7 +9,10 @@ import com.balex.quiz.domain.GetCountriesListNotUsedRepositoryUseCase
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class MainViewModel(application: Application, isUserLogged: Boolean) :
-    AndroidViewModel(application) {
+    AndroidViewModel(application)
+
+{
+
 
     private val TAG = "MainViewModel"
 
@@ -19,8 +22,9 @@ class MainViewModel(application: Application, isUserLogged: Boolean) :
     val deleteCountryFromNotUsedListRepositoryUseCase = DeleteCountryFromNotUsedListRepositoryUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
-    val countriesListFull = getCountriesListFullUseCase.getCountriesFullList()
-    val countriesListNotUsed = getCountriesListNotUsedUseCase.getCountriesListNotUsed()
+    val countriesListFull_LD = getCountriesListFullUseCase.getCountriesFullList()
+    val countriesListNotUsedInQuiz_LD = getCountriesListNotUsedUseCase.getCountriesListNotUsed()
+
 
 
 

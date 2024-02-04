@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.balex.quiz.R
 import com.balex.quiz.data.api.ApiFactory
-import com.balex.quiz.data.api.AuthRequest
 import com.balex.quiz.data.pojo.UserScore
 import com.balex.quiz.databinding.LoginBinding
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -21,8 +20,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 
 
 const val ERROR_ENTERED_USERNAME_MESSAGE =
