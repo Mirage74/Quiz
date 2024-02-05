@@ -1,7 +1,7 @@
 package com.balex.quiz.data.api
 
-import com.balex.quiz.data.pojo.CountriesResponse
-import com.balex.quiz.data.pojo.UserScoreResponse
+import com.balex.quiz.domain.entity.CountriesResponse
+import com.balex.quiz.domain.entity.UserScoreResponse
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

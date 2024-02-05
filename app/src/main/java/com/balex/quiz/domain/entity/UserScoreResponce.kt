@@ -1,4 +1,4 @@
-package com.balex.quiz.data.pojo
+package com.balex.quiz.domain.entity
 
 import com.google.gson.annotations.SerializedName
 

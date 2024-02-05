@@ -3,12 +3,13 @@ package com.balex .quiz.presentation
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
-import com.balex.quiz.data.pojo.UserScore
+import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.databinding.ActivityMainBinding
 import com.balex.quiz.presentation.LoginUserActivity.Companion.saveDataUser
 
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.countriesListNotUsedInQuiz_LD.observe(this) {
-            //Log.d(TAG, it[0].toString())
+            Log.d(TAG, it[0].toString())
 
         }
     }

@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.balex.quiz.R
 import com.balex.quiz.data.api.ApiFactory
-import com.balex.quiz.data.pojo.UserScore
+import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.databinding.LoginBinding
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
