@@ -3,10 +3,7 @@ package com.balex.quiz.presentation
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.balex.quiz.data.QuizRepositoryImpl
-import com.balex.quiz.domain.usecases.DeleteCountryFromNotUsedListRepositoryUseCase
 import com.balex.quiz.domain.usecases.GetCountriesFullListRepositoryUseCase
-import com.balex.quiz.domain.usecases.GetCountriesListNotUsedRepositoryUseCase
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class MainViewModel(application: Application, isUserLogged: Boolean) :
     AndroidViewModel(application)

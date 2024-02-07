@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_navigation">
-
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/userLoggedFalseMenu">
+    <fragment
+        android:id="@+id/userLoggedFalseMenu"
+        android:name="com.balex.quiz.presentation.fragments.UserLoggedFalseMenu"
+        android:label="UserLoggedFalseMenu" >
+        <action
+            android:id="@+id/action_userLoggedFalseMenu_to_loginUserFragment"
+            app:destination="@id/loginUserFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginUserFragment"
+        android:name="com.balex.quiz.presentation.fragments.LoginUserFragment"
+        android:label="LoginUserFragment" />
 </navigation>

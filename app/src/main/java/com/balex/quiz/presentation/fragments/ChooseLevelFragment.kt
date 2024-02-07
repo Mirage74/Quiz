@@ -1,4 +1,4 @@
-package com.balex.quiz.presentation
+package com.balex.quiz.presentation.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
