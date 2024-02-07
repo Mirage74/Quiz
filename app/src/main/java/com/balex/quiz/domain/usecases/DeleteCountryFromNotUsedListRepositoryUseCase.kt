@@ -6,7 +6,7 @@ import com.balex.quiz.domain.repository.QuizRepository
 
 class DeleteCountryFromNotUsedListRepositoryUseCase(private val quizRepository: QuizRepository) {
 
-    operator fun invoke(country: Country) {
-        quizRepository.deleteCountryFromNotUsedListRepository(country)
-    }
+//    operator fun invoke(country: Country) {
+//        quizRepository.deleteCountryFromNotUsedListRepository(country)
+//    }
 }

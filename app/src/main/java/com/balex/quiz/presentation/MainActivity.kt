@@ -14,15 +14,6 @@ import com.balex.quiz.databinding.ActivityMainBinding
 import com.balex.quiz.presentation.LoginUserActivity.Companion.saveDataUser
 
 
-const val SHARED_PREFS = "shared_prefs"
-const val SHARED_PREFS_USERNAME = "shared_prefs_username"
-const val SHARED_PREFS_BEST_RES_POINTS = "shared_prefs_best_res_points"
-const val SHARED_PREFS_BEST_RES_CONTENT = "shared_prefs_best_res_content"
-const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
-const val NOT_LOGGED_USER = "notLoggedUser"
-
-
-private const val USER_IS_LOGGED = true
 
 
 //class MainActivity : ComponentActivity() {
@@ -31,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
     private var isListFromBackendLoaded = false
+    var isUserLogged = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,24 +32,7 @@ class MainActivity : AppCompatActivity() {
         assignButtonWithClickListeners()
 
         val userName = loadDataUser(this)
-        val isUserLogged = if (userName == NOT_LOGGED_USER) {
-            with (binding) {
-                username?.visibility = View.GONE
-                startTest.visibility = View.GONE
-                info.visibility = View.GONE
-                logout.visibility = View.GONE
-            }
-            !USER_IS_LOGGED
-        } else {
-            with (binding) {
-                login.visibility = View.GONE
-                register.visibility = View.GONE
-                testRules.visibility = View.GONE
-                username?.text = userName
-                startTest.isEnabled= false
-            }
-            USER_IS_LOGGED
-        }
+
 
 
 
@@ -98,8 +73,11 @@ class MainActivity : AppCompatActivity() {
             } else if (v.id == R.id.logout) {
                 val userClear = UserScore(NOT_LOGGED_USER, 0, "", "")
                 saveDataUser(this@MainActivity, userClear)
+
                 val intent = Intent(this@MainActivity, MainActivity::class.java)
                 startActivity(intent)
+
+                finish()
             }
         }
 
@@ -130,12 +108,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    companion object {
-        fun loadDataUser(activity: Activity) : String {
-            val sharedPreferences = activity.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
-            return sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER).toString()
-        }
-    }
+
+
+
 
 }
 

@@ -16,23 +16,18 @@ class MainViewModel(application: Application, isUserLogged: Boolean) :
 
     private val TAG = "MainViewModel"
 
-    private val repository = QuizRepositoryImpl
+    private val repository = QuizRepositoryImpl(application)
     private val getCountriesFullListRepositoryUseCase = GetCountriesFullListRepositoryUseCase(repository)
-    private val getCountriesListNotUsedUseCase = GetCountriesListNotUsedRepositoryUseCase(repository)
-    val deleteCountryFromNotUsedListRepositoryUseCase = DeleteCountryFromNotUsedListRepositoryUseCase(repository)
-    private val compositeDisposable = CompositeDisposable()
+
+  //  private val compositeDisposable = CompositeDisposable()
 
     val countriesListFull_LD = getCountriesFullListRepositoryUseCase()
-    val countriesListNotUsedInQuiz_LD = getCountriesListNotUsedUseCase()
-
-
-
 
 
 
     override fun onCleared() {
         super.onCleared()
 
-        compositeDisposable.dispose()
+//        compositeDisposable.dispose()
     }
 }

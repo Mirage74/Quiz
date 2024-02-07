@@ -5,7 +5,7 @@ import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.repository.QuizRepository
 
 class GetCountriesListNotUsedRepositoryUseCase(private val quizRepository: QuizRepository) {
-    operator fun invoke(): LiveData<List<Country>> {
-        return quizRepository.getCountriesListNotUsedRepository()
-    }
+//    operator fun invoke(): LiveData<List<Country>> {
+//        return quizRepository.getCountriesListNotUsedRepository()
+//    }
 }

@@ -1,5 +1,8 @@
 package com.balex.quiz.data
 
+import android.app.Activity
+import android.app.Application
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.R
@@ -8,6 +11,7 @@ import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
+import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.domain.repository.QuizRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -19,61 +23,54 @@ import java.util.Collections
 import java.util.Random
 import java.util.stream.Collectors
 
+const val SHARED_PREFS = "shared_prefs"
+const val SHARED_PREFS_USERNAME = "shared_prefs_username"
+const val SHARED_PREFS_BEST_RES_POINTS = "shared_prefs_best_res_points"
+const val SHARED_PREFS_BEST_RES_CONTENT = "shared_prefs_best_res_content"
+const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
+const val NOT_LOGGED_USER = "notLoggedUser"
 
-object QuizRepositoryImpl : QuizRepository {
+class QuizRepositoryImpl(val application: Application) : QuizRepository {
+
     init {
         getCountriesListFromBackend()
+        refreshUserScoreLiveData(loadUserScoreFromPrefs())
     }
 
 
     private val countriesListFull_LD = MutableLiveData<List<Country>>()
-    private val countriesListNotUsedInQuiz_LD = MutableLiveData<List<Country>>()
+
+    //private val countriesListNotUsedInQuiz_LD = MutableLiveData<List<Country>>()
+    private var countriesListNotUsedInQuiz_LD: List<Country> = Collections.emptyList()
     private var listOddQuestions: List<Country> = Collections.emptyList()
     private var listEvenQuestions: List<Country> = Collections.emptyList()
+
+    private val userScore = MutableLiveData<UserScore>()
+
     private val compositeDisposable = CompositeDisposable()
-    private const val NUMBER_ANSWER_OPTIONS = 4
-    private const val DIFFICULT_LEVEL_EASY = 0
-    private const val DIFFICULT_LEVEL_MIDDLE = 1
-    private const val DIFFICULT_LEVEL_HARD = 2
+
+    private val NUMBER_ANSWER_OPTIONS = 4
+    private val DIFFICULT_LEVEL_EASY = 0
+    private val DIFFICULT_LEVEL_MIDDLE = 1
+    private val DIFFICULT_LEVEL_HARD = 2
     private val rand = Random()
-
-
-    private fun getCountriesListFromBackend() {
-        CoroutineScope(Dispatchers.IO).launch {
-            compositeDisposable.add(
-                ApiFactory.apiService.loadCountries()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        countriesListFull_LD.value =
-                            it.countries.stream().sorted { o1, o2 -> o1.id.compareTo(o2.id) }
-                                .collect(
-                                    Collectors.toList()
-                                )
-                        countriesListNotUsedInQuiz_LD.value = countriesListFull_LD.value
-                    }) {
-                        throw (RuntimeException("Error get countries list from server: + $it"))
-                    })
-        }
-
-    }
 
 
     override fun getCountriesListFullRepository(): LiveData<List<Country>> {
         return countriesListFull_LD
     }
 
-    override fun getCountriesListNotUsedRepository(): LiveData<List<Country>> {
-        return countriesListNotUsedInQuiz_LD
-    }
+//    override fun getCountriesListNotUsedRepository(): LiveData<List<Country>> {
+//        return countriesListNotUsedInQuiz_LD
+//    }
 
-    override fun deleteCountryFromNotUsedListRepository(country: Country) {
-        countriesListNotUsedInQuiz_LD.value =
-            countriesListNotUsedInQuiz_LD.value?.stream()?.filter { e ->
-                e != country
-            }?.collect(Collectors.toList())
-
-    }
+//    override fun deleteCountryFromNotUsedListRepository(country: Country) {
+//        countriesListNotUsedInQuiz_LD.value =
+//            countriesListNotUsedInQuiz_LD.value?.stream()?.filter { e ->
+//                e != country
+//            }?.collect(Collectors.toList())
+//
+//    }
 
     override fun getGameSettings(level: Level): GameSettings {
         val allQuestions = R.integer.test_questions
@@ -119,7 +116,6 @@ object QuizRepositoryImpl : QuizRepository {
             }
         }
     }
-
 
     override fun generateQuestion(level: Level, questionNumber: Int): Question {
 
@@ -169,13 +165,45 @@ object QuizRepositoryImpl : QuizRepository {
 
     }
 
+    override fun getUserScore(): LiveData<UserScore> {
+        return userScore
+    }
 
-    private fun deleteCountryFromCillections(idQuestion: Int) {
+    private fun getCountriesListFromBackend() {
+        CoroutineScope(Dispatchers.IO).launch {
+            compositeDisposable.add(
+                ApiFactory.apiService.loadCountries()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        countriesListFull_LD.value =
+                            it.countries.stream().sorted { o1, o2 -> o1.id.compareTo(o2.id) }
+                                .collect(
+                                    Collectors.toList()
+                                )
+
+                        val countriesList = countriesListFull_LD.value?.toList()
+                        if (countriesList != null) {
+                            countriesListNotUsedInQuiz_LD = countriesList
+                        }
+
+                    }) {
+                        throw (RuntimeException("Error get countries list from server: + $it"))
+                    })
+        }
+
+    }
+
+    private fun deleteCountryFromCollections(idQuestion: Int) {
         listEvenQuestions = listEvenQuestions.stream().filter {
             it.id != idQuestion
         }.collect(Collectors.toList())
 
         listOddQuestions = listOddQuestions.stream().filter {
+            it.id != idQuestion
+        }.collect(Collectors.toList())
+
+        countriesListNotUsedInQuiz_LD = countriesListNotUsedInQuiz_LD.stream().filter {
             it.id != idQuestion
         }.collect(Collectors.toList())
     }
@@ -192,13 +220,16 @@ object QuizRepositoryImpl : QuizRepository {
             questionNumInList = rand.nextInt(listOddQuestions.size)
             idQuestion = listOddQuestions[questionNumInList].id
         }
-        deleteCountryFromCillections(idQuestion)
+        deleteCountryFromCollections(idQuestion)
         return idQuestion
     }
 
 
     private fun resetCountriesListNotUsedInQuiz_LD() {
-        countriesListNotUsedInQuiz_LD.value = countriesListFull_LD.value
+        val countriesList = countriesListFull_LD.value?.toList()
+        if (countriesList != null) {
+            countriesListNotUsedInQuiz_LD = countriesList
+        }
     }
 
     private fun getOddList(level: Level): List<Country> {
@@ -257,6 +288,36 @@ object QuizRepositoryImpl : QuizRepository {
         } else {
             throw RuntimeException("Empty list in fun: getEvenList")
         }
+    }
+
+    fun refreshUserScoreLiveData(userNewScore: UserScore) {
+        userScore.value = userNewScore
+    }
+
+    fun loadUserScoreFromPrefs(): UserScore {
+        val userName = loadUserNameFromPrefs()
+        if (userName == NOT_LOGGED_USER) {
+            return UserScore(NOT_LOGGED_USER, 0, "", "")
+        } else {
+            val sharedPreferences = application.getSharedPreferences(
+                SHARED_PREFS,
+                AppCompatActivity.MODE_PRIVATE
+            )
+            return UserScore(
+                userName,
+                sharedPreferences.getInt(SHARED_PREFS_BEST_RES_POINTS, 0),
+                sharedPreferences.getString(SHARED_PREFS_BEST_RES_CONTENT, "").toString(),
+                sharedPreferences.getString(SHARED_PREFS_LAST_RES_CONTENT, "").toString()
+            )
+        }
+    }
+
+    private fun loadUserNameFromPrefs(): String {
+        val sharedPreferences = application.getSharedPreferences(
+            SHARED_PREFS,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        return sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER).toString()
     }
 
 
