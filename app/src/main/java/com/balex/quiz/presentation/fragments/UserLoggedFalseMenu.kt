@@ -5,11 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.StatusUserLoggedFalseBinding
+import com.balex.quiz.presentation.MainViewModel
+import com.balex.quiz.presentation.MainViewModelFactory
 
 class UserLoggedFalseMenu : Fragment() {
+
+    private lateinit var viewModel: MainViewModel
 
     private var _binding: StatusUserLoggedFalseBinding? = null
     private val binding: StatusUserLoggedFalseBinding
@@ -20,11 +25,13 @@ class UserLoggedFalseMenu : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = StatusUserLoggedFalseBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.updateUserScorePrefs()
         with(binding) {
             login.setOnClickListener {
                 launchLoginFragment()

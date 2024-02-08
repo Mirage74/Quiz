@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
 import com.balex.quiz.data.SHARED_PREFS
 import com.balex.quiz.data.SHARED_PREFS_BEST_RES_CONTENT
@@ -17,6 +18,8 @@ import com.balex.quiz.data.SHARED_PREFS_USERNAME
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.databinding.LoginBinding
 import com.balex.quiz.domain.entity.UserScore
+import com.balex.quiz.presentation.MainViewModel
+import com.balex.quiz.presentation.MainViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -26,6 +29,8 @@ import kotlinx.coroutines.launch
 
 
 class LoginUserFragment : Fragment() {
+
+    private lateinit var viewModel: MainViewModel
 
     private val ERROR_ENTERED_USERNAME_MESSAGE =
         "Name length must contain 3-20 char and begin from letter; pass must be not empty"
@@ -49,6 +54,10 @@ class LoginUserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = LoginBinding.inflate(inflater, container, false)
+//        viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+        viewModel = activity?.run {
+            ViewModelProvider(this)[MainViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
 
         minUserNameLen = resources.getInteger(R.integer.minUsernameLength)
         maxUserNameLen = resources.getInteger(R.integer.maxUsernameLength)
@@ -72,12 +81,16 @@ class LoginUserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(binding) {
+        viewModel.userScoreLiveData.observe(requireActivity()) {
+            Log.d(TAG, "userScore: $it")
+        }
+        viewModel.refreshUserScoreLiveData(UserScore("Test", 1, "2", "2"))
+        //with(binding) {
 //            buttonLevelTest.setOnClickListener {
 //                launchGameFragment(Level.TEST)
 //            }
 
-        }
+
     }
 
 
@@ -106,14 +119,14 @@ class LoginUserFragment : Fragment() {
                 pass1.transformationMethod =
                     android.text.method.HideReturnsTransformationMethod.getInstance()
                 pass1.setSelection(pass1.text.length)
-                toggleView1.setImageResource(com.balex.quiz.R.drawable.eye)
+                toggleView1.setImageResource(R.drawable.eye)
             }
         } else {
             with(binding) {
                 pass1.transformationMethod =
                     android.text.method.PasswordTransformationMethod.getInstance()
                 pass1.setSelection(pass1.text.length)
-                toggleView1.setImageResource(com.balex.quiz.R.drawable.eye_off)
+                toggleView1.setImageResource(R.drawable.eye_off)
             }
         }
         state = !state
@@ -136,6 +149,7 @@ class LoginUserFragment : Fragment() {
                         } else {
                             success_login.show()
                             saveDataUser(it.userScore)
+                            viewModel.refreshUserScoreLiveData(it.userScore)
                         }
                     }) {
                         Log.d(TAG, "Error login: + $it")

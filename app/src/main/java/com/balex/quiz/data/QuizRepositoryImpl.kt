@@ -1,6 +1,5 @@
 package com.balex.quiz.data
 
-import android.app.Activity
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -30,17 +29,16 @@ const val SHARED_PREFS_BEST_RES_CONTENT = "shared_prefs_best_res_content"
 const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
 const val NOT_LOGGED_USER = "notLoggedUser"
 
-class QuizRepositoryImpl(val application: Application) : QuizRepository {
+
+class QuizRepositoryImpl(private val application: Application) : QuizRepository {
 
     init {
         getCountriesListFromBackend()
-        refreshUserScoreLiveData(loadUserScoreFromPrefs())
     }
 
 
     private val countriesListFull_LD = MutableLiveData<List<Country>>()
 
-    //private val countriesListNotUsedInQuiz_LD = MutableLiveData<List<Country>>()
     private var countriesListNotUsedInQuiz_LD: List<Country> = Collections.emptyList()
     private var listOddQuestions: List<Country> = Collections.emptyList()
     private var listEvenQuestions: List<Country> = Collections.emptyList()
@@ -60,17 +58,6 @@ class QuizRepositoryImpl(val application: Application) : QuizRepository {
         return countriesListFull_LD
     }
 
-//    override fun getCountriesListNotUsedRepository(): LiveData<List<Country>> {
-//        return countriesListNotUsedInQuiz_LD
-//    }
-
-//    override fun deleteCountryFromNotUsedListRepository(country: Country) {
-//        countriesListNotUsedInQuiz_LD.value =
-//            countriesListNotUsedInQuiz_LD.value?.stream()?.filter { e ->
-//                e != country
-//            }?.collect(Collectors.toList())
-//
-//    }
 
     override fun getGameSettings(level: Level): GameSettings {
         val allQuestions = R.integer.test_questions
@@ -165,8 +152,30 @@ class QuizRepositoryImpl(val application: Application) : QuizRepository {
 
     }
 
-    override fun getUserScore(): LiveData<UserScore> {
+    override fun getUserScore(): MutableLiveData<UserScore> {
         return userScore
+    }
+
+    override fun refreshUserScore(newUserScore: UserScore) {
+        userScore.value = newUserScore
+    }
+
+    override fun loadUserScore(): UserScore {
+        val userName = loadUserNameFromPrefs()
+        if (userName == NOT_LOGGED_USER) {
+            return UserScore(NOT_LOGGED_USER, 0, "", "")
+        } else {
+            val sharedPreferences = application.getSharedPreferences(
+                SHARED_PREFS,
+                AppCompatActivity.MODE_PRIVATE
+            )
+            return UserScore(
+                userName,
+                sharedPreferences.getInt(SHARED_PREFS_BEST_RES_POINTS, 0),
+                sharedPreferences.getString(SHARED_PREFS_BEST_RES_CONTENT, "").toString(),
+                sharedPreferences.getString(SHARED_PREFS_LAST_RES_CONTENT, "").toString()
+            )
+        }
     }
 
     private fun getCountriesListFromBackend() {
@@ -290,27 +299,6 @@ class QuizRepositoryImpl(val application: Application) : QuizRepository {
         }
     }
 
-    fun refreshUserScoreLiveData(userNewScore: UserScore) {
-        userScore.value = userNewScore
-    }
-
-    fun loadUserScoreFromPrefs(): UserScore {
-        val userName = loadUserNameFromPrefs()
-        if (userName == NOT_LOGGED_USER) {
-            return UserScore(NOT_LOGGED_USER, 0, "", "")
-        } else {
-            val sharedPreferences = application.getSharedPreferences(
-                SHARED_PREFS,
-                AppCompatActivity.MODE_PRIVATE
-            )
-            return UserScore(
-                userName,
-                sharedPreferences.getInt(SHARED_PREFS_BEST_RES_POINTS, 0),
-                sharedPreferences.getString(SHARED_PREFS_BEST_RES_CONTENT, "").toString(),
-                sharedPreferences.getString(SHARED_PREFS_LAST_RES_CONTENT, "").toString()
-            )
-        }
-    }
 
     private fun loadUserNameFromPrefs(): String {
         val sharedPreferences = application.getSharedPreferences(
