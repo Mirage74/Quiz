@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
     app:startDestination="@id/userLoggedFalseMenu">
     <fragment
         android:id="@+id/userLoggedFalseMenu"
         android:name="com.balex.quiz.presentation.fragments.UserLoggedFalseMenu"
-        android:label="UserLoggedFalseMenu" >
+        android:label="UserLoggedFalseMenu"
+        tools:layout="@layout/status_user_logged_false">
         <action
             android:id="@+id/action_userLoggedFalseMenu_to_loginUserFragment"
             app:destination="@id/loginUserFragment" />
+        <action
+            android:id="@+id/action_userLoggedFalseMenu_to_userLoggedTrueMenu"
+            app:destination="@id/userLoggedTrueMenu" />
     </fragment>
     <fragment
         android:id="@+id/loginUserFragment"
         android:name="com.balex.quiz.presentation.fragments.LoginUserFragment"
-        android:label="LoginUserFragment" />
+        android:label="LoginUserFragment"
+        tools:layout="@layout/status_user_logged_true"/>
+    <fragment
+        android:id="@+id/userLoggedTrueMenu"
+        android:name="com.balex.quiz.presentation.fragments.UserLoggedTrueMenu"
+        android:label="UserLoggedTrueMenu"
+        tools:layout="@layout/login"/>
 </navigation>

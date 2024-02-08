@@ -54,10 +54,12 @@ class LoginUserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = LoginBinding.inflate(inflater, container, false)
-//        viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
-        viewModel = activity?.run {
-            ViewModelProvider(this)[MainViewModel::class.java]
-        } ?: throw Exception("Invalid Activity")
+        viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+        //Log.d(TAG, viewModel.userScoreLiveData.value.toString())
+
+//        viewModel = activity?.run {
+//            ViewModelProvider(this)[MainViewModel::class.java]
+//        } ?: throw Exception("Invalid Activity")
 
         minUserNameLen = resources.getInteger(R.integer.minUsernameLength)
         maxUserNameLen = resources.getInteger(R.integer.maxUsernameLength)
@@ -81,10 +83,10 @@ class LoginUserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.userScoreLiveData.observe(requireActivity()) {
-            Log.d(TAG, "userScore: $it")
+        viewModel.userScoreLiveData.observe(viewLifecycleOwner) {
+            //Log.d(TAG, "onViewCreated observe userScore: $it")
         }
-        viewModel.refreshUserScoreLiveData(UserScore("Test", 1, "2", "2"))
+        //viewModel.refreshUserScoreLiveData(UserScore("Test", 1, "2", "2"))
         //with(binding) {
 //            buttonLevelTest.setOnClickListener {
 //                launchGameFragment(Level.TEST)

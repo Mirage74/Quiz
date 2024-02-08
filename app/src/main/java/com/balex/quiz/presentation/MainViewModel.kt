@@ -1,8 +1,8 @@
 package com.balex.quiz.presentation
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.domain.usecases.GetCountriesFullListRepositoryUseCase
@@ -13,8 +13,12 @@ import com.balex.quiz.domain.usecases.RefreshUserScorePrefsUseCase
 class MainViewModel(application: Application) :
     AndroidViewModel(application) {
 
+    init {
+        Log.d("MainViewModel", "MainViewModel Init called")
+    }
 
-    private val TAG = "MainViewModel"
+
+    //private val TAG = "MainViewModel"
 
     private val repository = QuizRepositoryImpl(application)
 
@@ -25,17 +29,13 @@ class MainViewModel(application: Application) :
     private val loadUserScore = LoadUserScorePrefsUseCase(repository)
 
 
-
     val countriesFullListLiveData = getCountriesFullListLiveData
     val userScoreLiveData = getUserScoreLiveData()
     val refreshUserScoreLiveData = refreshUserScore
 
-    fun updateUserScorePrefs(userScore: UserScore) {
-        refreshUserScore(userScore)
-    }
 
-    fun loadUserScorePrefs(): UserScore {
-        refreshUserScore(userScore)
+    fun loadUserScorePrefs() {
+        refreshUserScore(loadUserScore())
     }
 
 

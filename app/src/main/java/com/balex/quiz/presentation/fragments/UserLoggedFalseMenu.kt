@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
+import com.balex.quiz.data.NOT_LOGGED_USER
 import com.balex.quiz.databinding.StatusUserLoggedFalseBinding
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
@@ -31,7 +32,12 @@ class UserLoggedFalseMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.updateUserScorePrefs()
+        viewModel.loadUserScorePrefs()
+        viewModel.userScoreLiveData.observe(viewLifecycleOwner) {
+            if (it.userName != NOT_LOGGED_USER) {
+                launchUserLoggedTrueFragment()
+            }
+        }
         with(binding) {
             login.setOnClickListener {
                 launchLoginFragment()
@@ -41,6 +47,11 @@ class UserLoggedFalseMenu : Fragment() {
 
     private fun launchLoginFragment() {
         findNavController().navigate(R.id.action_userLoggedFalseMenu_to_loginUserFragment)
+        //findNavController.popBackStack(R.id.Us)
+    }
+
+    private fun launchUserLoggedTrueFragment() {
+        findNavController().navigate(R.id.action_userLoggedFalseMenu_to_userLoggedTrueMenu)
     }
 
     override fun onDestroyView() {
