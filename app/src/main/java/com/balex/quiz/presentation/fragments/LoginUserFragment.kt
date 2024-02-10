@@ -6,18 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
-import com.balex.quiz.data.SHARED_PREFS
-import com.balex.quiz.data.SHARED_PREFS_BEST_RES_CONTENT
-import com.balex.quiz.data.SHARED_PREFS_BEST_RES_POINTS
-import com.balex.quiz.data.SHARED_PREFS_LAST_RES_CONTENT
-import com.balex.quiz.data.SHARED_PREFS_USERNAME
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.databinding.LoginBinding
-import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -47,7 +41,8 @@ class LoginUserFragment : Fragment() {
     private var passText = ""
     private var state = false
     private var minUserNameLen: Int = 0
-    var maxUserNameLen: Int = 0
+    private var maxUserNameLen: Int = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,11 +50,6 @@ class LoginUserFragment : Fragment() {
     ): View {
         _binding = LoginBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
-        //Log.d(TAG, viewModel.userScoreLiveData.value.toString())
-
-//        viewModel = activity?.run {
-//            ViewModelProvider(this)[MainViewModel::class.java]
-//        } ?: throw Exception("Invalid Activity")
 
         minUserNameLen = resources.getInteger(R.integer.minUsernameLength)
         maxUserNameLen = resources.getInteger(R.integer.maxUsernameLength)
@@ -83,10 +73,10 @@ class LoginUserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.userScoreLiveData.observe(viewLifecycleOwner) {
-            //Log.d(TAG, "onViewCreated observe userScore: $it")
-        }
-        //viewModel.refreshUserScoreLiveData(UserScore("Test", 1, "2", "2"))
+//        viewModel.userScore.observe(viewLifecycleOwner) {
+//            Log.d(TAG, "onViewCreated observe userScore: $it")
+//        }
+
         //with(binding) {
 //            buttonLevelTest.setOnClickListener {
 //                launchGameFragment(Level.TEST)
@@ -150,8 +140,8 @@ class LoginUserFragment : Fragment() {
                             failed_login.show()
                         } else {
                             success_login.show()
-                            saveDataUser(it.userScore)
-                            viewModel.refreshUserScoreLiveData(it.userScore)
+                            viewModel.refreshAndSaveUserScore(it.userScore)
+                            launchUserLoggedTrueFragment()
                         }
                     }) {
                         Log.d(TAG, "Error login: + $it")
@@ -161,19 +151,10 @@ class LoginUserFragment : Fragment() {
 
     }
 
-
-    private fun saveDataUser(user: UserScore) {
-        val sharedPreferences = requireActivity().getSharedPreferences(
-            SHARED_PREFS,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        val editor = sharedPreferences.edit()
-        editor.putString(SHARED_PREFS_USERNAME, user.userName)
-        editor.putInt(SHARED_PREFS_BEST_RES_POINTS, user.bestScore)
-        editor.putString(SHARED_PREFS_BEST_RES_CONTENT, user.bestResultJSON)
-        editor.putString(SHARED_PREFS_LAST_RES_CONTENT, user.lastResultJSON)
-        editor.apply()
+    private fun launchUserLoggedTrueFragment() {
+        findNavController().navigate(R.id.action_loginUserFragment_to_userLoggedTrueMenu)
     }
+
 
 
     override fun onDestroyView() {

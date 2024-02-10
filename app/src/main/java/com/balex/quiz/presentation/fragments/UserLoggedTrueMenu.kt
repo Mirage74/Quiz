@@ -9,13 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.StatusUserLoggedTrueBinding
+import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 
 class UserLoggedTrueMenu  : Fragment() {
 
     private lateinit var viewModel: MainViewModel
-
+    private lateinit var userScore: UserScore
     private var _binding: StatusUserLoggedTrueBinding? = null
     private val binding: StatusUserLoggedTrueBinding
     get() = _binding ?: throw RuntimeException("UserLoggedFalseMenu == null")
@@ -31,17 +32,20 @@ class UserLoggedTrueMenu  : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadUserScorePrefs()
-//        with(binding) {
-//            login.setOnClickListener {
-//                launchLoginFragment()
-//            }
-//        }
+        userScore = viewModel.notLogUserScoreInstance
+        viewModel.userScore.value?.let { userScore = it  }
+        binding.username.text = userScore.userName
+        with(binding) {
+            logout.setOnClickListener {
+                viewModel.setUserScoreAsNotLogged()
+                launchUserLoggedFalseFragment()
+            }
+        }
     }
 
-//    private fun launchLoginFragment() {
-//        findNavController().navigate(R.id.action_userLoggedFalseMenu_to_loginUserFragment)
-//    }
+    private fun launchUserLoggedFalseFragment() {
+        findNavController().navigate(R.id.action_userLoggedTrueMenu_to_userLoggedFalseMenu)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

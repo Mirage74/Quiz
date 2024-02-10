@@ -12,9 +12,9 @@ object ApiFactory {
     private const val BASE_URL = "https://balexvic.com/api/"
     //private const val BASE_URL = "https://10.0.2.2:4000/api/"
     //private const val BASE_URL = "http://localhost:4000/api/"
-    private val interceptor = InitInterceptor()
+    private val interceptor = initInterceptor()
 
-    private fun InitInterceptor(): HttpLoggingInterceptor {
+    private fun initInterceptor(): HttpLoggingInterceptor {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         return interceptor

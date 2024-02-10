@@ -1,7 +1,6 @@
 package com.balex.quiz.data
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.R
@@ -30,12 +29,12 @@ const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
 const val NOT_LOGGED_USER = "notLoggedUser"
 
 
+
 class QuizRepositoryImpl(private val application: Application) : QuizRepository {
 
     init {
         getCountriesListFromBackend()
     }
-
 
     private val countriesListFull_LD = MutableLiveData<List<Country>>()
 
@@ -44,6 +43,7 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     private var listEvenQuestions: List<Country> = Collections.emptyList()
 
     private val userScore = MutableLiveData<UserScore>()
+
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -152,31 +152,17 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
 
     }
 
-    override fun getUserScore(): MutableLiveData<UserScore> {
+    override fun getUserScore(): LiveData<UserScore> {
         return userScore
     }
 
-    override fun refreshUserScore(newUserScore: UserScore) {
+    override fun setUserScore(newUserScore: UserScore) {
         userScore.value = newUserScore
     }
 
-    override fun loadUserScore(): UserScore {
-        val userName = loadUserNameFromPrefs()
-        if (userName == NOT_LOGGED_USER) {
-            return UserScore(NOT_LOGGED_USER, 0, "", "")
-        } else {
-            val sharedPreferences = application.getSharedPreferences(
-                SHARED_PREFS,
-                AppCompatActivity.MODE_PRIVATE
-            )
-            return UserScore(
-                userName,
-                sharedPreferences.getInt(SHARED_PREFS_BEST_RES_POINTS, 0),
-                sharedPreferences.getString(SHARED_PREFS_BEST_RES_CONTENT, "").toString(),
-                sharedPreferences.getString(SHARED_PREFS_LAST_RES_CONTENT, "").toString()
-            )
-        }
-    }
+
+
+
 
     private fun getCountriesListFromBackend() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -300,13 +286,7 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     }
 
 
-    private fun loadUserNameFromPrefs(): String {
-        val sharedPreferences = application.getSharedPreferences(
-            SHARED_PREFS,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        return sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER).toString()
-    }
+
 
 
 }
