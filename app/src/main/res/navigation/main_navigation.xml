@@ -39,5 +39,12 @@
             app:destination="@id/userLoggedFalseMenu"
             app:popUpTo="@id/userLoggedTrueMenu"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_userLoggedTrueMenu_to_chooseLevelFragment"
+            app:destination="@id/chooseLevelFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/chooseLevelFragment"
+        android:name="com.balex.quiz.presentation.fragments.ChooseLevelFragment"
+        tools:layout="@layout/choose_level"/>
 </navigation>

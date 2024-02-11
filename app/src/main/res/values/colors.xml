@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="coreBG">#1F1C1B1F</color>
+    <color name="coreBG">#FFEB3B</color>
     <color name="stroke">#996750A4</color>
     <color name="buttonCheckBgColor">#8B5C32A6</color>
     <color name="rightAnswer">#4CAF50</color>

@@ -28,8 +28,8 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivImageCapital"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginHorizontal="50dp"
+            android:layout_height="240dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginBottom="10dp"
             android:adjustViewBounds="true"
             android:alpha="1"

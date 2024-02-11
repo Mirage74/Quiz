@@ -36,11 +36,18 @@ class UserLoggedTrueMenu  : Fragment() {
         viewModel.userScore.value?.let { userScore = it  }
         binding.username.text = userScore.userName
         with(binding) {
+            startTest.setOnClickListener {
+                launchChooseLevelFragment()
+            }
             logout.setOnClickListener {
                 viewModel.setUserScoreAsNotLogged()
                 launchUserLoggedFalseFragment()
             }
         }
+    }
+
+    private fun launchChooseLevelFragment() {
+        findNavController().navigate(R.id.action_userLoggedTrueMenu_to_chooseLevelFragment)
     }
 
     private fun launchUserLoggedFalseFragment() {
