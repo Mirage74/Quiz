@@ -14,7 +14,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this, MainViewModelFactory(this.application))[MainViewModel::class.java]
-
+        viewModel.setUserScore(App.loadUserScore())
+        viewModel.getCountriesListFromBackend()
     }
 
     companion object {

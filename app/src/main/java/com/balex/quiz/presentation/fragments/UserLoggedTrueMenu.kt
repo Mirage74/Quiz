@@ -40,7 +40,7 @@ class UserLoggedTrueMenu  : Fragment() {
                 launchChooseLevelFragment()
             }
             logout.setOnClickListener {
-                viewModel.setUserScoreAsNotLogged()
+                viewModel.setAndSaveUserScoreAsNotLogged()
                 launchUserLoggedFalseFragment()
             }
         }

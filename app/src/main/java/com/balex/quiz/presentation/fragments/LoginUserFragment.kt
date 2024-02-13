@@ -140,7 +140,7 @@ class LoginUserFragment : Fragment() {
                             failed_login.show()
                         } else {
                             success_login.show()
-                            viewModel.refreshAndSaveUserScore(it.userScore)
+                            viewModel.setAndSaveUserScore(it.userScore)
                             launchUserLoggedTrueFragment()
                         }
                     }) {

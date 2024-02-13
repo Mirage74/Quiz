@@ -37,11 +37,11 @@ class UserLoggedFalseMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userScore = viewModel.loadUserScore()
-        viewModel.userScore.value?.let { userScore = it  }
-        if (userScore.userName != NOT_LOGGED_USER) {
-            viewModel.refreshUserScore(userScore)
-        }
+//        userScore = viewModel.notLogUserScoreInstance
+//        viewModel.userScore.value?.let { userScore = it  }
+//        if (userScore.userName != NOT_LOGGED_USER) {
+//            viewModel.setAndSaveUserScore(userScore)
+//        }
 
         viewModel.userScore.observe(viewLifecycleOwner) {
             if (it.userName != NOT_LOGGED_USER) {

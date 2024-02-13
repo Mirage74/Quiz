@@ -1,22 +1,13 @@
 package com.balex.quiz.data
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.R
-import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
-import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.domain.repository.QuizRepository
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Collections
 import java.util.Random
 import java.util.stream.Collectors
@@ -32,9 +23,7 @@ const val NOT_LOGGED_USER = "notLoggedUser"
 
 class QuizRepositoryImpl(private val application: Application) : QuizRepository {
 
-    init {
-        getCountriesListFromBackend()
-    }
+
 
     private val countriesListFull_LD = MutableLiveData<List<Country>>()
 
@@ -42,10 +31,6 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     private var listOddQuestions: List<Country> = Collections.emptyList()
     private var listEvenQuestions: List<Country> = Collections.emptyList()
 
-    private val userScore = MutableLiveData<UserScore>()
-
-
-    private val compositeDisposable = CompositeDisposable()
 
     private val NUMBER_ANSWER_OPTIONS = 4
     private val DIFFICULT_LEVEL_EASY = 0
@@ -54,9 +39,6 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     private val rand = Random()
 
 
-    override fun getCountriesListFullRepository(): LiveData<List<Country>> {
-        return countriesListFull_LD
-    }
 
 
     override fun getGameSettings(level: Level): GameSettings {
@@ -152,42 +134,7 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
 
     }
 
-    override fun getUserScore(): LiveData<UserScore> {
-        return userScore
-    }
 
-    override fun setUserScore(newUserScore: UserScore) {
-        userScore.value = newUserScore
-    }
-
-
-
-
-
-    private fun getCountriesListFromBackend() {
-        CoroutineScope(Dispatchers.IO).launch {
-            compositeDisposable.add(
-                ApiFactory.apiService.loadCountries()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        countriesListFull_LD.value =
-                            it.countries.stream().sorted { o1, o2 -> o1.id.compareTo(o2.id) }
-                                .collect(
-                                    Collectors.toList()
-                                )
-
-                        val countriesList = countriesListFull_LD.value?.toList()
-                        if (countriesList != null) {
-                            countriesListNotUsedInQuiz_LD = countriesList
-                        }
-
-                    }) {
-                        throw (RuntimeException("Error get countries list from server: + $it"))
-                    })
-        }
-
-    }
 
     private fun deleteCountryFromCollections(idQuestion: Int) {
         listEvenQuestions = listEvenQuestions.stream().filter {
