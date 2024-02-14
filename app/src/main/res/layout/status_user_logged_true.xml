@@ -9,7 +9,7 @@
         android:background="@drawable/unsplash"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".presentation.fragments.UserLoggedTrueMenu">
+        tools:context=".presentation.fragments.UserLoggedTrueMenuFragment">
 
         <TextView
             android:id="@+id/username"

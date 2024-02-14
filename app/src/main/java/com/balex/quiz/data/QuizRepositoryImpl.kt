@@ -3,27 +3,21 @@ package com.balex.quiz.data
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.R
+import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.repository.QuizRepository
+import com.bumptech.glide.Glide
 import java.util.Collections
 import java.util.Random
 import java.util.stream.Collectors
 
-const val SHARED_PREFS = "shared_prefs"
-const val SHARED_PREFS_USERNAME = "shared_prefs_username"
-const val SHARED_PREFS_BEST_RES_POINTS = "shared_prefs_best_res_points"
-const val SHARED_PREFS_BEST_RES_CONTENT = "shared_prefs_best_res_content"
-const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
-const val NOT_LOGGED_USER = "notLoggedUser"
-
-
 
 class QuizRepositoryImpl(private val application: Application) : QuizRepository {
 
-
+    val BACKEND_STATIC_IMAGES_PREFIX = "images"
 
     private val countriesListFull_LD = MutableLiveData<List<Country>>()
 
@@ -37,8 +31,6 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     private val DIFFICULT_LEVEL_MIDDLE = 1
     private val DIFFICULT_LEVEL_HARD = 2
     private val rand = Random()
-
-
 
 
     override fun getGameSettings(level: Level): GameSettings {
@@ -86,20 +78,20 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
         }
     }
 
-    override fun generateQuestion(level: Level, questionNumber: Int): Question {
+    override fun generateQuestion(
+        level: Level,
+        questionNumber: Int,
+        countriesListFull: List<Country>,
+        countriesListNotUsedInQuiz: List<Country>
+    ): Question {
 
         val country: Country
         val maxQuestionNumber = R.integer.test_questions
-        val countriesListFull = countriesListFull_LD.value?.toList()
-        if (questionNumber <= maxQuestionNumber && countriesListFull != null) {
-
-            if (questionNumber == 1) {
-                resetCountriesListNotUsedInQuiz_LD()
-            }
+        if (questionNumber <= maxQuestionNumber) {
             val array = intArrayOf(1, 1, 1, 1)
-            listOddQuestions = getOddList(level)
-            listEvenQuestions = getEvenList(level)
-            val questionId = getQuestionID(questionNumber)
+            listOddQuestions = getOddList(level, countriesListNotUsedInQuiz)
+            listEvenQuestions = getEvenList(level, countriesListNotUsedInQuiz)
+            val questionId = generateQuestionID(questionNumber)
             country =
                 countriesListFull.stream().filter { it.id == questionId }.findFirst()
                     .get()
@@ -120,7 +112,9 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
                 array[0] = array[rightAnswerPositionInArray]
                 array[rightAnswerPositionInArray] = temp
             }
-            return Question(
+
+
+            val question = Question(
                 country.countryName,
                 array[0],
                 array[1],
@@ -128,12 +122,17 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
                 array[3],
                 array[rightAnswerPositionInArray]
             )
+
+            Glide.with(application)
+                .load(ApiFactory.apiService.loadCountryImage(BACKEND_STATIC_IMAGES_PREFIX + "/" + country.imageName))
+                .into(question.imageView)
+
+            return question
         } else {
             throw RuntimeException("Question number $questionNumber is more then maximal allowed $maxQuestionNumber")
         }
 
     }
-
 
 
     private fun deleteCountryFromCollections(idQuestion: Int) {
@@ -151,7 +150,7 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     }
 
 
-    private fun getQuestionID(questionNumberInQuiz: Int): Int {
+    private fun generateQuestionID(questionNumberInQuiz: Int): Int {
         val idQuestion: Int
         val questionNumInList: Int
         if (questionNumberInQuiz % 2 == 0) {
@@ -167,73 +166,54 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     }
 
 
-    private fun resetCountriesListNotUsedInQuiz_LD() {
-        val countriesList = countriesListFull_LD.value?.toList()
-        if (countriesList != null) {
-            countriesListNotUsedInQuiz_LD = countriesList
-        }
-    }
+    private fun getOddList(level: Level, countriesListFull: List<Country>): List<Country> {
 
-    private fun getOddList(level: Level): List<Country> {
-        val countriesListFull = countriesListFull_LD.value?.toList()
-        if (countriesListFull != null) {
-
-            val listOdd = when (level) {
-                Level.EASY -> {
-                    countriesListFull.stream()
-                        .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_EASY }
-                        .collect(Collectors.toList())
-                }
-
-                Level.MEDIUM -> {
-                    countriesListFull.stream()
-                        .filter { e -> e.difficultLevel <= DIFFICULT_LEVEL_MIDDLE }
-                        .collect(Collectors.toList())
-                }
-
-                Level.HARD -> {
-                    countriesListFull
-                }
+        val listOdd = when (level) {
+            Level.EASY -> {
+                countriesListFull.stream()
+                    .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_EASY }
+                    .collect(Collectors.toList())
             }
 
-            return listOdd
-        } else {
-            throw RuntimeException("Empty list in fun: getOddList")
-        }
-    }
-
-    private fun getEvenList(level: Level): List<Country> {
-        val countriesListFull = countriesListFull_LD.value?.toList()
-        if (countriesListFull != null) {
-            val listEven = when (level) {
-                Level.EASY -> {
-                    countriesListFull.stream()
-                        .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_EASY }
-                        .collect(Collectors.toList())
-                }
-
-                Level.MEDIUM -> {
-                    countriesListFull.stream()
-                        .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_MIDDLE }
-                        .collect(Collectors.toList())
-                }
-
-                Level.HARD -> {
-                    countriesListFull.stream()
-                        .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_HARD }
-                        .collect(Collectors.toList())
-                }
+            Level.MEDIUM -> {
+                countriesListFull.stream()
+                    .filter { e -> e.difficultLevel <= DIFFICULT_LEVEL_MIDDLE }
+                    .collect(Collectors.toList())
             }
 
-
-            return listEven
-        } else {
-            throw RuntimeException("Empty list in fun: getEvenList")
+            Level.HARD -> {
+                countriesListFull
+            }
         }
+
+        return listOdd
     }
 
+    private fun getEvenList(level: Level, countriesListFull: List<Country>): List<Country> {
+
+        val listEven = when (level) {
+            Level.EASY -> {
+                countriesListFull.stream()
+                    .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_EASY }
+                    .collect(Collectors.toList())
+            }
+
+            Level.MEDIUM -> {
+                countriesListFull.stream()
+                    .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_MIDDLE }
+                    .collect(Collectors.toList())
+            }
+
+            Level.HARD -> {
+                countriesListFull.stream()
+                    .filter { e -> e.difficultLevel == DIFFICULT_LEVEL_HARD }
+                    .collect(Collectors.toList())
+            }
+        }
 
 
+        return listEven
+    }
 
 
 }

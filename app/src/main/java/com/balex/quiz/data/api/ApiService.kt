@@ -1,5 +1,6 @@
 package com.balex.quiz.data.api
 
+import android.widget.ImageView
 import com.balex.quiz.domain.entity.CountriesResponse
 import com.balex.quiz.domain.entity.UserScoreResponse
 import io.reactivex.rxjava3.core.Single
@@ -11,6 +12,9 @@ import retrofit2.http.POST
 interface ApiService {
     @GET("get")
     fun loadCountries(): Single <CountriesResponse>
+
+    @GET("url")
+    fun loadCountryImage(url: String): ImageView
 
     @FormUrlEncoded
     @POST("login")

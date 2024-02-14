@@ -8,7 +8,7 @@
         android:background="@drawable/unsplash"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".presentation.fragments.UserLoggedFalseMenu">
+        tools:context=".presentation.fragments.UserLoggedFalseMenuFragment">
 
 
         <Button

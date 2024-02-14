@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.databinding.LoginBinding
+import com.balex.quiz.presentation.App
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -71,19 +72,6 @@ class LoginUserFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        viewModel.userScore.observe(viewLifecycleOwner) {
-//            Log.d(TAG, "onViewCreated observe userScore: $it")
-//        }
-
-        //with(binding) {
-//            buttonLevelTest.setOnClickListener {
-//                launchGameFragment(Level.TEST)
-//            }
-
-
-    }
 
 
     fun login() {
@@ -140,7 +128,8 @@ class LoginUserFragment : Fragment() {
                             failed_login.show()
                         } else {
                             success_login.show()
-                            viewModel.setAndSaveUserScore(it.userScore)
+                            App.saveDataUser(it.userScore,requireActivity().application)
+                            viewModel.setIsUserLogged(true)
                             launchUserLoggedTrueFragment()
                         }
                     }) {

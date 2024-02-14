@@ -1,11 +1,15 @@
 package com.balex.quiz.domain.entity
 
+import android.widget.ImageView
+
 data class Question(
     val countryName: String,
-    val option_1_Id: Int,
-    val option_2_Id: Int,
-    val option_3_Id: Int,
-    val option_4_Id: Int,
+    val option1Id: Int,
+    val option2Id: Int,
+    val option3Id: Int,
+    val option4Id: Int,
     val rightAnswerNumOption: Int
 
-)
+) {
+    lateinit var imageView: ImageView
+}

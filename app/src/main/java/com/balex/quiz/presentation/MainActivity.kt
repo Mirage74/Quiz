@@ -8,21 +8,21 @@ import com.balex.quiz.R
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        app = this
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this, MainViewModelFactory(this.application))[MainViewModel::class.java]
-        viewModel.setUserScore(App.loadUserScore())
-        viewModel.getCountriesListFromBackend()
+        viewModel.isListCountriesFromBackendLoaded.observe(this) {
+            if (!it) {
+                viewModel.getCountriesListFromBackend()
+            }
+        }
+
+        viewModel.initIsUserLoggedStatus()
     }
 
-    companion object {
 
-        lateinit var app: AppCompatActivity
-
-    }
 }
 
 

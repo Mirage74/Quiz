@@ -4,44 +4,52 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.balex.quiz.data.NOT_LOGGED_USER
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
-import com.balex.quiz.domain.entity.UserScore
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Collections
 import java.util.stream.Collectors
 
 class MainViewModel(application: Application) :
     AndroidViewModel(application) {
 
-    init {
-//        getCountriesListFromBackend()
-    }
+    private val _isListCountriesFromBackendLoaded = MutableLiveData<Boolean>(false)
+    val isListCountriesFromBackendLoaded: LiveData<Boolean>
+        get() = _isListCountriesFromBackendLoaded
+
+    private val _isUserLogged = MutableLiveData<Boolean>(false)
+    val isUserLogged: LiveData<Boolean>
+        get() = _isUserLogged
 
     private val TAG = "MainViewModel"
 
     private val repository = QuizRepositoryImpl(application)
     private val compositeDisposable = CompositeDisposable()
 
-    private val _countriesListFullLiveData = MutableLiveData<List<Country>>()
-    val countriesListFullLiveData: LiveData<List<Country>>
-        get() = _countriesListFullLiveData
-
-    private val _userScore = MutableLiveData<UserScore>()
-    val userScore: LiveData<UserScore>
-        get() = _userScore
+    private var countriesFullList: List<Country> = Collections.emptyList()
 
 
-    val notLogUserScoreInstance = UserScore(NOT_LOGGED_USER, 0, "", "")
+    private fun setCountriesFullList(list: List<Country>) {
+        countriesFullList = list
+        _isListCountriesFromBackendLoaded.value = true
+    }
 
-    private fun setСountriesListFullLiveData(list: List<Country>) {
-        _countriesListFullLiveData.value = list
+    fun initIsUserLoggedStatus() {
+        if (App.loadUserNameFromPrefs(getApplication()) != NOT_LOGGED_USER) {
+            setIsUserLogged(true)
+        } else {
+            setIsUserLogged(false)
+        }
+    }
+
+    fun setIsUserLogged(newStatus: Boolean) {
+        _isUserLogged.value = newStatus
     }
 
     fun getCountriesListFromBackend() {
@@ -51,7 +59,7 @@ class MainViewModel(application: Application) :
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        setСountriesListFullLiveData(
+                        setCountriesFullList(
                             it.countries.stream().sorted { o1, o2 -> o1.id.compareTo(o2.id) }
                                 .collect(
                                     Collectors.toList()
@@ -65,20 +73,6 @@ class MainViewModel(application: Application) :
 
     }
 
-    fun setUserScore(newUserScore: UserScore) {
-        _userScore.value = newUserScore
-    }
-
-
-    fun setAndSaveUserScore(userScore: UserScore) {
-        setUserScore(userScore)
-        App.saveDataUser(userScore)
-    }
-
-    fun setAndSaveUserScoreAsNotLogged() {
-        setUserScore(notLogUserScoreInstance)
-        App.saveDataUser(notLogUserScoreInstance)
-    }
 
     override fun onCleared() {
         super.onCleared()

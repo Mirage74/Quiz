@@ -9,42 +9,67 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.StatusUserLoggedTrueBinding
-import com.balex.quiz.domain.entity.UserScore
+import com.balex.quiz.presentation.App
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 
-class UserLoggedTrueMenu  : Fragment() {
+class UserLoggedTrueMenuFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var userScore: UserScore
+    private var userName = ""
     private var _binding: StatusUserLoggedTrueBinding? = null
     private val binding: StatusUserLoggedTrueBinding
-    get() = _binding ?: throw RuntimeException("UserLoggedFalseMenu == null")
+        get() = _binding ?: throw RuntimeException("UserLoggedFalseMenu == null")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = StatusUserLoggedTrueBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            MainViewModelFactory(requireActivity().application)
+        )[MainViewModel::class.java]
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userScore = viewModel.notLogUserScoreInstance
-        viewModel.userScore.value?.let { userScore = it  }
-        binding.username.text = userScore.userName
+        initViewValues()
+        observeViewModel()
+        setClickListeners()
+    }
+
+    private fun initViewValues() {
+        userName = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
+        with(binding) {
+            username.text = userName
+            startTest.isEnabled = false
+
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.isListCountriesFromBackendLoaded.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.startTest.isEnabled = true
+            }
+        }
+    }
+
+    private fun setClickListeners() {
         with(binding) {
             startTest.setOnClickListener {
                 launchChooseLevelFragment()
             }
             logout.setOnClickListener {
-                viewModel.setAndSaveUserScoreAsNotLogged()
+                App.setUserNotLogged(requireActivity().application)
+                viewModel.setIsUserLogged(false)
                 launchUserLoggedFalseFragment()
             }
         }
     }
+
 
     private fun launchChooseLevelFragment() {
         findNavController().navigate(R.id.action_userLoggedTrueMenu_to_chooseLevelFragment)

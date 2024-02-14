@@ -6,7 +6,7 @@
     app:startDestination="@id/userLoggedFalseMenu">
     <fragment
         android:id="@+id/userLoggedFalseMenu"
-        android:name="com.balex.quiz.presentation.fragments.UserLoggedFalseMenu"
+        android:name="com.balex.quiz.presentation.fragments.UserLoggedFalseMenuFragment"
         android:label="UserLoggedFalseMenu"
         tools:layout="@layout/status_user_logged_false">
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/userLoggedTrueMenu"
-        android:name="com.balex.quiz.presentation.fragments.UserLoggedTrueMenu"
+        android:name="com.balex.quiz.presentation.fragments.UserLoggedTrueMenuFragment"
         android:label="UserLoggedTrueMenu"
         tools:layout="@layout/status_user_logged_true">
         <action
@@ -46,5 +46,19 @@
     <fragment
         android:id="@+id/chooseLevelFragment"
         android:name="com.balex.quiz.presentation.fragments.ChooseLevelFragment"
-        tools:layout="@layout/choose_level"/>
+        android:label="chooseLevelFragment"
+        tools:layout="@layout/choose_level">
+        <action
+            android:id="@+id/action_chooseLevelFragment_to_gameCoreFragment"
+            app:destination="@id/gameCoreFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameCoreFragment"
+        android:name="com.balex.quiz.presentation.fragments.GameCoreFragment"
+        android:label="GameCoreFragment"
+        tools:layout="@layout/core_test">
+        <argument
+            android:name="levelEnum"
+            app:argType="com.balex.quiz.domain.entity.Level" />
+    </fragment>
 </navigation>
