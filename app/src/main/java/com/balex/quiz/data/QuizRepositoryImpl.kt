@@ -1,15 +1,12 @@
 package com.balex.quiz.data
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.R
-import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.repository.QuizRepository
-import com.bumptech.glide.Glide
 import java.util.Collections
 import java.util.Random
 import java.util.stream.Collectors
@@ -17,9 +14,6 @@ import java.util.stream.Collectors
 
 class QuizRepositoryImpl(private val application: Application) : QuizRepository {
 
-    val BACKEND_STATIC_IMAGES_PREFIX = "images"
-
-    private val countriesListFull_LD = MutableLiveData<List<Country>>()
 
     private var countriesListNotUsedInQuiz_LD: List<Country> = Collections.emptyList()
     private var listOddQuestions: List<Country> = Collections.emptyList()
@@ -34,10 +28,10 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
 
 
     override fun getGameSettings(level: Level): GameSettings {
-        val allQuestions = R.integer.test_questions
-        val timeMaxSec = R.integer.max_time_test_sec
-        val timeRestBestScoreSec = R.integer.time_score_best
-        val timeRestMediumScoreSec = R.integer.time_score_medium
+        val allQuestions = application.resources.getInteger(R.integer.test_questions)
+        val timeMaxSec = application.resources.getInteger(R.integer.max_time_test_sec)
+        val timeRestBestScoreSec = application.resources.getInteger(R.integer.time_score_best)
+        val timeRestMediumScoreSec = application.resources.getInteger(R.integer.time_score_medium)
 
         return when (level) {
             Level.EASY -> {
@@ -46,9 +40,9 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
                     timeMaxSec,
                     timeRestBestScoreSec,
                     timeRestMediumScoreSec,
-                    R.integer.easy_points_max,
-                    R.integer.easy_points_medium,
-                    R.integer.easy_points_min
+                    application.resources.getInteger(R.integer.easy_points_max),
+                    application.resources.getInteger(R.integer.easy_points_medium),
+                    application.resources.getInteger(R.integer.easy_points_min)
                 )
             }
 
@@ -58,9 +52,9 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
                     timeMaxSec,
                     timeRestBestScoreSec,
                     timeRestMediumScoreSec,
-                    R.integer.medium_points_max,
-                    R.integer.medium_points_medium,
-                    R.integer.medium_points_min
+                    application.resources.getInteger(R.integer.medium_points_max),
+                    application.resources.getInteger(R.integer.medium_points_medium),
+                    application.resources.getInteger(R.integer.medium_points_min)
                 )
             }
 
@@ -70,9 +64,9 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
                     timeMaxSec,
                     timeRestBestScoreSec,
                     timeRestMediumScoreSec,
-                    R.integer.hard_points_max,
-                    R.integer.hard_points_medium,
-                    R.integer.hard_points_min
+                    application.resources.getInteger(R.integer.hard_points_max),
+                    application.resources.getInteger(R.integer.hard_points_medium),
+                    application.resources.getInteger(R.integer.hard_points_min)
                 )
             }
         }
@@ -113,21 +107,14 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
                 array[rightAnswerPositionInArray] = temp
             }
 
-
-            val question = Question(
+            return Question(
                 country.countryName,
                 array[0],
                 array[1],
                 array[2],
                 array[3],
-                array[rightAnswerPositionInArray]
+                rightAnswerPositionInArray
             )
-
-            Glide.with(application)
-                .load(ApiFactory.apiService.loadCountryImage(BACKEND_STATIC_IMAGES_PREFIX + "/" + country.imageName))
-                .into(question.imageView)
-
-            return question
         } else {
             throw RuntimeException("Question number $questionNumber is more then maximal allowed $maxQuestionNumber")
         }

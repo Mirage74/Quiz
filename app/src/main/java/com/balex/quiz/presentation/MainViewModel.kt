@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -19,26 +18,28 @@ import java.util.stream.Collectors
 class MainViewModel(application: Application) :
     AndroidViewModel(application) {
 
-    private val _isListCountriesFromBackendLoaded = MutableLiveData<Boolean>(false)
+    private val _isListCountriesFromBackendLoaded = MutableLiveData(false)
     val isListCountriesFromBackendLoaded: LiveData<Boolean>
         get() = _isListCountriesFromBackendLoaded
 
-    private val _isUserLogged = MutableLiveData<Boolean>(false)
+    private val _isUserLogged = MutableLiveData(false)
     val isUserLogged: LiveData<Boolean>
         get() = _isUserLogged
 
-    private val TAG = "MainViewModel"
 
-    private val repository = QuizRepositoryImpl(application)
     private val compositeDisposable = CompositeDisposable()
 
-    private var countriesFullList: List<Country> = Collections.emptyList()
+    var countriesFullList: List<Country> = Collections.emptyList()
+        set(list) {
+            field = list
+            _isListCountriesFromBackendLoaded.value = true
+        }
 
 
-    private fun setCountriesFullList(list: List<Country>) {
-        countriesFullList = list
-        _isListCountriesFromBackendLoaded.value = true
-    }
+//    private fun setCountriesFullList(list: List<Country>) {
+//        countriesFullList = list
+//        _isListCountriesFromBackendLoaded.value = true
+//    }
 
     fun initIsUserLoggedStatus() {
         if (App.loadUserNameFromPrefs(getApplication()) != NOT_LOGGED_USER) {
@@ -59,12 +60,12 @@ class MainViewModel(application: Application) :
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        setCountriesFullList(
+                        countriesFullList =
                             it.countries.stream().sorted { o1, o2 -> o1.id.compareTo(o2.id) }
                                 .collect(
                                     Collectors.toList()
                                 )
-                        )
+
 
                     }) {
                         throw (RuntimeException("Error get countries list from server: + $it"))
