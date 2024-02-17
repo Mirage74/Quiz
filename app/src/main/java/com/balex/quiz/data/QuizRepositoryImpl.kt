@@ -7,24 +7,17 @@ import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.repository.QuizRepository
-import java.util.Collections
 import java.util.Random
 import java.util.stream.Collectors
 
 
 class QuizRepositoryImpl(private val application: Application) : QuizRepository {
 
-
-    private var countriesListNotUsedInQuiz_LD: List<Country> = Collections.emptyList()
-    private var listOddQuestions: List<Country> = Collections.emptyList()
-    private var listEvenQuestions: List<Country> = Collections.emptyList()
-
-
     private val NUMBER_ANSWER_OPTIONS = 4
     private val DIFFICULT_LEVEL_EASY = 0
     private val DIFFICULT_LEVEL_MIDDLE = 1
     private val DIFFICULT_LEVEL_HARD = 2
-    private val rand = Random()
+
 
 
     override fun getGameSettings(level: Level): GameSettings {
@@ -79,13 +72,14 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
         countriesListNotUsedInQuiz: List<Country>
     ): Question {
 
+
+        val rand = Random()
+
         val country: Country
         val maxQuestionNumber = R.integer.test_questions
         if (questionNumber <= maxQuestionNumber) {
             val array = intArrayOf(1, 1, 1, 1)
-            listOddQuestions = getOddList(level, countriesListNotUsedInQuiz)
-            listEvenQuestions = getEvenList(level, countriesListNotUsedInQuiz)
-            val questionId = generateQuestionID(questionNumber)
+            val questionId = generateQuestionID(questionNumber, level, countriesListNotUsedInQuiz)
             country =
                 countriesListFull.stream().filter { it.id == questionId }.findFirst()
                     .get()
@@ -108,7 +102,9 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
             }
 
             return Question(
-                country.countryName,
+                country.id,
+                country.countryName.trim(),
+                country.imageName.trim(),
                 array[0],
                 array[1],
                 array[2],
@@ -122,22 +118,25 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     }
 
 
-    private fun deleteCountryFromCollections(idQuestion: Int) {
-        listEvenQuestions = listEvenQuestions.stream().filter {
-            it.id != idQuestion
-        }.collect(Collectors.toList())
+//    private fun deleteCountryFromCollections(idQuestion: Int) {
+//        listEvenQuestions = listEvenQuestions.stream().filter {
+//            it.id != idQuestion
+//        }.collect(Collectors.toList())
+//
+//        listOddQuestions = listOddQuestions.stream().filter {
+//            it.id != idQuestion
+//        }.collect(Collectors.toList())
+//
+//        countriesListNotUsedInQuiz_LD = countriesListNotUsedInQuiz_LD.stream().filter {
+//            it.id != idQuestion
+//        }.collect(Collectors.toList())
+//    }
 
-        listOddQuestions = listOddQuestions.stream().filter {
-            it.id != idQuestion
-        }.collect(Collectors.toList())
 
-        countriesListNotUsedInQuiz_LD = countriesListNotUsedInQuiz_LD.stream().filter {
-            it.id != idQuestion
-        }.collect(Collectors.toList())
-    }
-
-
-    private fun generateQuestionID(questionNumberInQuiz: Int): Int {
+    private fun generateQuestionID(questionNumberInQuiz: Int, level: Level, countriesList: List<Country>, ): Int {
+        val listOddQuestions = getOddList(level, countriesList)
+        val listEvenQuestions = getEvenList(level, countriesList)
+        val rand = Random()
         val idQuestion: Int
         val questionNumInList: Int
         if (questionNumberInQuiz % 2 == 0) {
@@ -148,7 +147,7 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
             questionNumInList = rand.nextInt(listOddQuestions.size)
             idQuestion = listOddQuestions[questionNumInList].id
         }
-        deleteCountryFromCollections(idQuestion)
+        //deleteCountryFromCollections(idQuestion)
         return idQuestion
     }
 

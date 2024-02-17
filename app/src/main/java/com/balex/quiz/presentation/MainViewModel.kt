@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
+import com.balex.quiz.domain.entity.Question
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -29,7 +30,7 @@ class MainViewModel(application: Application) :
 
     private val compositeDisposable = CompositeDisposable()
 
-    var countriesFullList: List<Country> = Collections.emptyList()
+    var countriesFullList= mutableListOf<Country>()
         set(list) {
             field = list
             _isListCountriesFromBackendLoaded.value = true
