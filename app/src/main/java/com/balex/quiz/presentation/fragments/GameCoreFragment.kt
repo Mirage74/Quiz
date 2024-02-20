@@ -3,6 +3,7 @@ package com.balex.quiz.presentation.fragments
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +51,7 @@ class GameCoreFragment : Fragment() {
 
         gameViewModel.countriesFullList = mainViewModel.countriesFullList
         gameViewModel.setQuestionList()
-        gameViewModel.getList()
+        gameViewModel.downloadImagesToBitmap()
 
 
         return binding.root
@@ -70,7 +71,8 @@ class GameCoreFragment : Fragment() {
     private fun observeViewModel() {
         gameViewModel.isImagesDownloaded.observe(viewLifecycleOwner) {
             if (it) {
-                binding.ivImageCapital.setImageBitmap(gameViewModel.bitmapImagesList[0])
+                binding.ivImageCapital.setImageBitmap(gameViewModel.bitmapImagesList[10])
+                Log.d("ddd", "observeViewModel size ${gameViewModel.bitmapImagesList.size}")
             }
 
         }

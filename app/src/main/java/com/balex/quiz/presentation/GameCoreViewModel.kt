@@ -16,6 +16,7 @@ import com.balex.quiz.domain.usecases.GetGameSettingsUseCase
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
@@ -61,35 +62,41 @@ class GameCoreViewModel(
         return figureTargetList
     }
 
-    fun getList() {
+    fun downloadImagesToBitmap() {
         setIsImagesLoaded(false)
         CoroutineScope(Dispatchers.IO).launch {
-            getCountriesRX()
+            getImagesFromBackendRX()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     bitmapImagesList = it
                     setIsImagesLoaded(true)
+                    //Log.d("ddd", "fun getList size ${bitmapImagesList.size}")
                 }) {
-                    Log.d("ViewModel", "refreshList Exception + ${it.toString()}")
-                    //throw it
+                    Log.d("GameCoreViewModel", "fun downloadImagesToBitmap exception : $it")
+                    throw it
                 }
         }
 
     }
 
-    fun getCountriesRX(): Single<MutableList<Bitmap>> {
-        //Log.d("ViewModel", "fun getCountriesRX");
-        return Single.fromCallable(Callable { setImagesToBitmapList() })
-        //return Single.fromCallable ( Callable{ throw Exception()})
+    private fun getImagesFromBackendRX(): Single<MutableList<Bitmap>> {
+    //private fun getImagesFromBackendRX(): Completable {
+        return Single.fromCallable(Callable { getImagesFromBackend() })
+        //return Completable.fromAction { getImagesFromBackend() }
+
     }
 
-    fun setImagesToBitmapList(): MutableList<Bitmap> {
+    private fun getImagesFromBackend(): MutableList<Bitmap> {
+    //private fun getImagesFromBackend(){
         val figureTargetList = getImagesFigureTarget()
         val bitmapList = mutableListOf<Bitmap>()
         for (i in 0..<questionsList.size) {
-
             bitmapList.add(figureTargetList[i].get())
         }
+
+//        for (i in 0..<questionsList.size) {
+//            bitmapImagesList.add(figureTargetList[i].get())
+//        }
 
         return bitmapList
 
@@ -103,6 +110,7 @@ class GameCoreViewModel(
 
 
     fun setIsImagesLoaded(newValue: Boolean) {
+        Log.d("ddd", "setIsImagesLoaded called, newvalue $newValue")
         _isImagesDownloaded.value = newValue
 
     }

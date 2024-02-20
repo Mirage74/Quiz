@@ -30,6 +30,7 @@ class MainViewModel(application: Application) :
 
     private val compositeDisposable = CompositeDisposable()
 
+
     var countriesFullList= mutableListOf<Country>()
         set(list) {
             field = list
