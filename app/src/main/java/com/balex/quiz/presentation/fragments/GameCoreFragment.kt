@@ -1,8 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +14,6 @@ import com.balex.quiz.presentation.GameCoreViewModel
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import kotlinx.coroutines.delay
 
 class GameCoreFragment : Fragment() {
     private val TAG = "GameCoreFragment"
@@ -42,16 +39,6 @@ class GameCoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = CoreTestBinding.inflate(inflater, container, false)
-
-        val mainViewModel = ViewModelProvider(
-            requireActivity(),
-            MainViewModelFactory(requireActivity().application)
-        )[MainViewModel::class.java]
-
-        gameViewModel.countriesFullList = mainViewModel.countriesFullList
-        gameViewModel.setQuestionList()
-        gameViewModel.getList()
-
 
         return binding.root
     }

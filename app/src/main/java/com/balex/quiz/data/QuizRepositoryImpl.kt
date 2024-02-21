@@ -118,21 +118,6 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     }
 
 
-//    private fun deleteCountryFromCollections(idQuestion: Int) {
-//        listEvenQuestions = listEvenQuestions.stream().filter {
-//            it.id != idQuestion
-//        }.collect(Collectors.toList())
-//
-//        listOddQuestions = listOddQuestions.stream().filter {
-//            it.id != idQuestion
-//        }.collect(Collectors.toList())
-//
-//        countriesListNotUsedInQuiz_LD = countriesListNotUsedInQuiz_LD.stream().filter {
-//            it.id != idQuestion
-//        }.collect(Collectors.toList())
-//    }
-
-
     private fun generateQuestionID(questionNumberInQuiz: Int, level: Level, countriesList: List<Country>, ): Int {
         val listOddQuestions = getOddList(level, countriesList)
         val listEvenQuestions = getEvenList(level, countriesList)

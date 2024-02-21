@@ -8,7 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
+import com.balex.quiz.domain.entity.BitmapWithIndex
 import com.balex.quiz.domain.entity.Country
+import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.usecases.GenerateQuestionUseCase
@@ -16,6 +18,7 @@ import com.balex.quiz.domain.usecases.GetGameSettingsUseCase
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
@@ -23,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.Callable
 import java.util.stream.Collectors
+import kotlin.concurrent.Volatile
 
 
 class GameCoreViewModel(
@@ -30,21 +34,38 @@ class GameCoreViewModel(
     private val level: Level
 ) : ViewModel() {
 
+
     private val _isImagesDownloaded = MutableLiveData(false)
     val isImagesDownloaded: LiveData<Boolean>
         get() = _isImagesDownloaded
 
     private val repository = QuizRepositoryImpl(application)
-    val generateQuestion = GenerateQuestionUseCase(repository)
-    val getGameSettings = GetGameSettingsUseCase(repository)
+    val generateQuestionUseCase = GenerateQuestionUseCase(repository)
+    val getGameSettingsUseCase = GetGameSettingsUseCase(repository)
+
+    var gameSettings = getGameSettingsUseCase(level)
+    //val allQuestionsNumber = gameSettings.allQuestions.toString()
+
+    private val _allQuestionsNumber = MutableLiveData<String>()
+    val allQuestionsNumber: LiveData<String>
+        get() = _allQuestionsNumber
 
     var countriesFullList = mutableListOf<Country>()
     private var questionsList = mutableListOf<Question>()
+
     var bitmapImagesList = mutableListOf<Bitmap>()
+    private var bitmapImagesListIndex = mutableListOf<Int>()
 
 
-    private val gameSetting = getGameSettings(level)
+    @Volatile
+    var countOfBitmapLoaded = 0
 
+
+    //val gameSetting = getGameSettings(level)
+
+fun setAllQuestionsNumber() {
+    _allQuestionsNumber.value = gameSettings.allQuestions.toString()
+}
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -61,37 +82,54 @@ class GameCoreViewModel(
         return figureTargetList
     }
 
-    fun getList() {
+    private fun sortBitmapList(bitmapList: List<Bitmap>): MutableList<Bitmap> {
+        val bitmapListNew = mutableListOf<Bitmap>()
+        for (i in bitmapList.indices) {
+            bitmapListNew.add(bitmapList[bitmapImagesListIndex[i]])
+        }
+        return bitmapListNew
+    }
+
+    fun downloadImagesToBitmap() {
         setIsImagesLoaded(false)
-        CoroutineScope(Dispatchers.IO).launch {
-            getCountriesRX()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    bitmapImagesList = it
-                    setIsImagesLoaded(true)
-                }) {
-                    Log.d("ViewModel", "refreshList Exception + ${it.toString()}")
-                    //throw it
-                }
-        }
-
-    }
-
-    fun getCountriesRX(): Single<MutableList<Bitmap>> {
-        //Log.d("ViewModel", "fun getCountriesRX");
-        return Single.fromCallable(Callable { setImagesToBitmapList() })
-        //return Single.fromCallable ( Callable{ throw Exception()})
-    }
-
-    fun setImagesToBitmapList(): MutableList<Bitmap> {
         val figureTargetList = getImagesFigureTarget()
-        val bitmapList = mutableListOf<Bitmap>()
-        for (i in 0..<questionsList.size) {
-
-            bitmapList.add(figureTargetList[i].get())
+        for (i in 0..<figureTargetList.size) {
+            CoroutineScope(Dispatchers.IO).launch {
+                getImagesFromBackendRX(i, figureTargetList[i])
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        bitmapImagesListIndex.add(it.index)
+                        bitmapImagesList.add(it.figureTarget)
+                        ++countOfBitmapLoaded
+                        if (countOfBitmapLoaded == figureTargetList.size) {
+                            bitmapImagesList = sortBitmapList(bitmapImagesList)
+                            setIsImagesLoaded(true)
+                        }
+                        //Log.d("ddd", "fun getList i: size ${it.index}")
+                        //Log.d("ddd", "gameSetting ${gameSetting.allQuestions}")
+                    }) {
+                        Log.d("GameCoreViewModel", "fun downloadImagesToBitmap exception : $it")
+                        throw it
+                    }
+            }
         }
+    }
 
-        return bitmapList
+    private fun getImagesFromBackendRX(
+        index: Int,
+        figureTarget: FutureTarget<Bitmap>
+    ): Single<BitmapWithIndex> {
+        return Single.fromCallable(Callable { getImagesFromBackend(index, figureTarget) })
+
+    }
+
+    private fun getImagesFromBackend(
+        index: Int,
+        figureTarget: FutureTarget<Bitmap>
+    ): BitmapWithIndex {
+
+
+        return BitmapWithIndex(index, figureTarget.get())
 
     }
 
@@ -102,7 +140,8 @@ class GameCoreViewModel(
     }
 
 
-    fun setIsImagesLoaded(newValue: Boolean) {
+    private fun setIsImagesLoaded(newValue: Boolean) {
+        Log.d("ddd", "setIsImagesLoaded called, newvalue $newValue")
         _isImagesDownloaded.value = newValue
 
     }
@@ -111,7 +150,7 @@ class GameCoreViewModel(
         numQuestion: Int,
         countriesNotUsedInQuestion: List<Country>
     ): Question {
-        return generateQuestion(
+        return generateQuestionUseCase(
             level,
             numQuestion,
             countriesFullList,
@@ -121,44 +160,19 @@ class GameCoreViewModel(
 
     private fun generateListOfQuestions(): MutableList<Question> {
         val questionsList = mutableListOf<Question>()
+
+
         var countriesNotUsedInQuestion = countriesFullList
-        for (i in 1..gameSetting.allQuestions) {
+        for (i in 1..gameSettings.allQuestions) {
             val question = generateQuestion(i, countriesNotUsedInQuestion)
             questionsList.add(question)
             countriesNotUsedInQuestion = countriesNotUsedInQuestion.stream().filter {
                 it.id != question.id
             }.collect(Collectors.toList())
         }
+
         return questionsList
     }
-
-//    fun loadImageAsBitmapFromBackend(imageFileName: String) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//
-//
-//            Glide.with(application)
-//                .asBitmap()
-//                .load("${ApiFactory.BASE_URL_STATIC_IMAGES}/${imageFileName}")
-//                .into(object : CustomTarget<Bitmap>() {
-//                    override fun onResourceReady(
-//                        resource: Bitmap,
-//                        transition: Transition<in Bitmap>?
-//                    ) {
-//                        //imageView.setImageBitmap(resource)
-//                        bitmapNextQuestion = resource
-//                    }
-//
-//                    override fun onLoadCleared(placeholder: Drawable?) {
-//                        // this is called when imageView is cleared on lifecycle call or for
-//                        // some other reason.
-//                        // if you are referencing the bitmap somewhere else too other than this imageView
-//                        // clear it here as you can no longer have the bitmap
-//                    }
-//                })
-//
-//        }
-//
-//    }
 
 
     override fun onCleared() {

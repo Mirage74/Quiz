@@ -62,7 +62,7 @@ class ChooseLevelFragment : Fragment() {
 
     private fun launchGameFragment(level: Level) {
         findNavController().navigate(
-            ChooseLevelFragmentDirections.actionChooseLevelFragmentToGameCoreFragment(level)
+            ChooseLevelFragmentDirections.actionChooseLevelFragmentToProgressLoadingFragment(level)
         )
     }
 
