@@ -68,7 +68,7 @@ class GameCoreViewModel(
             getImagesFromBackendRX()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    bitmapImagesList = it
+                    //bitmapImagesList = it
                     setIsImagesLoaded(true)
                     //Log.d("ddd", "fun getList size ${bitmapImagesList.size}")
                 }) {
@@ -79,26 +79,26 @@ class GameCoreViewModel(
 
     }
 
-    private fun getImagesFromBackendRX(): Single<MutableList<Bitmap>> {
-    //private fun getImagesFromBackendRX(): Completable {
-        return Single.fromCallable(Callable { getImagesFromBackend() })
-        //return Completable.fromAction { getImagesFromBackend() }
+    //private fun getImagesFromBackendRX(): Single<MutableList<Bitmap>> {
+    private fun getImagesFromBackendRX(): Completable {
+      //  return Single.fromCallable(Callable { getImagesFromBackend() })
+        return Completable.fromAction { getImagesFromBackend() }
 
     }
 
-    private fun getImagesFromBackend(): MutableList<Bitmap> {
-    //private fun getImagesFromBackend(){
+    //private fun getImagesFromBackend(): MutableList<Bitmap> {
+    private fun getImagesFromBackend(){
         val figureTargetList = getImagesFigureTarget()
-        val bitmapList = mutableListOf<Bitmap>()
-        for (i in 0..<questionsList.size) {
-            bitmapList.add(figureTargetList[i].get())
-        }
-
+//        val bitmapList = mutableListOf<Bitmap>()
 //        for (i in 0..<questionsList.size) {
-//            bitmapImagesList.add(figureTargetList[i].get())
+//            bitmapList.add(figureTargetList[i].get())
 //        }
 
-        return bitmapList
+        for (i in 0..<questionsList.size) {
+            bitmapImagesList.add(figureTargetList[i].get())
+        }
+
+        //return bitmapList
 
     }
 
