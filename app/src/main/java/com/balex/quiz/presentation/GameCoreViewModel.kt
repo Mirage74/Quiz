@@ -10,7 +10,6 @@ import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.BitmapWithIndex
 import com.balex.quiz.domain.entity.Country
-import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.usecases.GenerateQuestionUseCase
@@ -18,7 +17,6 @@ import com.balex.quiz.domain.usecases.GetGameSettingsUseCase
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
@@ -35,20 +33,29 @@ class GameCoreViewModel(
 ) : ViewModel() {
 
 
+
     private val _isImagesDownloaded = MutableLiveData(false)
     val isImagesDownloaded: LiveData<Boolean>
         get() = _isImagesDownloaded
+
+
+    private val _currentProgressString = MutableLiveData<String>()
+    val currentProgressString: LiveData<String>
+        get() = _currentProgressString
+
+
+    @Volatile
+    private var _countOfBitmapLoaded = MutableLiveData(0)
+    val countOfBitmapLoaded: LiveData<Int>
+        get() = _countOfBitmapLoaded
+
 
     private val repository = QuizRepositoryImpl(application)
     val generateQuestionUseCase = GenerateQuestionUseCase(repository)
     val getGameSettingsUseCase = GetGameSettingsUseCase(repository)
 
     var gameSettings = getGameSettingsUseCase(level)
-    //val allQuestionsNumber = gameSettings.allQuestions.toString()
 
-    private val _allQuestionsNumber = MutableLiveData<String>()
-    val allQuestionsNumber: LiveData<String>
-        get() = _allQuestionsNumber
 
     var countriesFullList = mutableListOf<Country>()
     private var questionsList = mutableListOf<Question>()
@@ -57,20 +64,13 @@ class GameCoreViewModel(
     private var bitmapImagesListIndex = mutableListOf<Int>()
 
 
-    @Volatile
-    var countOfBitmapLoaded = 0
 
-
-    //val gameSetting = getGameSettings(level)
-
-fun setAllQuestionsNumber() {
-    _allQuestionsNumber.value = gameSettings.allQuestions.toString()
-}
 
     private val compositeDisposable = CompositeDisposable()
 
     private fun getImagesFigureTarget(): MutableList<FutureTarget<Bitmap>> {
         val figureTargetList = mutableListOf<FutureTarget<Bitmap>>()
+
         for (i in 0..<questionsList.size) {
             figureTargetList.add(
                 Glide.with(application)
@@ -100,8 +100,9 @@ fun setAllQuestionsNumber() {
                     .subscribe({
                         bitmapImagesListIndex.add(it.index)
                         bitmapImagesList.add(it.figureTarget)
-                        ++countOfBitmapLoaded
-                        if (countOfBitmapLoaded == figureTargetList.size) {
+                        _countOfBitmapLoaded.value = _countOfBitmapLoaded.value?.plus(1)
+                        _currentProgressString.value = "" + _countOfBitmapLoaded.value + " / " + gameSettings.allQuestions
+                        if (_countOfBitmapLoaded.value == figureTargetList.size) {
                             bitmapImagesList = sortBitmapList(bitmapImagesList)
                             setIsImagesLoaded(true)
                         }

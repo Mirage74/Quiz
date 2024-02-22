@@ -1,7 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.balex.quiz.domain.entity.Level
-import com.balex.quiz.presentation.App
-import com.balex.quiz.presentation.MainViewModel
-import com.balex.quiz.presentation.MainViewModelFactory
 import com.balex.quiz.databinding.ProgressBarBinding
+import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
+import com.balex.quiz.presentation.MainViewModel
+import com.balex.quiz.presentation.MainViewModelFactory
 
 class ProgressLoadingFragment : Fragment() {
     private val args by navArgs<GameCoreFragmentArgs>()
@@ -25,7 +23,7 @@ class ProgressLoadingFragment : Fragment() {
     }
 
     private val gameViewModel by lazy {
-        ViewModelProvider(this, gameViewModelFactory)[GameCoreViewModel::class.java]
+        ViewModelProvider(requireActivity(), gameViewModelFactory)[GameCoreViewModel::class.java]
     }
 
 
@@ -37,10 +35,8 @@ class ProgressLoadingFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = ProgressBarBinding.inflate(inflater, container, false)
-
-
 
         return binding.root
     }
@@ -54,12 +50,22 @@ class ProgressLoadingFragment : Fragment() {
         binding.viewModel = gameViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        observeViewModel()
+
         gameViewModel.getGameSettingsUseCase
-        gameViewModel.setAllQuestionsNumber()
         gameViewModel.countriesFullList = mainViewModel.countriesFullList
         gameViewModel.setQuestionList()
         gameViewModel.downloadImagesToBitmap()
 
+    }
+
+    private fun observeViewModel() {
+        gameViewModel.isImagesDownloaded.observe(viewLifecycleOwner) {
+            if (it) {
+                launchGameFragment(args.levelEnum)
+            }
+
+        }
     }
 
      private fun launchGameFragment(level: Level) {

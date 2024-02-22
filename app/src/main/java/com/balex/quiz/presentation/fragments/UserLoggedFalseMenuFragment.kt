@@ -9,15 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.StatusUserLoggedFalseBinding
-import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
-import com.balex.quiz.presentation.NOT_LOGGED_USER
 
 class UserLoggedFalseMenuFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var userScore: UserScore
 
     private var _binding: StatusUserLoggedFalseBinding? = null
     private val binding: StatusUserLoggedFalseBinding
@@ -37,11 +34,7 @@ class UserLoggedFalseMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        userScore = viewModel.notLogUserScoreInstance
-//        viewModel.userScore.value?.let { userScore = it  }
-//        if (userScore.userName != NOT_LOGGED_USER) {
-//            viewModel.setAndSaveUserScore(userScore)
-//        }
+
 
         viewModel.isUserLogged.observe(viewLifecycleOwner) {
             if (it) {

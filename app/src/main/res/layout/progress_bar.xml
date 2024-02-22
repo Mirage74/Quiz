@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="200dp"
             android:textAlignment="center"
-            android:text="@{viewModel.allQuestionsNumber}"
+            android:text="@{viewModel.currentProgressString}"
             app:layout_constraintTop_toTopOf="parent"
             android:textSize="40sp"
              />
@@ -31,7 +31,9 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:max="100"
+            android:max="@{viewModel.gameSettings.allQuestions}"
+            android:progress="@{viewModel.countOfBitmapLoaded}"
+            android:progressDrawable="@drawable/custom_progress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_questions_progress" />

@@ -11,12 +11,10 @@ import com.balex.quiz.databinding.CoreTestBinding
 import com.balex.quiz.presentation.App
 import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
-import com.balex.quiz.presentation.MainViewModel
-import com.balex.quiz.presentation.MainViewModelFactory
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class GameCoreFragment : Fragment() {
-    private val TAG = "GameCoreFragment"
+    //private val TAG = "GameCoreFragment"
     private val args by navArgs<GameCoreFragmentArgs>()
     private val gameViewModelFactory by lazy {
 
@@ -24,7 +22,7 @@ class GameCoreFragment : Fragment() {
     }
 
     private val gameViewModel by lazy {
-        ViewModelProvider(this, gameViewModelFactory)[GameCoreViewModel::class.java]
+        ViewModelProvider(requireActivity(), gameViewModelFactory)[GameCoreViewModel::class.java]
     }
 
 
