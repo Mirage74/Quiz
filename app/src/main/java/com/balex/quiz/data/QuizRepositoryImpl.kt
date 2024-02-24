@@ -10,10 +10,11 @@ import com.balex.quiz.domain.repository.QuizRepository
 import java.util.Random
 import java.util.stream.Collectors
 
+const val NUMBER_ANSWER_OPTIONS = 4
 
 class QuizRepositoryImpl(private val application: Application) : QuizRepository {
 
-    private val NUMBER_ANSWER_OPTIONS = 4
+
     private val DIFFICULT_LEVEL_EASY = 0
     private val DIFFICULT_LEVEL_MIDDLE = 1
     private val DIFFICULT_LEVEL_HARD = 2

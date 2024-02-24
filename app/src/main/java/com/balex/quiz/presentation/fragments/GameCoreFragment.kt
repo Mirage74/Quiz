@@ -1,6 +1,7 @@
 package com.balex.quiz.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,10 @@ import com.balex.quiz.databinding.CoreTestBinding
 import com.balex.quiz.presentation.App
 import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+
 
 class GameCoreFragment : Fragment() {
-    //private val TAG = "GameCoreFragment"
+    private val TAG = "GameCoreFragment"
     private val args by navArgs<GameCoreFragmentArgs>()
     private val gameViewModelFactory by lazy {
 
@@ -30,7 +31,7 @@ class GameCoreFragment : Fragment() {
     private val binding: CoreTestBinding
         get() = _binding ?: throw RuntimeException("UserLoggedFalseMenu == null")
 
-    private val compositeDisposable = CompositeDisposable()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,27 +43,34 @@ class GameCoreFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Log.d(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-        initViewValues()
-        observeViewModel()
+        if (gameViewModel.currentQuestionNumber > 0 && gameViewModel.currentQuestionNumber <= gameViewModel.gameSettings.allQuestions) {
+            with(binding) {
+                viewModel = gameViewModel
+                lifecycleOwner = viewLifecycleOwner
+            }
+            initViewValues()
+            if (!gameViewModel.isRoundInProgress) {
+                gameViewModel.startTimer()
+                gameViewModel.isRoundInProgress = true
+            }
+
+
+        } else {
+            throw RuntimeException ("Question number ${gameViewModel.currentQuestionNumber} is not in range 1..${gameViewModel.gameSettings.allQuestions} !")
+        }
     }
 
 
     private fun initViewValues() {
-        binding.username.text = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
-    }
-
-    private fun observeViewModel() {
-        gameViewModel.isImagesDownloaded.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.ivImageCapital.setImageBitmap(gameViewModel.bitmapImagesList[0])
-            }
-
+        with(binding) {
+            username.text = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
         }
+
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.dispose()
-    }
+
+
+
 }

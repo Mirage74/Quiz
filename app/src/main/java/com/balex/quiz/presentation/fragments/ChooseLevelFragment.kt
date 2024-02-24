@@ -14,7 +14,6 @@ import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 
 class ChooseLevelFragment : Fragment() {
-    private lateinit var viewModel: MainViewModel
     private var userName = ""
 
     private var _binding: ChooseLevelBinding? = null
@@ -27,10 +26,7 @@ class ChooseLevelFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = ChooseLevelBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            MainViewModelFactory(requireActivity().application)
-        )[MainViewModel::class.java]
+
         return binding.root
     }
 
@@ -61,6 +57,7 @@ class ChooseLevelFragment : Fragment() {
     }
 
     private fun launchGameFragment(level: Level) {
+
         findNavController().navigate(
             ChooseLevelFragmentDirections.actionChooseLevelFragmentToProgressLoadingFragment(level)
         )

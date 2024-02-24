@@ -2,10 +2,12 @@ package com.balex.quiz.presentation
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.balex.quiz.data.NUMBER_ANSWER_OPTIONS
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.BitmapWithIndex
@@ -32,16 +34,26 @@ class GameCoreViewModel(
     private val level: Level
 ) : ViewModel() {
 
-
+    var currentQuestionNumber = 0
+    var currentScore = 0
+    var isRoundInProgress = false
 
     private val _isImagesDownloaded = MutableLiveData(false)
     val isImagesDownloaded: LiveData<Boolean>
         get() = _isImagesDownloaded
 
 
+
+    private var timer: CountDownTimer? = null
+    private val _formattedTime = MutableLiveData<String>()
+    val formattedTime: LiveData<String>
+        get() = _formattedTime
+
+
     private val _currentProgressString = MutableLiveData<String>()
     val currentProgressString: LiveData<String>
         get() = _currentProgressString
+
 
 
     @Volatile
@@ -58,15 +70,45 @@ class GameCoreViewModel(
 
 
     var countriesFullList = mutableListOf<Country>()
-    private var questionsList = mutableListOf<Question>()
+
+    var questionsList = mutableListOf<Question>()
 
     var bitmapImagesList = mutableListOf<Bitmap>()
     private var bitmapImagesListIndex = mutableListOf<Int>()
 
+    fun resetNewTestData() {
+        _countOfBitmapLoaded.value = 0
+        _isImagesDownloaded.value = false
+        currentScore = 0
+    }
+
+    fun getCurrentQuestionString(): String {
+        return "$currentQuestionNumber / ${gameSettings.allQuestions}"
+    }
+
+    fun getCapitalNameById(id: Int): String {
+        return countriesFullList.stream().filter { it.id == id }.findFirst()
+            .get().capitalName.trim()
+
+    }
+
+    fun chooseAnswer(numUserAnswer: Int) {
+        timer?.cancel()
+        if (numUserAnswer >= TIME_IS_EXPIRED && numUserAnswer <= NUMBER_ANSWER_OPTIONS ) {
+            if (numUserAnswer == TIME_IS_EXPIRED) {
+
+            } else {
+                if (numUserAnswer == questionsList[currentQuestionNumber].rightAnswerNumOption) {
+
+                }
+            }
+
+        } else {
+            throw RuntimeException("fun chooseAnswer, answer num $numUserAnswer not in range $TIME_IS_EXPIRED..$NUMBER_ANSWER_OPTIONS")
+        }
 
 
-
-    private val compositeDisposable = CompositeDisposable()
+    }
 
     private fun getImagesFigureTarget(): MutableList<FutureTarget<Bitmap>> {
         val figureTargetList = mutableListOf<FutureTarget<Bitmap>>()
@@ -101,7 +143,8 @@ class GameCoreViewModel(
                         bitmapImagesListIndex.add(it.index)
                         bitmapImagesList.add(it.figureTarget)
                         _countOfBitmapLoaded.value = _countOfBitmapLoaded.value?.plus(1)
-                        _currentProgressString.value = "" + _countOfBitmapLoaded.value + " / " + gameSettings.allQuestions
+                        _currentProgressString.value =
+                            "" + _countOfBitmapLoaded.value + " / " + gameSettings.allQuestions
                         if (_countOfBitmapLoaded.value == figureTargetList.size) {
                             bitmapImagesList = sortBitmapList(bitmapImagesList)
                             setIsImagesLoaded(true)
@@ -176,9 +219,26 @@ class GameCoreViewModel(
     }
 
 
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.dispose()
+
+    fun startTimer() {
+        timer = object : CountDownTimer(
+            gameSettings.timeMaxSec * MILLIS_IN_SECONDS,
+            MILLIS_IN_SECONDS
+        ) {
+            override fun onTick(millisUntilFinished: Long) {
+                _formattedTime.value = "${(millisUntilFinished / MILLIS_IN_SECONDS)} sec."
+            }
+
+            override fun onFinish() {
+                chooseAnswer(TIME_IS_EXPIRED)
+            }
+        }
+        timer?.start()
+    }
+
+    companion object {
+        private const val MILLIS_IN_SECONDS = 1000L
+        private const val TIME_IS_EXPIRED = 0
     }
 
 }

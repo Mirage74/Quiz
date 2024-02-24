@@ -1,168 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/coreBG">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+        <variable
+            name="viewModel"
+            type="com.balex.quiz.presentation.GameCoreViewModel" />
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/coreBG">
 
 
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:text="@string/username"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivImageCapital"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="10dp"
-            android:adjustViewBounds="true"
-            android:alpha="1"
-            android:scaleType="centerCrop"
-            android:src="@drawable/unsplash"
-            app:layout_constraintBottom_toTopOf="@+id/country_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-            app:strokeColor="@color/stroke"
-            app:strokeWidth="5dp" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivImageCapitalNext"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="10dp"
-            android:adjustViewBounds="true"
-            android:alpha="1"
-            android:scaleType="centerCrop"
-            android:src="@drawable/unsplash"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/country_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-            app:strokeColor="@color/stroke"
-            app:strokeWidth="5dp" />
+            android:layout_height="wrap_content">
 
 
-        <TextView
-            android:id="@+id/question_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/question_number"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@id/country_name"
-            app:layout_constraintEnd_toStartOf="@id/sec_rest"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivImageCapital" />
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:text="@string/username"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-        <TextView
-            android:id="@+id/sec_rest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/max_sec"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@id/country_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.9"
-            app:layout_constraintStart_toEndOf="@id/question_number"
-            app:layout_constraintTop_toBottomOf="@id/ivImageCapital" />
-
-        <TextView
-            android:id="@+id/country_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/country_name"
-            android:textSize="@dimen/tvCountryTextSizeNormal"
-            android:layout_marginHorizontal="40dp"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@id/capital1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/question_number" />
+            <TextView
+                android:id="@+id/sec_rest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.formattedTime}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintStart_toEndOf="@id/username"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="00"/>
 
 
-        <Button
-            android:id="@+id/capital1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
-            android:layout_marginTop="25dp"
-            android:text="@string/capital"
-            android:textSize="@dimen/buttonCoreTextSizeNormal"
-            app:layout_constraintBottom_toTopOf="@id/capital2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/country_name" />
-
-        <Button
-            android:id="@+id/capital2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/capital"
-            android:textSize="@dimen/buttonCoreTextSizeNormal"
-            app:layout_constraintBottom_toTopOf="@id/capital3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/capital1" />
-
-        <Button
-            android:id="@+id/capital3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/capital"
-            android:textSize="@dimen/buttonCoreTextSizeNormal"
-            app:layout_constraintBottom_toTopOf="@id/capital4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/capital2"
-
-            />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivImageCapital"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="10dp"
+                android:adjustViewBounds="true"
+                android:alpha="1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/unsplash"
+                app:layout_constraintBottom_toTopOf="@+id/country_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/username"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                app:strokeColor="@color/stroke"
+                app:strokeWidth="5dp" />
 
 
+            <TextView
+                android:id="@+id/question_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@{viewModel.getCurrentQuestionString()}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textSize="20sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toTopOf="@id/country_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivImageCapital"
+                tools:text="@string/question_number" />
 
 
+            <TextView
+                android:id="@+id/country_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="40dp"
+                android:text="@{viewModel.questionsList[viewModel.currentQuestionNumber].countryName}"
+                android:textSize="@dimen/tvCountryTextSizeNormal"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toTopOf="@id/capital1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/question_number"
+                tools:text="@string/country_name"/>
 
-        <Button
-            android:id="@+id/capital4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/capital"
-            android:textSize="@dimen/buttonCoreTextSizeNormal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/capital3" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/capital1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="80dp"
+                android:layout_marginTop="25dp"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option1Id)}"
+                app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+                android:textSize="@dimen/buttonCoreTextSizeNormal"
+                app:layout_constraintBottom_toTopOf="@id/capital2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/country_name"
+                tools:text="@string/capital"/>
 
-</ScrollView>
+            <Button
+                android:id="@+id/capital2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="80dp"
+                android:layout_marginTop="20dp"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option2Id)}"
+                app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+                android:textSize="@dimen/buttonCoreTextSizeNormal"
+                app:layout_constraintBottom_toTopOf="@id/capital3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/capital1"
+                tools:text="@string/capital"/>
+
+            <Button
+                android:id="@+id/capital3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="80dp"
+                android:layout_marginTop="20dp"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option3Id)}"
+                app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+                android:textSize="@dimen/buttonCoreTextSizeNormal"
+                app:layout_constraintBottom_toTopOf="@id/capital4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/capital2"
+                tools:text="@string/capital"/>
+                />
+
+
+            <Button
+                android:id="@+id/capital4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="80dp"
+                android:layout_marginTop="20dp"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option4Id)}"
+                app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+                android:textSize="@dimen/buttonCoreTextSizeNormal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/capital3"
+                tools:text="@string/capital"/>/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>

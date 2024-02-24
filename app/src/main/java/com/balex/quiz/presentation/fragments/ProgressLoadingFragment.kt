@@ -47,28 +47,34 @@ class ProgressLoadingFragment : Fragment() {
             requireActivity(),
             MainViewModelFactory(requireActivity().application)
         )[MainViewModel::class.java]
-        binding.viewModel = gameViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-
+        with(binding) {
+            viewModel = gameViewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
         observeViewModel()
 
-        gameViewModel.getGameSettingsUseCase
-        gameViewModel.countriesFullList = mainViewModel.countriesFullList
-        gameViewModel.setQuestionList()
-        gameViewModel.downloadImagesToBitmap()
+        with (gameViewModel){
+            currentQuestionNumber = 1
+            getGameSettingsUseCase
+            countriesFullList = mainViewModel.countriesFullList
+            setQuestionList()
+            downloadImagesToBitmap()
+        }
+
 
     }
 
     private fun observeViewModel() {
         gameViewModel.isImagesDownloaded.observe(viewLifecycleOwner) {
             if (it) {
+                gameViewModel.resetNewTestData()
                 launchGameFragment(args.levelEnum)
             }
 
         }
     }
 
-     private fun launchGameFragment(level: Level) {
+    private fun launchGameFragment(level: Level) {
         findNavController().navigate(
             ProgressLoadingFragmentDirections.actionProgressLoadingFragmentToGameCoreFragment(level)
         )

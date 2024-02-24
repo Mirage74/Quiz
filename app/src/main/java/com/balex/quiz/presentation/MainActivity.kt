@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
@@ -20,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.initIsUserLoggedStatus()
+
+
     }
 
 

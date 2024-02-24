@@ -63,7 +63,8 @@
             app:argType="com.balex.quiz.domain.entity.Level" />
         <action
             android:id="@+id/action_progressLoadingFragment_to_gameCoreFragment"
-            app:destination="@id/gameCoreFragment" />
+            app:destination="@id/gameCoreFragment"
+            app:popUpTo="@id/chooseLevelFragment" />
     </fragment>
 
     <fragment
