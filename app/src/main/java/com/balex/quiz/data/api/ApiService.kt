@@ -20,5 +20,7 @@ interface ApiService {
     //fun login(@PartMap() partMap: MutableMap<String, RequestBody>): Single<UserScore>
     fun login(@Field("login") login: String, @Field("password") password: String): Single<UserScoreResponse>
 
+    //https://stackoverflow.com/questions/72714274/how-to-deserialize-an-instance-of-a-generated-data-class
+
 
 }
