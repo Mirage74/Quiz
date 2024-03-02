@@ -2,6 +2,7 @@ package com.balex.quiz.domain.entity
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 
 
 data class UserScore(
@@ -14,11 +15,11 @@ data class UserScore(
     @SerializedName("LAST_RES")
     val lastResultJSON: String
 ) {
-    fun getJsonInstance(): String {
+    fun serializeInstance(): String {
         return Gson().toJson(this)
     }
     companion object {
-        fun serializedToInstance(s: String): UserScore  {
+        fun deserializeInstance(s: String): UserScore  {
             return Gson().fromJson(s, UserScore::class.java)
         }
     }
