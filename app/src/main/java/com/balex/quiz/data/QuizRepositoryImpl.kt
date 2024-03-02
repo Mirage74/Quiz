@@ -110,7 +110,7 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
                 array[1],
                 array[2],
                 array[3],
-                rightAnswerPositionInArray
+                rightAnswerPositionInArray + 1
             )
         } else {
             throw RuntimeException("Question number $questionNumber is more then maximal allowed $maxQuestionNumber")

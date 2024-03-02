@@ -69,33 +69,6 @@ class MainViewModel(application: Application) :
                                 .collect(
                                     Collectors.toList()
                                 )
-
-
-                        val arrAnswers = mutableListOf<UserAnswer>()
-                        val userScore = App.loadUserScore(getApplication())
-                        val serializedScore = userScore.serializeInstance()
-                        val newUserScore = UserScore.deserializeInstance(serializedScore)
-                        var oneRes = UserAnswer(1, 4 ,4, 7)
-                        arrAnswers.add(oneRes)
-                        oneRes = UserAnswer(2, 11 ,11, 4)
-                        arrAnswers.add(oneRes)
-                        oneRes = UserAnswer(3, 33 ,10, 0)
-                        arrAnswers.add(oneRes)
-                        val serializedArrAnswers = UserAnswer.serializeListOfInstances(arrAnswers)
-                        val arrayQuestions = UserAnswer.deserializeListOfInstances(serializedArrAnswers)
-
-//        Log.d(TAG, "userScore: $userScore")
-//        Log.d(TAG, "serializedScore: $serializedScore")
-                        Log.d(TAG, "newUserScore.bestResultJSON: ${newUserScore.bestResultJSON}")
-                        Log.d(TAG, "serializedArrAnswers: $serializedArrAnswers")
-//        Log.d(TAG, "userScore == newUserScore: ${userScore == newUserScore}")
-                        Log.d(TAG, "arrayQuestions: $arrayQuestions")
-                        Log.d(TAG, "oneRes: ${oneRes.getCapitalNameRightAnswer(it.countries)}")
-                        Log.d(TAG, "oneRes: ${oneRes.getCapitalNameUserAnswer(it.countries)}")
-                        Log.d(TAG, "oneRes: ${oneRes.getCountryName(it.countries)}")
-
-
-
                     }) {
                         throw (RuntimeException("Error get countries list from server: + $it"))
                     })

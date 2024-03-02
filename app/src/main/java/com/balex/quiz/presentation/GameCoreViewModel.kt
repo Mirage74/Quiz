@@ -43,17 +43,20 @@ class GameCoreViewModel(
         get() = _isImagesDownloaded
 
 
-
     private var timer: CountDownTimer? = null
+
     private val _formattedTime = MutableLiveData<String>()
     val formattedTime: LiveData<String>
         get() = _formattedTime
+
+    private val _secLeftForAnswer = MutableLiveData<Int>()
+    val secLeftForAnswer: LiveData<Int>
+        get() = _secLeftForAnswer
 
 
     private val _currentProgressString = MutableLiveData<String>()
     val currentProgressString: LiveData<String>
         get() = _currentProgressString
-
 
 
     @Volatile
@@ -92,15 +95,31 @@ class GameCoreViewModel(
 
     }
 
+    private fun getFrameScore(timeLeft: Int): Int {
+        return when (timeLeft) {
+            in gameSettings.timeRestBestScoreSec..gameSettings.timeMaxSec -> {
+                gameSettings.pointsMax
+            }
+
+            in gameSettings.timeRestMediumScoreSec..<gameSettings.timeRestBestScoreSec -> {
+                gameSettings.pointsMedium
+            }
+
+            else -> {
+                gameSettings.pointsMin
+            }
+        }
+    }
+
     fun chooseAnswer(numUserAnswer: Int) {
         timer?.cancel()
-        if (numUserAnswer >= TIME_IS_EXPIRED && numUserAnswer <= NUMBER_ANSWER_OPTIONS ) {
-            if (numUserAnswer == TIME_IS_EXPIRED) {
-
-            } else {
-                if (numUserAnswer == questionsList[currentQuestionNumber].rightAnswerNumOption) {
-
-                }
+        var score = 0
+        var answerId = 0
+        if (numUserAnswer in 1..NUMBER_ANSWER_OPTIONS) {
+            answerId = questionsList[currentQuestionNumber].getOptionId(numUserAnswer)
+            if (numUserAnswer == questionsList[currentQuestionNumber].rightAnswerNumOption) {
+                currentScore += getFrameScore(secLeftForAnswer.value ?: 0)
+                val t = 5
             }
 
         } else {
@@ -219,7 +238,6 @@ class GameCoreViewModel(
     }
 
 
-
     fun startTimer() {
         timer = object : CountDownTimer(
             gameSettings.timeMaxSec * MILLIS_IN_SECONDS,
@@ -227,6 +245,7 @@ class GameCoreViewModel(
         ) {
             override fun onTick(millisUntilFinished: Long) {
                 _formattedTime.value = "${(millisUntilFinished / MILLIS_IN_SECONDS)} sec."
+                _secLeftForAnswer.value = (millisUntilFinished / MILLIS_IN_SECONDS).toInt()
             }
 
             override fun onFinish() {
