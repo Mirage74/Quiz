@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
-            android:text="@{viewModel.getCurrentQuestionString()}"
+            android:text="@{viewModel.currentQuestionString}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@id/country_name"

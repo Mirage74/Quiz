@@ -1,6 +1,7 @@
 package com.balex.quiz.data.api
 
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 //import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
@@ -14,16 +15,16 @@ object ApiFactory {
 
     //private const val BASE_URL = "https://10.0.2.2:4000/api/"
     //private const val BASE_URL = "http://localhost:4000/api/"
-//    private val interceptor = initInterceptor()
+    private val interceptor = initInterceptor()
 
-//    private fun initInterceptor(): HttpLoggingInterceptor {
-//        val interceptor = HttpLoggingInterceptor()
-//        interceptor.level = HttpLoggingInterceptor.Level.BODY
-//        return interceptor
-//    }
+    private fun initInterceptor(): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        return interceptor
+    }
 
     val client = OkHttpClient.Builder()
-        //.addInterceptor(interceptor)
+        .addInterceptor(interceptor)
         .build()
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL).client(client)

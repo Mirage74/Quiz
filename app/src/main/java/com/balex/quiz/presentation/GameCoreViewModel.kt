@@ -4,6 +4,7 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.os.CountDownTimer
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ import com.balex.quiz.domain.entity.BitmapWithIndex
 import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
+import com.balex.quiz.domain.entity.UserAnswer
 import com.balex.quiz.domain.usecases.GenerateQuestionUseCase
 import com.balex.quiz.domain.usecases.GetGameSettingsUseCase
 import com.bumptech.glide.Glide
@@ -21,6 +23,7 @@ import com.bumptech.glide.request.FutureTarget
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,13 +31,21 @@ import java.util.concurrent.Callable
 import java.util.stream.Collectors
 import kotlin.concurrent.Volatile
 
-
 class GameCoreViewModel(
     private val application: Application,
     private val level: Level
 ) : ViewModel() {
 
-    var currentQuestionNumber = 0
+    val TAG = "GameCoreViewModel"
+    private val UPDATE_USER_FAILED = "Update user failed"
+    private val UPDATE_USER_SUCCESS = "Update user success"
+
+    private val LOAD_USER_INFO_FAILED = "Load user data failed"
+    private val LOAD_USER_INFO_SUCCESS = "Load user data success"
+
+    var currentQuestionNumber = MutableLiveData<Int>()
+
+
     var currentScore = 0
     var isRoundInProgress = false
 
@@ -49,14 +60,17 @@ class GameCoreViewModel(
     val formattedTime: LiveData<String>
         get() = _formattedTime
 
-    private val _secLeftForAnswer = MutableLiveData<Int>()
-    val secLeftForAnswer: LiveData<Int>
-        get() = _secLeftForAnswer
+    private val secLeftForAnswer = MutableLiveData<Int>()
 
 
     private val _currentProgressString = MutableLiveData<String>()
     val currentProgressString: LiveData<String>
         get() = _currentProgressString
+
+
+    val _currentQuestionString = MutableLiveData<String>()
+    val currentQuestionString: LiveData<String>
+        get() = _currentQuestionString
 
 
     @Volatile
@@ -76,8 +90,12 @@ class GameCoreViewModel(
 
     var questionsList = mutableListOf<Question>()
 
+    var userAnswers = mutableListOf<UserAnswer>()
+
     var bitmapImagesList = mutableListOf<Bitmap>()
     private var bitmapImagesListIndex = mutableListOf<Int>()
+
+    private val compositeDisposable = CompositeDisposable()
 
     fun resetNewTestData() {
         _countOfBitmapLoaded.value = 0
@@ -85,13 +103,19 @@ class GameCoreViewModel(
         currentScore = 0
     }
 
-    fun getCurrentQuestionString(): String {
-        return "$currentQuestionNumber / ${gameSettings.allQuestions}"
-    }
+//    fun getCurrentQuestionString(): String {
+//        return "${currentQuestionNumber.value} / ${gameSettings.allQuestions}"
+//    }
 
     fun getCapitalNameById(id: Int): String {
-        return countriesFullList.stream().filter { it.id == id }.findFirst()
-            .get().capitalName.trim()
+        if (id > 0 && id <= countriesFullList.size) {
+            return countriesFullList.stream().filter { it.id == id }.findFirst()
+                .get().capitalName.trim()
+
+        } else {
+            throw RuntimeException("fun getCapitalNameById error, id = $id, but id must be between 1 and ${countriesFullList.size}")
+        }
+
 
     }
 
@@ -113,20 +137,109 @@ class GameCoreViewModel(
 
     fun chooseAnswer(numUserAnswer: Int) {
         timer?.cancel()
-        var score = 0
+        var scoreFrame = 0
         var answerId = 0
-        if (numUserAnswer in 1..NUMBER_ANSWER_OPTIONS) {
-            answerId = questionsList[currentQuestionNumber].getOptionId(numUserAnswer)
-            if (numUserAnswer == questionsList[currentQuestionNumber].rightAnswerNumOption) {
-                currentScore += getFrameScore(secLeftForAnswer.value ?: 0)
-                val t = 5
+        var currQuestionNotNull = 0
+        currentQuestionNumber.value?.let {
+            currQuestionNotNull = it
+        }
+        if (currQuestionNotNull > 0) {
+
+
+            if (numUserAnswer in TIME_IS_EXPIRED..NUMBER_ANSWER_OPTIONS) {
+                if (numUserAnswer > TIME_IS_EXPIRED) {
+                    answerId = questionsList[currQuestionNotNull - 1].getOptionId(numUserAnswer)
+                    if (questionsList[currQuestionNotNull - 1].isAnswerCorrect(numUserAnswer)) {
+                        scoreFrame = getFrameScore(secLeftForAnswer.value ?: 0)
+                        currentScore += scoreFrame
+
+                    }
+
+                }
+                userAnswers.add(
+                    UserAnswer(
+                        currQuestionNotNull,
+                        questionsList[currQuestionNotNull - 1].id,
+                        answerId,
+                        scoreFrame
+                    )
+                )
+
+
+                currQuestionNotNull++
+                if (currQuestionNotNull <= gameSettings.allQuestions) {
+                    currentQuestionNumber.value = currQuestionNotNull
+                    _currentQuestionString.value =
+                        "${currentQuestionNumber.value} / ${gameSettings.allQuestions}"
+                    startTimer()
+                } else {
+                    timer?.cancel()
+                    updateUserBackend()
+//                    Log.d(TAG, "userAnswers: $userAnswers")
+//                    Log.d(TAG, "user score: $currentScore")
+                }
+
+
+            } else {
+                throw RuntimeException("fun chooseAnswer, answer num $numUserAnswer not in range $TIME_IS_EXPIRED..$NUMBER_ANSWER_OPTIONS")
             }
 
         } else {
-            throw RuntimeException("fun chooseAnswer, answer num $numUserAnswer not in range $TIME_IS_EXPIRED..$NUMBER_ANSWER_OPTIONS")
+            throw RuntimeException("fun chooseAnswer, currQuestionNotNull  $currQuestionNotNull = 0")
+        }
+    }
+
+    private fun updateUserBackend() {
+        val failed_update = Toast.makeText(application, UPDATE_USER_FAILED, Toast.LENGTH_SHORT)
+        val success_update = Toast.makeText(application, UPDATE_USER_SUCCESS, Toast.LENGTH_SHORT)
+        val userName = App.loadUserNameFromPrefsCapitalized(application).trim()
+        CoroutineScope(Dispatchers.IO).launch {
+            compositeDisposable.add(
+
+                ApiFactory.apiService.updateUser(userName, currentScore.toString(), UserAnswer.serializeListOfInstances(userAnswers))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.indexOf("UPDATE_USER_01") == 0) {
+                            success_update.show()
+                            getUserScoreFromBackend(userName)
+                        } else {
+                            failed_update.show()
+                        }
+                    }) {
+                        Log.d(TAG, "Error update user: + $it")
+                        failed_update.show()
+                    })
         }
 
+    }
 
+    private fun getUserScoreFromBackend(userName: String) {
+        val failed_load_user = Toast.makeText(application, LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
+        val success_load_user = Toast.makeText(application, LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
+        CoroutineScope(Dispatchers.IO).launch {
+            compositeDisposable.add(
+                ApiFactory.apiService.getUserScore(userName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.toString().indexOf("DISPLAYNAME") == 1) {
+                            success_load_user.show()
+                            App.saveDataUser(it.userScore, application)
+                            launchUserResTestFragment()
+                        } else {
+                            failed_load_user.show()
+                        }
+                    }) {
+                        Log.d(TAG, "Error get user data: + $it")
+                        failed_load_user.show()
+                    })
+        }
+
+    }
+
+    private fun launchUserResTestFragment() {
+        //findNavController().navigate(R.id.action_loginUserFragment_to_userLoggedTrueMenu)
     }
 
     private fun getImagesFigureTarget(): MutableList<FutureTarget<Bitmap>> {
@@ -182,7 +295,7 @@ class GameCoreViewModel(
         index: Int,
         figureTarget: FutureTarget<Bitmap>
     ): Single<BitmapWithIndex> {
-        return Single.fromCallable(Callable { getImagesFromBackend(index, figureTarget) })
+        return Single.fromCallable { getImagesFromBackend(index, figureTarget) }
 
     }
 
@@ -199,12 +312,11 @@ class GameCoreViewModel(
 
     fun setQuestionList() {
         questionsList = generateListOfQuestions()
-        Log.d("ddd", "$questionsList")
+
     }
 
 
     private fun setIsImagesLoaded(newValue: Boolean) {
-        Log.d("ddd", "setIsImagesLoaded called, newvalue $newValue")
         _isImagesDownloaded.value = newValue
 
     }
@@ -245,7 +357,7 @@ class GameCoreViewModel(
         ) {
             override fun onTick(millisUntilFinished: Long) {
                 _formattedTime.value = "${(millisUntilFinished / MILLIS_IN_SECONDS)} sec."
-                _secLeftForAnswer.value = (millisUntilFinished / MILLIS_IN_SECONDS).toInt()
+                secLeftForAnswer.value = (millisUntilFinished / MILLIS_IN_SECONDS).toInt()
             }
 
             override fun onFinish() {
@@ -260,4 +372,9 @@ class GameCoreViewModel(
         private const val TIME_IS_EXPIRED = 0
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
+
+    }
 }

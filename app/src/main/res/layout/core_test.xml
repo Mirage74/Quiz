@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@{viewModel.getCurrentQuestionString()}"
+                android:text="@{viewModel.currentQuestionString}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textSize="20sp"
                 app:layout_constrainedWidth="true"
@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="40dp"
-                android:text="@{viewModel.questionsList[viewModel.currentQuestionNumber].countryName}"
+                android:text="@{viewModel.questionsList[viewModel.currentQuestionNumber - 1].countryName}"
                 android:textSize="@dimen/tvCountryTextSizeNormal"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toTopOf="@id/capital1"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="80dp"
                 android:layout_marginTop="25dp"
-                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option1Id)}"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber - 1].option1Id)}"
                 app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
                 android:textSize="@dimen/buttonCoreTextSizeNormal"
                 app:layout_constraintBottom_toTopOf="@id/capital2"
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="80dp"
                 android:layout_marginTop="20dp"
-                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option2Id)}"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber - 1].option2Id)}"
                 app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
                 android:textSize="@dimen/buttonCoreTextSizeNormal"
                 app:layout_constraintBottom_toTopOf="@id/capital3"
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="80dp"
                 android:layout_marginTop="20dp"
-                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option3Id)}"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber - 1].option3Id)}"
                 app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
                 android:textSize="@dimen/buttonCoreTextSizeNormal"
                 app:layout_constraintBottom_toTopOf="@id/capital4"
@@ -143,7 +143,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/capital2"
                 tools:text="@string/capital"/>
-                />
+
 
 
             <Button
@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="80dp"
                 android:layout_marginTop="20dp"
-                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber].option4Id)}"
+                android:text="@{viewModel.getCapitalNameById(viewModel.questionsList[viewModel.currentQuestionNumber - 1].option4Id)}"
                 app:onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
                 android:textSize="@dimen/buttonCoreTextSizeNormal"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -44,13 +44,13 @@ class App : Application() {
 
         }
 
-        fun loadUserNameFromPrefs(context: Context): String {
-            val sharedPreferences = context.getSharedPreferences(
-                SHARED_PREFS,
-                MODE_PRIVATE
-            )
-            return sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER).toString()
-        }
+//        fun loadUserNameFromPrefs(context: Context): String {
+//            val sharedPreferences = context.getSharedPreferences(
+//                SHARED_PREFS,
+//                MODE_PRIVATE
+//            )
+//            return sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER).toString()
+//        }
 
         fun loadUserNameFromPrefsCapitalized(context: Context): String {
             val sharedPreferences = context.getSharedPreferences(
@@ -58,7 +58,7 @@ class App : Application() {
                 MODE_PRIVATE
             )
             return sharedPreferences.getString(SHARED_PREFS_USERNAME, NOT_LOGGED_USER)?.lowercase()
-                ?.replaceFirstChar(Char::uppercase).toString()
+                ?.replaceFirstChar(Char::uppercase).toString().trim()
         }
 
         fun loadUserScore(context: Context): UserScore {
@@ -76,12 +76,5 @@ class App : Application() {
             )
         }
     }
-
-
-    //    private val repository: BooksRepositoryImpl
-//        get() = ServiceLocator.provideBooksRepository(this)
-//
-//
-//    (applicationContext as App).repository.smth()
 
 }

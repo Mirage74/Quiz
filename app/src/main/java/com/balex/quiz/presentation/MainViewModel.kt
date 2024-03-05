@@ -2,25 +2,25 @@ package com.balex.quiz.presentation
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
-import com.balex.quiz.domain.entity.Question
-import com.balex.quiz.domain.entity.UserAnswer
-import com.balex.quiz.domain.entity.UserScore
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Collections
 import java.util.stream.Collectors
 
 class MainViewModel(application: Application) :
     AndroidViewModel(application) {
+
+    private val LOAD_USER_INFO_FAILED = "Load user data failed"
+    private val LOAD_USER_INFO_SUCCESS = "Load user data success"
 
     private val _isListCountriesFromBackendLoaded = MutableLiveData(false)
     val isListCountriesFromBackendLoaded: LiveData<Boolean>
@@ -40,17 +40,37 @@ class MainViewModel(application: Application) :
         }
 
 
-//    private fun setCountriesFullList(list: List<Country>) {
-//        countriesFullList = list
-//        _isListCountriesFromBackendLoaded.value = true
-//    }
-
     fun initIsUserLoggedStatus() {
-        if (App.loadUserNameFromPrefs(getApplication()) != NOT_LOGGED_USER) {
+        val userName = App.loadUserNameFromPrefsCapitalized(getApplication()).trim()
+        if (userName != NOT_LOGGED_USER) {
+            getUserScoreFromBackend(userName)
             setIsUserLogged(true)
         } else {
             setIsUserLogged(false)
         }
+    }
+
+    private fun getUserScoreFromBackend(userName: String) {
+        val failed_load_user = Toast.makeText(getApplication(), LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
+        val success_load_user = Toast.makeText(getApplication(), LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
+        CoroutineScope(Dispatchers.IO).launch {
+            compositeDisposable.add(
+                ApiFactory.apiService.getUserScore(userName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.toString().indexOf("DISPLAYNAME") == 1) {
+                            success_load_user.show()
+                            App.saveDataUser(it.userScore, getApplication())
+                        } else {
+                            failed_load_user.show()
+                        }
+                    }) {
+                        Log.d(TAG, "Error get user data: + $it")
+                        failed_load_user.show()
+                    })
+        }
+
     }
 
     fun setIsUserLogged(newStatus: Boolean) {

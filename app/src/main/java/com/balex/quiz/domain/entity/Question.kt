@@ -1,7 +1,5 @@
 package com.balex.quiz.domain.entity
 
-import java.util.Arrays
-
 data class Question(
     val id: Int,
     val countryName: String,
@@ -19,5 +17,8 @@ data class Question(
             3 -> option3Id
             else -> option4Id
         }
+    }
+    fun isAnswerCorrect(i: Int): Boolean {
+        return i == rightAnswerNumOption
     }
 }

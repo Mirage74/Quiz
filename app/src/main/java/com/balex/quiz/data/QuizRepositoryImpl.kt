@@ -20,6 +20,7 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
     private val DIFFICULT_LEVEL_HARD = 2
 
 
+    //val TAG = "QuizRepositoryImpl"
 
     override fun getGameSettings(level: Level): GameSettings {
         val allQuestions = application.resources.getInteger(R.integer.test_questions)
@@ -90,9 +91,9 @@ class QuizRepositoryImpl(private val application: Application) : QuizRepository 
             }.collect(Collectors.toList())
             for (i in 1..<NUMBER_ANSWER_OPTIONS) {
                 val randInt = rand.nextInt(listFullWithoutRightAnswer.size)
-                array[i] = randInt
-                listFullWithoutRightAnswer = countriesListFull.stream().filter {
-                    it.id != randInt
+                array[i] = listFullWithoutRightAnswer[randInt].id
+                listFullWithoutRightAnswer = listFullWithoutRightAnswer.stream().filter {
+                    it.id != array[i]
                 }.collect(Collectors.toList())
             }
             val rightAnswerPositionInArray = rand.nextInt(NUMBER_ANSWER_OPTIONS)

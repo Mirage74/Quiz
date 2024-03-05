@@ -11,16 +11,29 @@ import retrofit2.http.POST
 interface ApiService {
 
     @GET("get")
-    fun loadCountries(): Single <CountriesResponse>
+    fun loadCountries(): Single<CountriesResponse>
 
 
     @FormUrlEncoded
     @POST("login")
-    //fun login(@Body authRequest: AuthRequest): Single<UserScore>
-    //fun login(@PartMap() partMap: MutableMap<String, RequestBody>): Single<UserScore>
-    fun login(@Field("login") login: String, @Field("password") password: String): Single<UserScoreResponse>
+    fun login(
+        @Field("login") login: String,
+        @Field("password") password: String
+    ): Single<UserScoreResponse>
 
-    //https://stackoverflow.com/questions/72714274/how-to-deserialize-an-instance-of-a-generated-data-class
+    @FormUrlEncoded
+    @POST("userScore")
+    fun getUserScore(
+        @Field("username") username: String,
+    ): Single<UserScoreResponse>
 
+
+    @FormUrlEncoded
+    @POST("updateUser")
+    fun updateUser(
+        @Field("login") login: String,
+        @Field("BESTSCORE") bestScore: String,
+        @Field("LAST_RES") lastRes: String
+    ): Single<String>
 
 }

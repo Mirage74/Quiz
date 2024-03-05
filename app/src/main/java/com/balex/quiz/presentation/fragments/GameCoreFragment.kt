@@ -1,7 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ import com.balex.quiz.presentation.GameCoreViewModel
 
 
 class GameCoreFragment : Fragment() {
-    private val TAG = "GameCoreFragment"
+    //private val TAG = "GameCoreFragment"
     private val args by navArgs<GameCoreFragmentArgs>()
     private val gameViewModelFactory by lazy {
 
@@ -45,7 +44,12 @@ class GameCoreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Log.d(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-        if (gameViewModel.currentQuestionNumber > 0 && gameViewModel.currentQuestionNumber <= gameViewModel.gameSettings.allQuestions) {
+        var currQuestionNotNull = 0
+        gameViewModel.currentQuestionNumber.value?.let {
+            currQuestionNotNull = it
+        }
+        gameViewModel._currentQuestionString.value = "1 / ${gameViewModel.gameSettings.allQuestions}"
+        if (currQuestionNotNull > 0 && currQuestionNotNull <= gameViewModel.gameSettings.allQuestions) {
             with(binding) {
                 viewModel = gameViewModel
                 lifecycleOwner = viewLifecycleOwner

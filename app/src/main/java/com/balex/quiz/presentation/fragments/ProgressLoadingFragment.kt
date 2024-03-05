@@ -54,7 +54,7 @@ class ProgressLoadingFragment : Fragment() {
         observeViewModel()
 
         with (gameViewModel){
-            currentQuestionNumber = 1
+            currentQuestionNumber.value = 1
             getGameSettingsUseCase
             countriesFullList = mainViewModel.countriesFullList
             setQuestionList()

@@ -124,7 +124,7 @@ class LoginUserFragment : Fragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
-                        if (it.toString().indexOf("CODE LOGIN_USER_02") == 1) {
+                        if (it.toString().indexOf("CODE LOGIN_USER_02") == 0) {
                             failed_login.show()
                         } else {
                             success_login.show()
