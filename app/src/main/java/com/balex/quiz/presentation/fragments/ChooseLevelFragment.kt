@@ -5,13 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.databinding.ChooseLevelBinding
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.presentation.App
-import com.balex.quiz.presentation.MainViewModel
-import com.balex.quiz.presentation.MainViewModelFactory
 
 class ChooseLevelFragment : Fragment() {
     private var userName = ""

@@ -12,4 +12,5 @@
     <color name="buttonCheckBgColor">#8B5C32A6</color>
     <color name="rightAnswer">#4CAF50</color>
     <color name="yourAnswer">#F44336</color>
+    <color name="wrongAnswer">#85F44336</color>
 </resources>

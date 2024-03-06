@@ -75,7 +75,15 @@
         <argument
             android:name="levelEnum"
             app:argType="com.balex.quiz.domain.entity.Level" />
+        <action
+            android:id="@+id/action_gameCoreFragment_to_resultQuizFragment"
+            app:destination="@id/resultQuizFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/resultQuizFragment"
+        android:name="com.balex.quiz.presentation.fragments.ResultQuizFragment"
+        android:label="ResultQuizFragment"
+        tools:layout="@layout/quiz_result"/>
 
 
 </navigation>

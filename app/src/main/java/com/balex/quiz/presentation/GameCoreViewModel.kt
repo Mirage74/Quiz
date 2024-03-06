@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.balex.quiz.R
 import com.balex.quiz.data.NUMBER_ANSWER_OPTIONS
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
@@ -27,7 +28,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.concurrent.Callable
 import java.util.stream.Collectors
 import kotlin.concurrent.Volatile
 
@@ -53,6 +53,9 @@ class GameCoreViewModel(
     val isImagesDownloaded: LiveData<Boolean>
         get() = _isImagesDownloaded
 
+    val isQuizFinished = MutableLiveData(false)
+
+    var lockButtons = false
 
     private var timer: CountDownTimer? = null
 
@@ -145,45 +148,46 @@ class GameCoreViewModel(
         }
         if (currQuestionNotNull > 0) {
 
+            if (!lockButtons) {
 
-            if (numUserAnswer in TIME_IS_EXPIRED..NUMBER_ANSWER_OPTIONS) {
-                if (numUserAnswer > TIME_IS_EXPIRED) {
-                    answerId = questionsList[currQuestionNotNull - 1].getOptionId(numUserAnswer)
-                    if (questionsList[currQuestionNotNull - 1].isAnswerCorrect(numUserAnswer)) {
-                        scoreFrame = getFrameScore(secLeftForAnswer.value ?: 0)
-                        currentScore += scoreFrame
+
+                if (numUserAnswer in TIME_IS_EXPIRED..NUMBER_ANSWER_OPTIONS) {
+                    if (numUserAnswer > TIME_IS_EXPIRED) {
+                        answerId = questionsList[currQuestionNotNull - 1].getOptionId(numUserAnswer)
+                        if (questionsList[currQuestionNotNull - 1].isAnswerCorrect(numUserAnswer)) {
+                            scoreFrame = getFrameScore(secLeftForAnswer.value ?: 0)
+                            currentScore += scoreFrame
+
+                        }
 
                     }
-
-                }
-                userAnswers.add(
-                    UserAnswer(
-                        currQuestionNotNull,
-                        questionsList[currQuestionNotNull - 1].id,
-                        answerId,
-                        scoreFrame
+                    userAnswers.add(
+                        UserAnswer(
+                            currQuestionNotNull,
+                            questionsList[currQuestionNotNull - 1].id,
+                            answerId,
+                            scoreFrame
+                        )
                     )
-                )
 
 
-                currQuestionNotNull++
-                if (currQuestionNotNull <= gameSettings.allQuestions) {
-                    currentQuestionNumber.value = currQuestionNotNull
-                    _currentQuestionString.value =
-                        "${currentQuestionNumber.value} / ${gameSettings.allQuestions}"
-                    startTimer()
+                    currQuestionNotNull++
+                    if (currQuestionNotNull <= gameSettings.allQuestions) {
+                        currentQuestionNumber.value = currQuestionNotNull
+                        _currentQuestionString.value =
+                            "${currentQuestionNumber.value} / ${gameSettings.allQuestions}"
+                        startTimer()
+                    } else {
+                        timer?.cancel()
+                        lockButtons = true
+                        updateUserBackend()
+                    }
+
+
                 } else {
-                    timer?.cancel()
-                    updateUserBackend()
-//                    Log.d(TAG, "userAnswers: $userAnswers")
-//                    Log.d(TAG, "user score: $currentScore")
+                    throw RuntimeException("fun chooseAnswer, answer num $numUserAnswer not in range $TIME_IS_EXPIRED..$NUMBER_ANSWER_OPTIONS")
                 }
-
-
-            } else {
-                throw RuntimeException("fun chooseAnswer, answer num $numUserAnswer not in range $TIME_IS_EXPIRED..$NUMBER_ANSWER_OPTIONS")
             }
-
         } else {
             throw RuntimeException("fun chooseAnswer, currQuestionNotNull  $currQuestionNotNull = 0")
         }
@@ -196,7 +200,11 @@ class GameCoreViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             compositeDisposable.add(
 
-                ApiFactory.apiService.updateUser(userName, currentScore.toString(), UserAnswer.serializeListOfInstances(userAnswers))
+                ApiFactory.apiService.updateUser(
+                    userName,
+                    currentScore.toString(),
+                    UserAnswer.serializeListOfInstances(userAnswers)
+                )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
@@ -215,18 +223,20 @@ class GameCoreViewModel(
     }
 
     private fun getUserScoreFromBackend(userName: String) {
-        val failed_load_user = Toast.makeText(application, LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
-        val success_load_user = Toast.makeText(application, LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
+        val failed_load_user =
+            Toast.makeText(application, LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
+        val success_load_user =
+            Toast.makeText(application, LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
         CoroutineScope(Dispatchers.IO).launch {
             compositeDisposable.add(
                 ApiFactory.apiService.getUserScore(userName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        if (it.toString().indexOf("DISPLAYNAME") == 1) {
+                        if (it.userScore.toString().indexOf("userName=") >= 0) {
                             success_load_user.show()
                             App.saveDataUser(it.userScore, application)
-                            launchUserResTestFragment()
+                            isQuizFinished.value = true
                         } else {
                             failed_load_user.show()
                         }
@@ -238,9 +248,6 @@ class GameCoreViewModel(
 
     }
 
-    private fun launchUserResTestFragment() {
-        //findNavController().navigate(R.id.action_loginUserFragment_to_userLoggedTrueMenu)
-    }
 
     private fun getImagesFigureTarget(): MutableList<FutureTarget<Bitmap>> {
         val figureTargetList = mutableListOf<FutureTarget<Bitmap>>()
@@ -281,8 +288,6 @@ class GameCoreViewModel(
                             bitmapImagesList = sortBitmapList(bitmapImagesList)
                             setIsImagesLoaded(true)
                         }
-                        //Log.d("ddd", "fun getList i: size ${it.index}")
-                        //Log.d("ddd", "gameSetting ${gameSetting.allQuestions}")
                     }) {
                         Log.d("GameCoreViewModel", "fun downloadImagesToBitmap exception : $it")
                         throw it

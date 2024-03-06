@@ -124,6 +124,10 @@ class LoginUserFragment : Fragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
 
+                        Log.d(TAG, "it: $it")
+                        Log.d(TAG, "it: ${it.toString()}")
+                        Log.d(TAG, "it.userScore: ${it.userScore}")
+                        Log.d(TAG, "it.userScore: ${it.userScore.toString()}")
                         if (it.toString().indexOf("CODE LOGIN_USER_02") == 0) {
                             failed_login.show()
                         } else {
