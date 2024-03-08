@@ -56,9 +56,9 @@ class ResultQuizFragment : Fragment() {
         initViewValues()
         userInfo = App.loadUserScore(requireActivity())
         listLastScore =
-            UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON).toMutableList()
+            UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON).sortedBy { it.frameNum }.toMutableList()
         listBestScore =
-            UserAnswer.deserializeListOfInstances(userInfo.bestResultJSON).toMutableList()
+            UserAnswer.deserializeListOfInstances(userInfo.bestResultJSON).sortedBy { it.frameNum }.toMutableList()
         binding.layoutTableResult.addView(fillAnswerTable())
 
 
@@ -81,9 +81,9 @@ class ResultQuizFragment : Fragment() {
         )
         tvQuizNum.setGravity(Gravity.END)
         tvQuizNum.setPadding(1, PADDING_VERTICAL, 0, PADDING_VERTICAL)
-        s = userAnswer.answerId.toString() + "   "
+        s = userAnswer.frameNum.toString() + "   "
         tvQuizNum.text = s
-        tvQuizNum.setTextSize(TypedValue.COMPLEX_UNIT_PX, SMALL_TEXT_SIZE.toFloat())
+        tvQuizNum.setTextSize(TypedValue.COMPLEX_UNIT_SP, SMALL_TEXT_SIZE.toFloat())
 
         tvCountryName.setLayoutParams(
             TableRow.LayoutParams(
@@ -95,7 +95,7 @@ class ResultQuizFragment : Fragment() {
         tvCountryName.setPadding(5, PADDING_VERTICAL, 0, PADDING_VERTICAL)
         s = userAnswer.getCountryName(viewModel.countriesFullList)
         tvCountryName.setText(s)
-        tvCountryName.setTextSize(TypedValue.COMPLEX_UNIT_PX, SMALL_TEXT_SIZE.toFloat())
+        tvCountryName.setTextSize(TypedValue.COMPLEX_UNIT_SP, SMALL_TEXT_SIZE.toFloat())
 
         tvScorePoints.setLayoutParams(
             TableRow.LayoutParams(
@@ -112,7 +112,7 @@ class ResultQuizFragment : Fragment() {
         } else {
             tvScorePoints.setTextColor(ContextCompat.getColor(requireActivity(), R.color.wrongAnswer))
         }
-        tvScorePoints.setTextSize(TypedValue.COMPLEX_UNIT_PX,  SMALL_TEXT_SIZE.toFloat())
+        tvScorePoints.setTextSize(TypedValue.COMPLEX_UNIT_SP,  SMALL_TEXT_SIZE.toFloat())
 
         val tableRaw = TableRow(requireActivity())
         tableRaw.setId(userAnswer.answerId)
@@ -128,9 +128,9 @@ class ResultQuizFragment : Fragment() {
 
     private fun fillAnswerTable(): View {
         val scoreList = if (showMode == LAST_RES_SHOW_MODE) {
-            listBestScore
-        } else {
             listLastScore
+        } else {
+            listBestScore
         }
 
         val leftRowMargin = 0

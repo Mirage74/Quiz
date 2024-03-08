@@ -63,6 +63,7 @@ class GameCoreViewModel(
     val formattedTime: LiveData<String>
         get() = _formattedTime
 
+
     private val secLeftForAnswer = MutableLiveData<Int>()
 
 
@@ -152,7 +153,9 @@ class GameCoreViewModel(
 
 
                 if (numUserAnswer in TIME_IS_EXPIRED..NUMBER_ANSWER_OPTIONS) {
-                    if (numUserAnswer > TIME_IS_EXPIRED) {
+                    var secRest = 0
+                    secLeftForAnswer.value?.let { secRest = it}
+                    if (secRest > TIME_IS_EXPIRED) {
                         answerId = questionsList[currQuestionNotNull - 1].getOptionId(numUserAnswer)
                         if (questionsList[currQuestionNotNull - 1].isAnswerCorrect(numUserAnswer)) {
                             scoreFrame = getFrameScore(secLeftForAnswer.value ?: 0)
