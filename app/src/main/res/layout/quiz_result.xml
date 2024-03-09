@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/answerColor">
 
         <TextView
             android:id="@+id/username"
@@ -14,19 +15,21 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
             android:text="@string/username"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             android:layout_marginTop="8dp"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/coreBG"
+            android:scrollbars="vertical"
             android:fillViewport="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginVertical="4dp"
+            android:scrollbarSize="10dp"
+            android:layout_marginVertical="8dp"
             app:layout_constraintTop_toBottomOf="@+id/username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,11 +41,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
 
+
                 >
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineListAndItem"
@@ -53,13 +57,14 @@
             />
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/shop_item_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:id="@+id/showUserAnswerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/guidelineListAndItem"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout="@layout/view_answer_fragment"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

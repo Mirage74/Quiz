@@ -59,4 +59,5 @@
     <string name="points_easy">points, \'Easy\' :</string>
     <string name="points_medium">points, \'Medium\' :</string>
     <string name="hello_user">Hello, user !</string>
+    <string name="score">score</string>
 </resources>

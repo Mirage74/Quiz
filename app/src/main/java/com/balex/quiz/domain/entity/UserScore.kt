@@ -19,6 +19,11 @@ data class UserScore(
         return Gson().toJson(this)
     }
     companion object {
+
+        fun getEmptyInstance(): UserScore {
+            return UserScore("", 0, "", "")
+        }
+
         fun deserializeInstance(s: String): UserScore  {
             return Gson().fromJson(s, UserScore::class.java)
         }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout="@layout/view_answer_fragment">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvCountryName"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/country_name"
+            android:textSize="@dimen/wrong_answer_text_size" />
+
+        <TextView
+            android:id="@+id/tvRightAnswer"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/capital"
+            android:textSize="@dimen/wrong_answer_text_size" />
+
+        <TextView
+            android:id="@+id/tvYourAnswer"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/capital"
+            android:textSize="@dimen/wrong_answer_text_size" />
+
+        <TextView
+            android:id="@+id/tvPoints"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/score"
+            android:textSize="@dimen/wrong_answer_text_size" />
+
+
+    </LinearLayout>
+</layout>

@@ -4,7 +4,7 @@
     <dimen name = "font_size_default_list">21sp</dimen>
     <dimen name = "font_size_min_list">15sp</dimen>
     <dimen name = "font_size_max_list">25sp</dimen>
-    <dimen name = "wrong_answer_text_size">30sp</dimen>
+    <dimen name = "wrong_answer_text_size">20sp</dimen>
     <dimen name = "buttonCoreTextSizeNormal">25sp</dimen>
     <dimen name = "tvCountryTextSizeNormal">30sp</dimen>
     <dimen name = "btCoreWidth">180dp</dimen>

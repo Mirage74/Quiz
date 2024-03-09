@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
+import com.balex.quiz.domain.entity.UserAnswer
+import com.balex.quiz.domain.entity.UserScore
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -30,10 +32,12 @@ class MainViewModel(application: Application) :
     val isUserLogged: LiveData<Boolean>
         get() = _isUserLogged
 
+    var currentResultItemInView = MutableLiveData<UserAnswer>()
+
 
     private val compositeDisposable = CompositeDisposable()
 
-    var countriesFullList= mutableListOf<Country>()
+    var countriesFullList = mutableListOf<Country>()
         set(list) {
             field = list
             _isListCountriesFromBackendLoaded.value = true
@@ -43,23 +47,30 @@ class MainViewModel(application: Application) :
     fun initIsUserLoggedStatus() {
         val userName = App.loadUserNameFromPrefsCapitalized(getApplication()).trim()
         if (userName != NOT_LOGGED_USER) {
-            getUserScoreFromBackend(userName)
-            setIsUserLogged(true)
+            _isUserLogged.value?.let {
+                if (!it) {
+                    getUserScoreFromBackend(userName)
+                    setIsUserLogged(true)
+                }
+            }
         } else {
             setIsUserLogged(false)
         }
     }
 
     private fun getUserScoreFromBackend(userName: String) {
-        val failed_load_user = Toast.makeText(getApplication(), LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
-        val success_load_user = Toast.makeText(getApplication(), LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
+        val failed_load_user =
+            Toast.makeText(getApplication(), LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
+        val success_load_user =
+            Toast.makeText(getApplication(), LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
+        Log.d("USERDATA", "getUserScoreFromBackend")
         CoroutineScope(Dispatchers.IO).launch {
             compositeDisposable.add(
                 ApiFactory.apiService.getUserScore(userName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        if (it.toString().indexOf("DISPLAYNAME") == 1) {
+                        if (it.toString().indexOf("userName") >= 0) {
                             success_load_user.show()
                             App.saveDataUser(it.userScore, getApplication())
                         } else {

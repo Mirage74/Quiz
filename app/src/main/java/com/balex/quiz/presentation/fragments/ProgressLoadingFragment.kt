@@ -79,4 +79,9 @@ class ProgressLoadingFragment : Fragment() {
             ProgressLoadingFragmentDirections.actionProgressLoadingFragmentToGameCoreFragment(level)
         )
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

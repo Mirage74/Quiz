@@ -1,6 +1,7 @@
 package com.balex.quiz.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ import com.balex.quiz.presentation.GameCoreViewModel
 
 
 class GameCoreFragment : Fragment() {
-    //private val TAG = "GameCoreFragment"
+    private val TAG = "GameCoreFragment"
     private val args by navArgs<GameCoreFragmentArgs>()
     private val gameViewModelFactory by lazy {
 
@@ -50,8 +51,10 @@ class GameCoreFragment : Fragment() {
             currQuestionNotNull = it
         }
         gameViewModel._currentQuestionString.value =
-            "1 / ${gameViewModel.gameSettings.allQuestions}"
+            "$currQuestionNotNull / ${gameViewModel.gameSettings.allQuestions}"
+        //Log.d(TAG, gameViewModel.questionsList.toString())
         if (currQuestionNotNull > 0 && currQuestionNotNull <= gameViewModel.gameSettings.allQuestions) {
+            Log.d(TAG, "gameViewModel.currentQuestionNumber.value: ${gameViewModel.currentQuestionNumber.value}")
             with(binding) {
                 viewModel = gameViewModel
                 lifecycleOwner = viewLifecycleOwner
@@ -62,7 +65,6 @@ class GameCoreFragment : Fragment() {
                 gameViewModel.startTimer()
                 gameViewModel.isRoundInProgress = true
             }
-
 
         } else {
             throw RuntimeException("Question number ${gameViewModel.currentQuestionNumber} is not in range 1..${gameViewModel.gameSettings.allQuestions} !")
@@ -91,6 +93,11 @@ class GameCoreFragment : Fragment() {
 
     private fun launchQuizResFragment() {
         findNavController().navigate(R.id.action_gameCoreFragment_to_resultQuizFragment)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

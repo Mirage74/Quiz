@@ -77,7 +77,8 @@
             app:argType="com.balex.quiz.domain.entity.Level" />
         <action
             android:id="@+id/action_gameCoreFragment_to_resultQuizFragment"
-            app:destination="@id/resultQuizFragment" />
+            app:destination="@id/resultQuizFragment"
+            app:popUpTo="@id/userLoggedTrueMenu" />
     </fragment>
     <fragment
         android:id="@+id/resultQuizFragment"

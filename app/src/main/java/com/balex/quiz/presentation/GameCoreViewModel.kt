@@ -17,6 +17,7 @@ import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.entity.UserAnswer
+import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.domain.usecases.GenerateQuestionUseCase
 import com.balex.quiz.domain.usecases.GetGameSettingsUseCase
 import com.bumptech.glide.Glide

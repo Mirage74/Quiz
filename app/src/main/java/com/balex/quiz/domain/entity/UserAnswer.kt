@@ -25,9 +25,13 @@ data class UserAnswer(
     }
 
     fun getCapitalNameUserAnswer(countriesList: List<Country>): String {
-        return countriesList.stream()
-            .filter(Predicate<Country> { e: Country -> e.id == this.answerId })
-            .findFirst().get().capitalName.trim()
+        if (answerId > 0) {
+            return countriesList.stream()
+                .filter(Predicate<Country> { e: Country -> e.id == this.answerId })
+                .findFirst().get().capitalName.trim()
+        } else {
+            return TIME_EXPIRED
+        }
     }
 
     fun serializeInstance(): String {
@@ -35,11 +39,18 @@ data class UserAnswer(
     }
 
     companion object {
-        fun deserializeInstance(s: String): UserAnswer  {
+
+        const val TIME_EXPIRED = "No answer"
+
+        fun getEmptyInstance(): UserAnswer {
+            return UserAnswer(1, 1, 1, 1)
+        }
+
+        fun deserializeInstance(s: String): UserAnswer {
             var temp = s
             val frameNum = s.substring(temp.indexOf("{") + 1, temp.indexOf("/")).toInt()
             temp = temp.substring(temp.indexOf("/") + 1)
-            val questionId  = temp.substring(0, temp.indexOf("/")).toInt()
+            val questionId = temp.substring(0, temp.indexOf("/")).toInt()
             temp = temp.substring(temp.indexOf("/") + 1)
             val answerId = temp.substring(0, temp.indexOf("/")).toInt()
             temp = temp.substring(temp.indexOf("/") + 1)
@@ -49,20 +60,20 @@ data class UserAnswer(
 
         fun serializeListOfInstances(list: List<UserAnswer>): String {
             var s = ""
-            for (i in 0.. list.size - 1) {
+            for (i in 0..list.size - 1) {
                 s += list[i].serializeInstance()
             }
             return s
         }
 
-        fun deserializeListOfInstances(listSerialized: String): List<UserAnswer>  {
+        fun deserializeListOfInstances(listSerialized: String): List<UserAnswer> {
             val listAnswers = mutableListOf<UserAnswer>()
             if (listSerialized.isNotEmpty()) {
                 var s = listSerialized
                 while (s.length > 5) {
                     val i = s.indexOf("}")
                     val temp = s.substring(0, i + 1)
-                    listAnswers.add(UserAnswer.deserializeInstance (temp))
+                    listAnswers.add(UserAnswer.deserializeInstance(temp))
                     s = s.substring(i + 1)
                 }
             } else {

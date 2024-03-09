@@ -1,13 +1,9 @@
 package com.balex.quiz.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
-import com.balex.quiz.domain.entity.UserAnswer
-import com.balex.quiz.domain.entity.UserScore
-import com.google.gson.Gson
 
 val TAG = "MainActivity"
 
@@ -26,10 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.initIsUserLoggedStatus()
 
-
-
     }
-
 
 }
 

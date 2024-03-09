@@ -13,4 +13,5 @@
     <color name="rightAnswer">#4CAF50</color>
     <color name="yourAnswer">#F44336</color>
     <color name="wrongAnswer">#85F44336</color>
+    <color name="answerColor">#FF78F3F3</color>
 </resources>
