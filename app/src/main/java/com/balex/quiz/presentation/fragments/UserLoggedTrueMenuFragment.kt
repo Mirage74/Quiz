@@ -62,6 +62,11 @@ class UserLoggedTrueMenuFragment : Fragment() {
             startTest.setOnClickListener {
                 launchChooseLevelFragment()
             }
+
+            about.setOnClickListener{
+                launchAboutFragment()
+            }
+
             logout.setOnClickListener {
                 App.setUserNotLogged(requireActivity().application)
                 viewModel.setIsUserLogged(false)
@@ -77,6 +82,10 @@ class UserLoggedTrueMenuFragment : Fragment() {
 
     private fun launchUserLoggedFalseFragment() {
         findNavController().navigate(R.id.action_userLoggedTrueMenu_to_userLoggedFalseMenu)
+    }
+
+    private fun launchAboutFragment() {
+        findNavController().navigate(R.id.action_userLoggedTrueMenu_to_aboutFragment)
     }
 
     override fun onDestroyView() {

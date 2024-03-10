@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
 
-val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 

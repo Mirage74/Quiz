@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.UserAnswer
-import com.balex.quiz.domain.entity.UserScore
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -20,6 +19,7 @@ import java.util.stream.Collectors
 
 class MainViewModel(application: Application) :
     AndroidViewModel(application) {
+    val TAG = "MainViewModel"
 
     private val LOAD_USER_INFO_FAILED = "Load user data failed"
     private val LOAD_USER_INFO_SUCCESS = "Load user data success"

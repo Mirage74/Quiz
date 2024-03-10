@@ -17,6 +17,9 @@
             app:destination="@id/userLoggedTrueMenu"
             app:popUpTo="@id/userLoggedFalseMenu"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_userLoggedFalseMenu_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginUserFragment"
@@ -42,6 +45,9 @@
         <action
             android:id="@+id/action_userLoggedTrueMenu_to_chooseLevelFragment"
             app:destination="@id/chooseLevelFragment" />
+        <action
+            android:id="@+id/action_userLoggedTrueMenu_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/chooseLevelFragment"
@@ -85,6 +91,11 @@
         android:name="com.balex.quiz.presentation.fragments.ResultQuizFragment"
         android:label="ResultQuizFragment"
         tools:layout="@layout/quiz_result"/>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.balex.quiz.presentation.fragments.AboutFragment"
+        android:label="AboutFragment"
+        tools:layout="@layout/about"/>
 
 
 </navigation>
