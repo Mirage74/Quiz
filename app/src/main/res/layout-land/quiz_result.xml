@@ -27,11 +27,25 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
             android:text="@string/username"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_marginTop="8dp"
             app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@id/switchRes"
+            app:layout_constraintEnd_toStartOf="@id/tvScoreSum"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tvScoreSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:text="@string/points_50"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_marginTop="8dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@id/guidelineListAndItem"
+            app:layout_constraintStart_toEndOf="@id/username"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -42,8 +56,8 @@
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
             android:text="@string/view_best_result"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/username"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guidelineListAndItem"
             android:textSize="15sp" />
 
@@ -78,7 +92,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/username"
+            app:layout_constraintTop_toBottomOf="@id/switchRes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/guidelineListAndItem"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -1,36 +1,32 @@
 package com.balex.quiz.domain.entity
 
-import java.util.function.Predicate
-
 data class UserAnswer(
     val frameNum: Int = 0,
     val questionId: Int = 0,
     val answerId: Int = 0,
     val score: Int = 0
 ) {
-    fun isCorrectAnswer(): Boolean {
-        return questionId == answerId
-    }
+
 
     fun getCountryName(countriesList: List<Country>): String {
         return countriesList.stream()
-            .filter(Predicate<Country> { e: Country -> e.id == this.questionId })
+            .filter { e -> e.id == this.questionId }
             .findFirst().get().countryName.trim()
     }
 
     fun getCapitalNameRightAnswer(countriesList: List<Country>): String {
         return countriesList.stream()
-            .filter(Predicate<Country> { e: Country -> e.id == this.questionId })
+            .filter { e -> e.id == this.questionId }
             .findFirst().get().capitalName.trim()
     }
 
     fun getCapitalNameUserAnswer(countriesList: List<Country>): String {
-        if (answerId > 0) {
-            return countriesList.stream()
-                .filter(Predicate<Country> { e: Country -> e.id == this.answerId })
+        return if (answerId > 0) {
+            countriesList.stream()
+                .filter { e -> e.id == this.answerId }
                 .findFirst().get().capitalName.trim()
         } else {
-            return TIME_EXPIRED
+            TIME_EXPIRED
         }
     }
 
@@ -41,6 +37,10 @@ data class UserAnswer(
     companion object {
 
         const val TIME_EXPIRED = "No answer"
+
+        fun getQuizScore(list: List<UserAnswer>): Int {
+            return list.map{it -> it.score}.sum()
+        }
 
         fun getEmptyInstance(): UserAnswer {
             return UserAnswer(1, 1, 1, 1)
@@ -73,7 +73,7 @@ data class UserAnswer(
                 while (s.length > 5) {
                     val i = s.indexOf("}")
                     val temp = s.substring(0, i + 1)
-                    listAnswers.add(UserAnswer.deserializeInstance(temp))
+                    listAnswers.add(deserializeInstance(temp))
                     s = s.substring(i + 1)
                 }
             } else {

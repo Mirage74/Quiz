@@ -7,14 +7,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
 import com.balex.quiz.databinding.QuizResultBinding
@@ -86,11 +84,13 @@ class ResultQuizFragment : Fragment() {
         } else {
             listBestScore
         }
+        val s = "points: ${UserAnswer.getQuizScore(scoreList).toString()}"
+        binding.tvScoreSum.text = s
         viewModel.currentResultItemInView.value = scoreList[currentAnswerInView - 1]
         binding.layoutTableResult.removeAllViews()
         binding.layoutTableResult.addView(fillAnswerTable())
         getChildFragmentManager().popBackStack()
-        getChildFragmentManager().beginTransaction().replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit()
 
     }
 
@@ -98,7 +98,6 @@ class ResultQuizFragment : Fragment() {
         val tvQuizNum = TextView(requireActivity())
         val tvCountryName = TextView(requireActivity())
         val tvScorePoints = TextView(requireActivity())
-        var s = ""
         tvQuizNum.setLayoutParams(
             TableRow.LayoutParams(
                 TableRow.LayoutParams.WRAP_CONTENT,
@@ -107,7 +106,7 @@ class ResultQuizFragment : Fragment() {
         )
         tvQuizNum.setGravity(Gravity.END)
         tvQuizNum.setPadding(1, PADDING_VERTICAL, 0, PADDING_VERTICAL)
-        s = userAnswer.frameNum.toString() + "   "
+        var s: String = userAnswer.frameNum.toString() + "   "
         tvQuizNum.text = s
         tvQuizNum.setTextSize(TypedValue.COMPLEX_UNIT_SP, SMALL_TEXT_SIZE.toFloat())
 
@@ -177,7 +176,7 @@ class ResultQuizFragment : Fragment() {
             tRaw.setOnClickListener {
                 currentAnswerInView = tRaw.id
                 viewModel.currentResultItemInView.value = scoreList[currentAnswerInView - 1]
-                getChildFragmentManager().beginTransaction().replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit();
+                getChildFragmentManager().beginTransaction().replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit()
             }
             tableLayout.addView(tRaw)
         }
@@ -187,7 +186,6 @@ class ResultQuizFragment : Fragment() {
     private fun initViewValues() {
         with(binding) {
             username.text = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
-
         }
 
     }
