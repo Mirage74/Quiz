@@ -7,13 +7,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
 import com.balex.quiz.databinding.QuizResultBinding
@@ -59,12 +60,37 @@ class ResultQuizFragment : Fragment() {
             UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON).sortedBy { it.frameNum }.toMutableList()
         listBestScore =
             UserAnswer.deserializeListOfInstances(userInfo.bestResultJSON).sortedBy { it.frameNum }.toMutableList()
-        binding.layoutTableResult.addView(fillAnswerTable())
+        //binding.layoutTableResult.addView(fillAnswerTable())
+
+
+        binding.switchRes.setOnClickListener {
+            showMode = if (showMode == LAST_RES_SHOW_MODE) {
+                binding.switchRes.text = resources.getString(R.string.view_last_result)
+                BEST_RES_SHOW_MODE
+            } else {
+                binding.switchRes.text = resources.getString(R.string.view_best_result)
+                LAST_RES_SHOW_MODE
+            }
+            initCurrentAnswer()
+          //  binding.layoutTableResult.addView(fillAnswerTable())
+
+        }
+        initCurrentAnswer()
+
+    }
+
+    private fun initCurrentAnswer() {
         currentAnswerInView = 1
+        scoreList = if (showMode == LAST_RES_SHOW_MODE) {
+            listLastScore
+        } else {
+            listBestScore
+        }
         viewModel.currentResultItemInView.value = scoreList[currentAnswerInView - 1]
-
+        binding.layoutTableResult.removeAllViews()
+        binding.layoutTableResult.addView(fillAnswerTable())
+        getChildFragmentManager().popBackStack()
         getChildFragmentManager().beginTransaction().replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit();
-
 
     }
 
@@ -126,11 +152,7 @@ class ResultQuizFragment : Fragment() {
     }
 
     private fun fillAnswerTable(): View {
-        scoreList = if (showMode == LAST_RES_SHOW_MODE) {
-            listLastScore
-        } else {
-            listBestScore
-        }
+
 
         val leftRowMargin = 0
         val topRowMargin = 0
