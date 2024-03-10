@@ -36,7 +36,7 @@ class ResultQuizFragment : Fragment() {
     private var listBestScore : MutableList<UserAnswer> = Collections.emptyList()
     private var showMode = LAST_RES_SHOW_MODE
 
-    private var scoreList = listLastScore.toList()
+    private var scoreList : MutableList<UserAnswer> = Collections.emptyList()
     private var currentAnswerInView = 1
 
 
@@ -58,8 +58,6 @@ class ResultQuizFragment : Fragment() {
             UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON).sortedBy { it.frameNum }.toMutableList()
         listBestScore =
             UserAnswer.deserializeListOfInstances(userInfo.bestResultJSON).sortedBy { it.frameNum }.toMutableList()
-        //binding.layoutTableResult.addView(fillAnswerTable())
-
 
         binding.switchRes.setOnClickListener {
             showMode = if (showMode == LAST_RES_SHOW_MODE) {
@@ -70,7 +68,6 @@ class ResultQuizFragment : Fragment() {
                 LAST_RES_SHOW_MODE
             }
             initCurrentAnswer()
-          //  binding.layoutTableResult.addView(fillAnswerTable())
 
         }
         initCurrentAnswer()

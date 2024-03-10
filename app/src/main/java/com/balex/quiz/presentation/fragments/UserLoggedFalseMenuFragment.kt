@@ -47,6 +47,11 @@ class UserLoggedFalseMenuFragment : Fragment() {
             login.setOnClickListener {
                 launchLoginFragment()
             }
+
+            testRules.setOnClickListener {
+                launchQuizRulesFragment()
+            }
+
             about.setOnClickListener{
                 launchAboutFragment()
             }
@@ -63,6 +68,10 @@ class UserLoggedFalseMenuFragment : Fragment() {
 
     private fun launchAboutFragment() {
         findNavController().navigate(R.id.action_userLoggedFalseMenu_to_aboutFragment)
+    }
+
+    private fun launchQuizRulesFragment() {
+        findNavController().navigate(R.id.action_userLoggedFalseMenu_to_gameRulesFragment)
     }
 
     override fun onDestroyView() {

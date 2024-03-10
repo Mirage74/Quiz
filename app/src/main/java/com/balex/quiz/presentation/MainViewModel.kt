@@ -46,7 +46,8 @@ class MainViewModel(application: Application) :
 
     fun initIsUserLoggedStatus() {
         val userName = App.loadUserNameFromPrefsCapitalized(getApplication()).trim()
-        if (userName != NOT_LOGGED_USER) {
+        if (userName != NOT_LOGGED_USER.lowercase()
+                .replaceFirstChar(Char::uppercase).trim()) {
             _isUserLogged.value?.let {
                 if (!it) {
                     getUserScoreFromBackend(userName)

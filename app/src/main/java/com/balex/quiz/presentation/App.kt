@@ -9,7 +9,7 @@ const val SHARED_PREFS_USERNAME = "shared_prefs_username"
 const val SHARED_PREFS_BEST_RES_POINTS = "shared_prefs_best_res_points"
 const val SHARED_PREFS_BEST_RES_CONTENT = "shared_prefs_best_res_content"
 const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
-const val NOT_LOGGED_USER = "notLoggedUser"
+const val NOT_LOGGED_USER = "Notloggeduser"
 
 class App : Application() {
 

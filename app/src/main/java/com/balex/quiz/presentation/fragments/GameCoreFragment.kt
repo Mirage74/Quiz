@@ -19,14 +19,16 @@ import com.balex.quiz.presentation.GameCoreViewModel
 class GameCoreFragment : Fragment() {
     private val TAG = "GameCoreFragment"
     private val args by navArgs<GameCoreFragmentArgs>()
-    private val gameViewModelFactory by lazy {
+//    private val gameViewModelFactory by lazy {
+//
+//        GameCoreModelFactory(requireActivity().application, args.levelEnum)
+//    }
+//
+//    private val gameViewModel by lazy {
+//        ViewModelProvider(requireActivity(), gameViewModelFactory)[GameCoreViewModel::class.java]
+//    }
 
-        GameCoreModelFactory(requireActivity().application, args.levelEnum)
-    }
-
-    private val gameViewModel by lazy {
-        ViewModelProvider(requireActivity(), gameViewModelFactory)[GameCoreViewModel::class.java]
-    }
+    private lateinit var gameViewModel: GameCoreViewModel
 
 
     private var _binding: CoreTestBinding? = null
@@ -39,6 +41,7 @@ class GameCoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = CoreTestBinding.inflate(inflater, container, false)
+        gameViewModel = ViewModelProvider(requireActivity(), GameCoreModelFactory(requireActivity().application, args.levelEnum))[GameCoreViewModel::class.java]
 
         return binding.root
     }

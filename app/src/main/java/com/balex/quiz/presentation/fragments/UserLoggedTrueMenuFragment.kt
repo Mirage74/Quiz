@@ -16,7 +16,6 @@ import com.balex.quiz.presentation.MainViewModelFactory
 class UserLoggedTrueMenuFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
-    private var userName = ""
     private var _binding: StatusUserLoggedTrueBinding? = null
     private val binding: StatusUserLoggedTrueBinding
         get() = _binding ?: throw RuntimeException("UserLoggedFalseMenu == null")
@@ -41,7 +40,7 @@ class UserLoggedTrueMenuFragment : Fragment() {
     }
 
     private fun initViewValues() {
-        userName = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
+        val userName = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
         with(binding) {
             username.text = userName
             startTest.isEnabled = false
@@ -67,6 +66,10 @@ class UserLoggedTrueMenuFragment : Fragment() {
                 launchAboutFragment()
             }
 
+            info.setOnClickListener{
+                launchInfoFragment()
+            }
+
             logout.setOnClickListener {
                 App.setUserNotLogged(requireActivity().application)
                 viewModel.setIsUserLogged(false)
@@ -82,6 +85,10 @@ class UserLoggedTrueMenuFragment : Fragment() {
 
     private fun launchUserLoggedFalseFragment() {
         findNavController().navigate(R.id.action_userLoggedTrueMenu_to_userLoggedFalseMenu)
+    }
+
+    private fun launchInfoFragment() {
+        findNavController().navigate(R.id.action_userLoggedTrueMenu_to_infoLoggedUserFragment)
     }
 
     private fun launchAboutFragment() {

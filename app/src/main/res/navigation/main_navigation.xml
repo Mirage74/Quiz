@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_userLoggedFalseMenu_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_userLoggedFalseMenu_to_gameRulesFragment"
+            app:destination="@id/gameRulesFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginUserFragment"
@@ -48,6 +51,9 @@
         <action
             android:id="@+id/action_userLoggedTrueMenu_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_userLoggedTrueMenu_to_infoLoggedUserFragment"
+            app:destination="@id/infoLoggedUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/chooseLevelFragment"
@@ -96,6 +102,23 @@
         android:name="com.balex.quiz.presentation.fragments.AboutFragment"
         android:label="AboutFragment"
         tools:layout="@layout/about"/>
+    <fragment
+        android:id="@+id/gameRulesFragment"
+        android:name="com.balex.quiz.presentation.fragments.GameRulesFragment"
+        android:label="GameRulesFragment"
+        tools:layout="@layout/game_rules"/>
+    <fragment
+        android:id="@+id/infoLoggedUserFragment"
+        android:name="com.balex.quiz.presentation.fragments.InfoLoggedUserFragment"
+        android:label="InfoLoggedUserFragment"
+        tools:layout="@layout/info">
+        <action
+            android:id="@+id/action_infoLoggedUserFragment_to_resultQuizFragment"
+            app:destination="@id/resultQuizFragment" />
+        <action
+            android:id="@+id/action_infoLoggedUserFragment_to_gameRulesFragment"
+            app:destination="@id/gameRulesFragment" />
+    </fragment>
 
 
 </navigation>

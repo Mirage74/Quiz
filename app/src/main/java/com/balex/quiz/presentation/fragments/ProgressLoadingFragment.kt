@@ -27,6 +27,8 @@ class ProgressLoadingFragment : Fragment() {
     }
 
 
+
+
     private var _binding: ProgressBarBinding? = null
     private val binding: ProgressBarBinding
         get() = _binding ?: throw RuntimeException("FragmentChooseLevelBinding == null")
