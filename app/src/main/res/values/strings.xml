@@ -49,8 +49,8 @@
     <string name="enter_capital_name">Enter capital name</string>
     <string name="choose_first_letter_or_enter_name">Choose first letter or enter name</string>
     <string name="enter_part_name">Enter part of the name</string>
-    <string name="by_country">By country</string>
-    <string name="by_capital">By capital</string>
+    <string name="by_country">by country</string>
+    <string name="by_capital">by capital</string>
     <string name="change_font_size">--- change font size ---</string>
     <string name="tvRulesTakePart">Test your knowledge of the capitals! The quiz contains a total of 193 UN (United Nation) member countries. You can see the whole list: Info/guide after Login.</string>
     <string name="rulesGroup">\u0020\u0020\u0020Countries are divided into 3 difficulty groups (according to the author\'s opinion): 1 (Easy), 2 (Medium), 3 (Hard).</string>
@@ -66,4 +66,7 @@
     <string name="good_luck">Good luck !</string>
     <string name="capital_s_info">capital\'s info</string>
     <string name="capitals_list">capitals_list</string>
+    <string name="sort_by">sort by</string>
+    <string name="filter_by_letter">letter</string>
+    <string name="filter_all">*</string>
 </resources>

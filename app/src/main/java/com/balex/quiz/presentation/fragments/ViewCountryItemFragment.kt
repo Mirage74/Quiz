@@ -30,11 +30,13 @@ class ViewCountryItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
-            tvCountryName.text = args.country.countryName
-            tvCapitalName.text = args.country.capitalName
+            var s = "Country name: ${args.country.countryName}"
+            tvCountryName.text = s
+            s = "Capital name: ${args.country.capitalName}"
+            tvCapitalName.text = s
             Glide.with(view)
                 .load("${ApiFactory.BASE_URL_STATIC_IMAGES}/${args.country.imageName}")
-                .into(imCapital)
+                .into(ivImageCapital)
         }
     }
 

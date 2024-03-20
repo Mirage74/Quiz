@@ -65,6 +65,9 @@ class InfoLoggedUserFragment : Fragment() {
 
     private fun setClickListeners() {
         with(binding) {
+            startTest.setOnClickListener {
+                launchChooseLevelFragment()
+            }
             btViewResult.setOnClickListener {
                 launchViewResultFragment()
             }
@@ -76,6 +79,10 @@ class InfoLoggedUserFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun launchChooseLevelFragment() {
+        findNavController().navigate(R.id.action_infoLoggedUserFragment_to_chooseLevelFragment)
     }
 
     private fun launchViewResultFragment() {

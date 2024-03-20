@@ -121,6 +121,9 @@
         <action
             android:id="@+id/action_infoLoggedUserFragment_to_recycledListCountriesFragment"
             app:destination="@id/recycledListCountriesFragment" />
+        <action
+            android:id="@+id/action_infoLoggedUserFragment_to_chooseLevelFragment"
+            app:destination="@id/chooseLevelFragment" />
     </fragment>
     <fragment
         android:id="@+id/recycledListCountriesFragment"

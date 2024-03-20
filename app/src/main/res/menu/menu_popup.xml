@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/letterA"
+        android:title="A" />
+    <item
+        android:id="@+id/letterB"
+        android:title="B" />
+    <item
+        android:id="@+id/letterC"
+        android:title="C" />
+    <item
+        android:id="@+id/letterD"
+        android:title="D" />
+    <item
+        android:id="@+id/letterE"
+        android:title="E" />
+    <item
+        android:id="@+id/letterF"
+        android:title="F" />
+    <item
+        android:id="@+id/letterG"
+        android:title="G" />
+    <item
+        android:id="@+id/letterH"
+        android:title="H" />
+    <item
+        android:id="@+id/letterI"
+        android:title="I" />
+    <item
+        android:id="@+id/letterJ"
+        android:title="J" />
+    <item
+        android:id="@+id/letterK"
+        android:title="K" />
+    <item
+        android:id="@+id/letterL"
+        android:title="L" />
+    <item
+        android:id="@+id/letterM"
+        android:title="M" />
+    <item
+        android:id="@+id/letterN"
+        android:title="N" />
+    <item
+        android:id="@+id/letterO"
+        android:title="O" />
+    <item
+        android:id="@+id/letterP"
+        android:title="P" />
+    <item
+        android:id="@+id/letterQ"
+        android:title="Q" />
+    <item
+        android:id="@+id/letterR"
+        android:title="R" />
+    <item
+        android:id="@+id/letterS"
+        android:title="S" />
+    <item
+        android:id="@+id/letterT"
+        android:title="T" />
+    <item
+        android:id="@+id/letterU"
+        android:title="U" />
+    <item
+        android:id="@+id/letterV"
+        android:title="V" />
+    <item
+        android:id="@+id/letterW"
+        android:title="W" />
+    <item
+        android:id="@+id/letterX"
+        android:title="X" />
+    <item
+        android:id="@+id/letterY"
+        android:title="Y" />
+    <item
+        android:id="@+id/letterZ"
+        android:title="Z" />
+
+</menu>
