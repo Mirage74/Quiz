@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.balex.quiz.R
 import com.balex.quiz.data.NUMBER_ANSWER_OPTIONS
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
@@ -17,7 +16,6 @@ import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.entity.UserAnswer
-import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.domain.usecases.GenerateQuestionUseCase
 import com.balex.quiz.domain.usecases.GetGameSettingsUseCase
 import com.bumptech.glide.Glide

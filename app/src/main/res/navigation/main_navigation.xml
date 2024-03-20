@@ -118,7 +118,13 @@
         <action
             android:id="@+id/action_infoLoggedUserFragment_to_gameRulesFragment"
             app:destination="@id/gameRulesFragment" />
+        <action
+            android:id="@+id/action_infoLoggedUserFragment_to_recycledListCountriesFragment"
+            app:destination="@id/recycledListCountriesFragment" />
     </fragment>
-
-
+    <fragment
+        android:id="@+id/recycledListCountriesFragment"
+        android:name="com.balex.quiz.presentation.fragments.RecycledListCountriesFragment"
+        android:label="RecycledListCountriesFragment"
+        tools:layout="@layout/recycled_list_countries"/>
 </navigation>
