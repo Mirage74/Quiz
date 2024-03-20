@@ -126,5 +126,18 @@
         android:id="@+id/recycledListCountriesFragment"
         android:name="com.balex.quiz.presentation.fragments.RecycledListCountriesFragment"
         android:label="RecycledListCountriesFragment"
-        tools:layout="@layout/recycled_list_countries"/>
+        tools:layout="@layout/recycled_list_countries">
+        <action
+            android:id="@+id/action_recycledListCountriesFragment_to_viewCountryItemFragment"
+            app:destination="@id/viewCountryItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewCountryItemFragment"
+        android:name="com.balex.quiz.presentation.fragments.ViewCountryItemFragment"
+        android:label="ViewCountryItemFragment"
+        tools:layout="@layout/country_item">
+        <argument
+            android:name="country"
+            app:argType="com.balex.quiz.domain.entity.Country" />
+    </fragment>
 </navigation>

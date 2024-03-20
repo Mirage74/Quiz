@@ -8,6 +8,8 @@ import com.balex.quiz.domain.entity.Country
 
 class CountriesAdapter: ListAdapter<Country, CountryViewHolder>(CountryDiffCallback()) {
 
+    var onCountryItemClickListener: ((Country) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.country_item, parent, false)
         return CountryViewHolder(view)
@@ -15,6 +17,9 @@ class CountriesAdapter: ListAdapter<Country, CountryViewHolder>(CountryDiffCallb
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val country: Country = getItem(position)
+        holder.view.setOnClickListener {
+            onCountryItemClickListener?.invoke(country)
+        }
         holder.bind(country)
     }
 }

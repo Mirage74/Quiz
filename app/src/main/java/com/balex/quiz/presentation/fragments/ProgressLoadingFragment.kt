@@ -16,7 +16,7 @@ import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 
 class ProgressLoadingFragment : Fragment() {
-    private val args by navArgs<GameCoreFragmentArgs>()
+    private val args by navArgs<ProgressLoadingFragmentArgs>()
     private val gameViewModelFactory by lazy {
 
         GameCoreModelFactory(requireActivity().application, args.levelEnum)
@@ -25,9 +25,6 @@ class ProgressLoadingFragment : Fragment() {
     private val gameViewModel by lazy {
         ViewModelProvider(requireActivity(), gameViewModelFactory)[GameCoreViewModel::class.java]
     }
-
-
-
 
     private var _binding: ProgressBarBinding? = null
     private val binding: ProgressBarBinding
