@@ -44,11 +44,19 @@ class InfoLoggedUserFragment : Fragment() {
 
     private fun observeViewModel() {
         if (viewModel.isListCountriesFromBackendLoaded.value == false) {
-
-            binding.btGuide.isEnabled = false
+            with(binding) {
+                startTest.isEnabled = false
+                btViewResult.isEnabled = false
+                btGuide.isEnabled = false
+            }
             viewModel.isListCountriesFromBackendLoaded.observe(viewLifecycleOwner) {
                 if (it) {
-                    binding.btGuide.isEnabled = true
+                    with(binding) {
+                        startTest.isEnabled = true
+                        btViewResult.isEnabled = true
+                        binding.btGuide.isEnabled = true
+                    }
+
                 }
             }
         }

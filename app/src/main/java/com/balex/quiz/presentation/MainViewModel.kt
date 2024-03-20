@@ -17,6 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
+const val SORT_MODE_BY_COUNTRY = 0
+const val SORT_MODE_BY_CAPITAL = 1
+const val SYMBOL_NOT_APPLY_FILTER = '*'
+
 class MainViewModel(application: Application) :
     AndroidViewModel(application) {
     val TAG = "MainViewModel"
@@ -44,10 +48,44 @@ class MainViewModel(application: Application) :
         }
 
 
+    fun getCountriesListSortedAndFiltered(
+        sortMode: Int,
+        letter: Char
+    ): List<Country> {
+        val newList = if (letter == SYMBOL_NOT_APPLY_FILTER) {
+            if (sortMode == SORT_MODE_BY_COUNTRY) {
+                countriesFullList.stream()
+                    .sorted { o1, o2 -> o1.countryName.compareTo(o2.countryName) }.collect(
+                        Collectors.toList()
+                    )
+            } else {
+                countriesFullList.stream()
+                    .sorted { o1, o2 -> o1.capitalName.compareTo(o2.capitalName) }.collect(
+                        Collectors.toList()
+                    )
+            }
+        } else {
+            if (sortMode == SORT_MODE_BY_COUNTRY) {
+                countriesFullList.filter { it.countryName.first() == letter }.stream()
+                    .sorted { o1, o2 -> o1.countryName.compareTo(o2.countryName) }.collect(
+                        Collectors.toList()
+                    )
+            } else {
+                countriesFullList.filter { it.capitalName.first() == letter }.stream()
+                    .sorted { o1, o2 -> o1.capitalName.compareTo(o2.capitalName) }.collect(
+                        Collectors.toList()
+                    )
+            }
+        }
+        return newList
+    }
+
+
     fun initIsUserLoggedStatus() {
         val userName = App.loadUserNameFromPrefsCapitalized(getApplication()).trim()
         if (userName != NOT_LOGGED_USER.lowercase()
-                .replaceFirstChar(Char::uppercase).trim()) {
+                .replaceFirstChar(Char::uppercase).trim()
+        ) {
             _isUserLogged.value?.let {
                 if (!it) {
                     getUserScoreFromBackend(userName)

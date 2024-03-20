@@ -1,6 +1,7 @@
 package com.balex.quiz.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,12 @@ import com.balex.quiz.R
 import com.balex.quiz.databinding.RecycledListCountriesBinding
 import com.balex.quiz.presentation.CountriesAdapter
 import com.balex.quiz.presentation.MainViewModel
+import com.balex.quiz.presentation.SORT_MODE_BY_CAPITAL
+import com.balex.quiz.presentation.SORT_MODE_BY_COUNTRY
+import com.balex.quiz.presentation.SYMBOL_NOT_APPLY_FILTER
 
 class RecycledListCountriesFragment : Fragment() {
+    val TAG = "RecycledListCountriesFragment"
     private var _binding: RecycledListCountriesBinding? = null
     private val binding: RecycledListCountriesBinding
         get() = _binding ?: throw RuntimeException("RecycledListCountriesFragment == null")
@@ -37,11 +42,27 @@ class RecycledListCountriesFragment : Fragment() {
         val popupMenu = PopupMenu(requireActivity(), binding.btFilter)
         popupMenu.menuInflater.inflate(R.menu.menu_popup, popupMenu.menu)
         popupMenuSetListener(popupMenu)
-        countriesListAdapter.submitList(viewModel.countriesFullList)
-        binding.btFilter.setOnClickListener{
+        countriesListAdapter.submitList(
+            viewModel.getCountriesListSortedAndFiltered(
+                SORT_MODE_BY_COUNTRY, SYMBOL_NOT_APPLY_FILTER
+            )
+        )
+        setRadioListener()
+        binding.btFilter.setOnClickListener {
             popupMenu.show()
         }
+        binding.radioGroupSort.setOnCheckedChangeListener { _, checkedId ->
+            //Log.d(TAG, "checkedId: ${checkedId == R.id.rbSortByCountry}")
+            if (checkedId == R.id.rbSortByCountry) {
 
+            } else {
+                if (checkedId == R.id.rbSortByCapital) {
+
+                }
+            }
+
+
+        }
     }
 
 
@@ -67,6 +88,30 @@ class RecycledListCountriesFragment : Fragment() {
             )
         }
 
+    }
+
+    private fun setRadioListener() {
+        binding.radioGroupSort.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.rbSortByCountry) {
+                countriesListAdapter.submitList(
+                    viewModel.getCountriesListSortedAndFiltered(
+                        SORT_MODE_BY_COUNTRY, binding.tvSelectedLetter.text.first()
+                    )
+                ) {
+                    binding.rvCountriesList.scrollToPosition(0)
+                }
+            } else if (checkedId == R.id.rbSortByCapital) {
+                countriesListAdapter.submitList(
+                    viewModel.getCountriesListSortedAndFiltered(
+                        SORT_MODE_BY_CAPITAL, binding.tvSelectedLetter.text.first()
+                    )
+                ) {
+                    binding.rvCountriesList.scrollToPosition(0)
+                }
+
+            }
+
+        }
     }
 
     private fun popupMenuSetListener(popupMenu: PopupMenu) {
@@ -101,11 +146,32 @@ class RecycledListCountriesFragment : Fragment() {
                 R.id.letterZ -> "Z"
                 else -> "*"
             }
+
             binding.tvSelectedLetter.text = s
+            filterListByLetter(s)
             false
         }
     }
 
+    private fun filterListByLetter(s: String) {
+        if (binding.radioGroupSort.checkedRadioButtonId == R.id.rbSortByCountry) {
+            countriesListAdapter.submitList(
+                viewModel.getCountriesListSortedAndFiltered(
+                    SORT_MODE_BY_COUNTRY, s.first()
+                )
+            ) {
+                binding.rvCountriesList.scrollToPosition(0)
+            }
+        } else if (binding.radioGroupSort.checkedRadioButtonId == R.id.rbSortByCapital) {
+            countriesListAdapter.submitList(
+                viewModel.getCountriesListSortedAndFiltered(
+                    SORT_MODE_BY_CAPITAL, s.first()
+                )
+            ) {
+                binding.rvCountriesList.scrollToPosition(0)
+            }
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
