@@ -11,11 +11,10 @@
         <TextView
             android:id="@+id/tvUsername"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="50dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:text="@string/username"
             android:textColor="#FFFFFF"
+            android:paddingVertical="30dp"
             android:textSize="35sp" />
 
         <Button
@@ -25,7 +24,7 @@
             android:layout_gravity="center"
             android:layout_weight="2"
             android:text="@string/start"
-            android:textSize="25sp" />
+            android:textSize="35sp" />
 
         <Button
             android:id="@+id/btTestRules"
@@ -33,7 +32,7 @@
             android:layout_height="0dp"
             android:layout_weight="2"
             android:text="@string/test_rules"
-            android:textSize="25sp" />
+            android:textSize="30sp" />
 
         <Button
             android:id="@+id/btViewResult"
@@ -41,16 +40,15 @@
             android:layout_height="0dp"
             android:layout_weight="2"
             android:text="@string/view_score"
-            android:textSize="25sp" />
+            android:textSize="30sp" />
 
         <Button
             android:id="@+id/btGuide"
             android:layout_width="200dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="50dp"
             android:layout_weight="2"
             android:text="@string/guide"
-            android:textSize="25sp" />
+            android:textSize="30sp" />
 
 
     </LinearLayout>

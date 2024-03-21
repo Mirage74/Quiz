@@ -1,7 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,7 @@ import com.balex.quiz.presentation.SORT_MODE_BY_COUNTRY
 import com.balex.quiz.presentation.SYMBOL_NOT_APPLY_FILTER
 
 class RecycledListCountriesFragment : Fragment() {
-    val TAG = "RecycledListCountriesFragment"
+    //val TAG = "RecycledListCountriesFragment"
     private var _binding: RecycledListCountriesBinding? = null
     private val binding: RecycledListCountriesBinding
         get() = _binding ?: throw RuntimeException("RecycledListCountriesFragment == null")
@@ -51,18 +50,18 @@ class RecycledListCountriesFragment : Fragment() {
         binding.btFilter.setOnClickListener {
             popupMenu.show()
         }
-        binding.radioGroupSort.setOnCheckedChangeListener { _, checkedId ->
-            //Log.d(TAG, "checkedId: ${checkedId == R.id.rbSortByCountry}")
-            if (checkedId == R.id.rbSortByCountry) {
-
-            } else {
-                if (checkedId == R.id.rbSortByCapital) {
-
-                }
-            }
-
-
-        }
+//        binding.radioGroupSort.setOnCheckedChangeListener { _, checkedId ->
+//            //Log.d(TAG, "checkedId: ${checkedId == R.id.rbSortByCountry}")
+//            if (checkedId == R.id.rbSortByCountry) {
+//
+//            } else {
+//                if (checkedId == R.id.rbSortByCapital) {
+//
+//                }
+//            }
+//
+//
+//        }
     }
 
 
@@ -81,6 +80,7 @@ class RecycledListCountriesFragment : Fragment() {
 
         }
         countriesListAdapter.onCountryItemClickListener = {
+            binding.rbSortByCountry.isChecked = true
             findNavController().navigate(
                 RecycledListCountriesFragmentDirections.actionRecycledListCountriesFragmentToViewCountryItemFragment(
                     it
