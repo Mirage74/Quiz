@@ -200,6 +200,7 @@ class GameCoreViewModel(
         val success_update = Toast.makeText(application, UPDATE_USER_SUCCESS, Toast.LENGTH_SHORT)
         val userName = App.loadUserNameFromPrefsCapitalized(application).trim()
         CoroutineScope(Dispatchers.IO).launch {
+            Log.d(TAG, "UserAnswer.serializeListOfInstances(userAnswers): ${UserAnswer.serializeListOfInstances(userAnswers)}")
             compositeDisposable.add(
 
                 ApiFactory.apiService.updateUser(

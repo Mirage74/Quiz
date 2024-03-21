@@ -14,6 +14,7 @@ import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
+import java.util.Collections
 
 class ProgressLoadingFragment : Fragment() {
     private val args by navArgs<ProgressLoadingFragmentArgs>()
@@ -74,6 +75,7 @@ class ProgressLoadingFragment : Fragment() {
     }
 
     private fun launchGameFragment(level: Level) {
+        gameViewModel.userAnswers.clear()
         findNavController().navigate(
             ProgressLoadingFragmentDirections.actionProgressLoadingFragmentToGameCoreFragment(level)
         )
