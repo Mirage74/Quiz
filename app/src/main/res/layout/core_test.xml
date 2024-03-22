@@ -56,7 +56,7 @@
                 android:adjustViewBounds="true"
                 android:alpha="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/unsplash"
+                app:srcBitmap="@{viewModel.bitmapImagesList[viewModel.currentQuestionNumber - 1]}"
                 app:layout_constraintBottom_toTopOf="@+id/country_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -158,7 +158,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/capital3"
-                tools:text="@string/capital"/>/>
+                tools:text="@string/capital"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

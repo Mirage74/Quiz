@@ -64,6 +64,7 @@ class GameCoreFragment : Fragment() {
             }
             initViewValues()
             observeViewModel()
+            binding.ivImageCapital.setImageBitmap(gameViewModel.bitmapImagesList[currQuestionNotNull - 1])
             if (!gameViewModel.isRoundInProgress) {
                 gameViewModel.startTimer()
                 gameViewModel.isRoundInProgress = true

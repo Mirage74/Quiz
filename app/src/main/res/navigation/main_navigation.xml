@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_userLoggedFalseMenu_to_gameRulesFragment"
             app:destination="@id/gameRulesFragment" />
+        <action
+            android:id="@+id/action_userLoggedFalseMenu_to_registerUserFragment"
+            app:destination="@id/registerUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginUserFragment"
@@ -142,5 +145,14 @@
         <argument
             android:name="country"
             app:argType="com.balex.quiz.domain.entity.Country" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerUserFragment"
+        android:name="com.balex.quiz.presentation.fragments.RegisterUserFragment"
+        android:label="RegisterUserFragment"
+        tools:layout="@layout/register">
+        <action
+            android:id="@+id/action_registerUserFragment_to_userLoggedTrueMenu"
+            app:destination="@id/userLoggedTrueMenu" />
     </fragment>
 </navigation>

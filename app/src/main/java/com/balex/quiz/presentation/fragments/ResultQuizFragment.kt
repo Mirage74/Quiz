@@ -32,11 +32,11 @@ class ResultQuizFragment : Fragment() {
         get() = _binding ?: throw RuntimeException("ResultQuizFragment == null")
 
     private var userInfo = UserScore.getEmptyInstance()
-    private var listLastScore : MutableList<UserAnswer> = Collections.emptyList()
-    private var listBestScore : MutableList<UserAnswer> = Collections.emptyList()
+    private var listLastScore: MutableList<UserAnswer> = Collections.emptyList()
+    private var listBestScore: MutableList<UserAnswer> = Collections.emptyList()
     private var showMode = LAST_RES_SHOW_MODE
 
-    private var scoreList : MutableList<UserAnswer> = Collections.emptyList()
+    private var scoreList: MutableList<UserAnswer> = Collections.emptyList()
     private var currentAnswerInView = 1
 
 
@@ -45,7 +45,10 @@ class ResultQuizFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = QuizResultBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            MainViewModelFactory(requireActivity().application)
+        )[MainViewModel::class.java]
 
         return binding.root
     }
@@ -54,10 +57,17 @@ class ResultQuizFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViewValues()
         userInfo = App.loadUserScore(requireActivity())
-        listLastScore =
-            UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON).sortedBy { it.frameNum }.toMutableList()
-        listBestScore =
-            UserAnswer.deserializeListOfInstances(userInfo.bestResultJSON).sortedBy { it.frameNum }.toMutableList()
+        if (userInfo.lastResultJSON.length > 0) {
+            listLastScore =
+                UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON)
+                    .sortedBy { it.frameNum }.toMutableList()
+        }
+
+        if (userInfo.bestResultJSON.length > 0) {
+            listBestScore =
+                UserAnswer.deserializeListOfInstances(userInfo.bestResultJSON)
+                    .sortedBy { it.frameNum }.toMutableList()
+        }
 
         binding.switchRes.setOnClickListener {
             showMode = if (showMode == LAST_RES_SHOW_MODE) {
@@ -81,14 +91,16 @@ class ResultQuizFragment : Fragment() {
         } else {
             listBestScore
         }
-        val s = "points: ${UserAnswer.getQuizScore(scoreList).toString()}"
-        binding.tvScoreSum.text = s
-        viewModel.currentResultItemInView.value = scoreList[currentAnswerInView - 1]
-        binding.layoutTableResult.removeAllViews()
-        binding.layoutTableResult.addView(fillAnswerTable())
-        getChildFragmentManager().popBackStack()
-        getChildFragmentManager().beginTransaction().replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit()
-
+        if (scoreList.size > 0) {
+            val s = "points: ${UserAnswer.getQuizScore(scoreList)}"
+            binding.tvScoreSum.text = s
+            viewModel.currentResultItemInView.value = scoreList[currentAnswerInView - 1]
+            binding.layoutTableResult.removeAllViews()
+            binding.layoutTableResult.addView(fillAnswerTable())
+            getChildFragmentManager().popBackStack()
+            getChildFragmentManager().beginTransaction()
+                .replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit()
+        }
     }
 
     private fun createOneRaw(userAnswer: UserAnswer, trParams: TableLayout.LayoutParams): TableRow {
@@ -132,9 +144,14 @@ class ResultQuizFragment : Fragment() {
         if (userAnswer.score > 0) {
             tvScorePoints.setTextColor(Color.GREEN)
         } else {
-            tvScorePoints.setTextColor(ContextCompat.getColor(requireActivity(), R.color.wrongAnswer))
+            tvScorePoints.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.wrongAnswer
+                )
+            )
         }
-        tvScorePoints.setTextSize(TypedValue.COMPLEX_UNIT_SP,  SMALL_TEXT_SIZE.toFloat())
+        tvScorePoints.setTextSize(TypedValue.COMPLEX_UNIT_SP, SMALL_TEXT_SIZE.toFloat())
 
         val tableRaw = TableRow(requireActivity())
         tableRaw.setId(userAnswer.answerId)
@@ -173,11 +190,12 @@ class ResultQuizFragment : Fragment() {
             tRaw.setOnClickListener {
                 currentAnswerInView = tRaw.id
                 viewModel.currentResultItemInView.value = scoreList[currentAnswerInView - 1]
-                getChildFragmentManager().beginTransaction().replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit()
+                getChildFragmentManager().beginTransaction()
+                    .replace(R.id.showUserAnswerContainer, ViewAnswerFragment()).commit()
             }
             tableLayout.addView(tRaw)
         }
-    return tableLayout
+        return tableLayout
     }
 
     private fun initViewValues() {

@@ -45,7 +45,7 @@
             android:adjustViewBounds="true"
             android:alpha="1"
             android:scaleType="centerCrop"
-            android:src="@drawable/unsplash"
+            app:srcBitmap="@{viewModel.bitmapImagesList[viewModel.currentQuestionNumber - 1]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/lineSectionEnd1"
             app:layout_constraintHorizontal_bias="0.5"

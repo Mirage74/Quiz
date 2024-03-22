@@ -61,7 +61,7 @@
     <string name="points_hard">points, \'Hard\' :</string>
     <string name="hello_user">Hello, user !</string>
     <string name="score">score</string>
-    <string name="points_50">points: 50</string>
+    <string name="points_0">points: 0</string>
     <string name="backend">Backend :</string>
     <string name="good_luck">Good luck !</string>
     <string name="capital_s_info">capital\'s info</string>

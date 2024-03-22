@@ -1,6 +1,8 @@
 package com.balex.quiz.presentation
 
+import android.graphics.Bitmap
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.balex.quiz.R
@@ -32,5 +34,10 @@ fun bindOnOptionClickListener(button: Button, clickListener: OnOptionClickListen
     button.setOnClickListener {
         clickListener.onOptionClick(getNumUserAnswerFromString(button.id))
     }
+}
+
+@BindingAdapter("srcBitmap")
+fun setBitmapToImageView(imageView: ImageView, bitmap: Bitmap) {
+    imageView.setImageBitmap(bitmap)
 }
 

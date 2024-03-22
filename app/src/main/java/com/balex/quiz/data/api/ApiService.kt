@@ -13,6 +13,13 @@ interface ApiService {
     @GET("get")
     fun loadCountries(): Single<CountriesResponse>
 
+    @FormUrlEncoded
+    @POST("createUser")
+    fun registerUser(
+        @Field("login") login: String,
+        @Field("password") password: String
+    ): Single<String>
+
 
     @FormUrlEncoded
     @POST("login")

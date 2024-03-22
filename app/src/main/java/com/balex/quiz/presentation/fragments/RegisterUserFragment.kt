@@ -10,7 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.data.api.ApiFactory
-import com.balex.quiz.databinding.LoginBinding
+import com.balex.quiz.databinding.RegisterBinding
+import com.balex.quiz.domain.entity.UserScore
 import com.balex.quiz.presentation.App
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
@@ -21,20 +22,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
-class LoginUserFragment : Fragment() {
+class RegisterUserFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
 
     private val ERROR_ENTERED_USERNAME_MESSAGE =
         "Name length must contain 3-20 char and begin from letter; pass must be not empty"
-    private val LOGIN_FAILED = "Login failed"
-    private val LOGIN_SUCCESS = "Login success"
+    private val REGISTER_FAILED = "Register failed"
+    private val REGISTER_SUCCESS = "Register success"
 
-    private var _binding: LoginBinding? = null
-    private val binding: LoginBinding
+    private var _binding: RegisterBinding? = null
+    private val binding: RegisterBinding
         get() = _binding ?: throw RuntimeException("LoginUserFragment == null")
-    //val TAG = "LoginUserFragment"
+    //val TAG = "RegisterUserFragment"
 
     private val compositeDisposable = CompositeDisposable()
     private var nameText = ""
@@ -48,7 +48,7 @@ class LoginUserFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = LoginBinding.inflate(inflater, container, false)
+        _binding = RegisterBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
 
         minUserNameLen = resources.getInteger(R.integer.minUsernameLength)
@@ -56,16 +56,16 @@ class LoginUserFragment : Fragment() {
 
         val onClickListener =
             View.OnClickListener { v: View ->
-                if (v.id == R.id.login) {
-                    login()
-                } else if (v.id == R.id.toggle_view1) {
+                if (v.id == R.id.register) {
+                    register()
+                } else if (v.id == R.id.toggle_view2) {
                     toggle()
                 }
             }
 
         with(binding) {
-            login.setOnClickListener(onClickListener)
-            toggleView1.setOnClickListener(onClickListener)
+            register.setOnClickListener(onClickListener)
+            toggleView2.setOnClickListener(onClickListener)
         }
 
         return binding.root
@@ -73,9 +73,9 @@ class LoginUserFragment : Fragment() {
 
 
 
-    fun login() {
-        nameText = binding.user1.text.toString()
-        passText = binding.pass1.text.toString()
+    fun register() {
+        nameText = binding.user2.text.toString()
+        passText = binding.pass2.text.toString()
         val checkUsername =
             nameText.matches("[A-Za-z]\\w+".toRegex()) && nameText.length >= minUserNameLen && nameText.length <= maxUserNameLen
         if (nameText.isEmpty() || passText.isEmpty() || !checkUsername) {
@@ -86,7 +86,7 @@ class LoginUserFragment : Fragment() {
             ).show()
         } else {
 
-            userLoginToBackend(nameText, passText)
+            userRegisterToBackend(nameText, passText)
 
 
         }
@@ -95,56 +95,50 @@ class LoginUserFragment : Fragment() {
     private fun toggle() {
         if (!state) {
             with(binding) {
-                pass1.transformationMethod =
+                pass2.transformationMethod =
                     android.text.method.HideReturnsTransformationMethod.getInstance()
-                pass1.setSelection(pass1.text.length)
-                toggleView1.setImageResource(R.drawable.eye)
+                pass2.setSelection(pass2.text.length)
+                toggleView2.setImageResource(R.drawable.eye)
             }
         } else {
             with(binding) {
-                pass1.transformationMethod =
+                pass2.transformationMethod =
                     android.text.method.PasswordTransformationMethod.getInstance()
-                pass1.setSelection(pass1.text.length)
-                toggleView1.setImageResource(R.drawable.eye_off)
+                pass2.setSelection(pass2.text.length)
+                toggleView2.setImageResource(R.drawable.eye_off)
             }
         }
         state = !state
     }
 
-    private fun userLoginToBackend(login: String, password: String) {
+    private fun userRegisterToBackend(login: String, password: String) {
 
-        val failed_login = Toast.makeText(requireActivity(), LOGIN_FAILED, Toast.LENGTH_SHORT)
-        val success_login = Toast.makeText(requireActivity(), LOGIN_SUCCESS, Toast.LENGTH_SHORT)
+        val failed_register = Toast.makeText(requireActivity(), REGISTER_FAILED, Toast.LENGTH_SHORT)
+        val success_register = Toast.makeText(requireActivity(), REGISTER_SUCCESS, Toast.LENGTH_SHORT)
         CoroutineScope(Dispatchers.IO).launch {
             compositeDisposable.add(
-                //ApiFactory.apiService.login(authRequest)
-                ApiFactory.apiService.login(login, password)
+                ApiFactory.apiService.registerUser(login.trim(), password)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-
-//                        Log.d(TAG, "it: $it")
-//                        Log.d(TAG, "it: ${it.toString()}")
-//                        Log.d(TAG, "it.userScore: ${it.userScore}")
-//                        Log.d(TAG, "it.userScore: ${it.userScore.toString()}")
-                        if (it.toString().indexOf("CODE LOGIN_USER_02") == 0) {
-                            failed_login.show()
-                        } else {
-                            success_login.show()
-                            App.saveDataUser(it.userScore,requireActivity().application)
+                        if (it.indexOf("CODE REG_USER_01") == 0) {
+                            success_register.show()
+                            App.saveDataUser(UserScore.getEmptyInstanceWithUserName(login.trim()), requireActivity())
                             viewModel.setIsUserLogged(true)
                             launchUserLoggedTrueFragment()
+                        } else {
+                            failed_register.show()
                         }
                     }) {
-                        //Log.d(TAG, "Error login: + $it")
-                        failed_login.show()
+                        //Log.d(TAG, "Error register user: + $it")
+                        failed_register.show()
                     })
         }
 
     }
 
     private fun launchUserLoggedTrueFragment() {
-        findNavController().navigate(R.id.action_loginUserFragment_to_userLoggedTrueMenu)
+        findNavController().navigate(R.id.action_registerUserFragment_to_userLoggedTrueMenu)
     }
 
 
@@ -154,5 +148,4 @@ class LoginUserFragment : Fragment() {
         _binding = null
         compositeDisposable.dispose()
     }
-
 }

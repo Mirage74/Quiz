@@ -41,11 +41,13 @@ class UserLoggedFalseMenuFragment : Fragment() {
                 launchUserLoggedTrueFragment()
             }
         }
-
-
         with(binding) {
             login.setOnClickListener {
                 launchLoginFragment()
+            }
+
+            register.setOnClickListener {
+                launchRegisterFragment()
             }
 
             testRules.setOnClickListener {
@@ -60,6 +62,10 @@ class UserLoggedFalseMenuFragment : Fragment() {
 
     private fun launchLoginFragment() {
         findNavController().navigate(R.id.action_userLoggedFalseMenu_to_loginUserFragment)
+    }
+
+    private fun launchRegisterFragment() {
+        findNavController().navigate(R.id.action_userLoggedFalseMenu_to_registerUserFragment)
     }
 
     private fun launchUserLoggedTrueFragment() {
