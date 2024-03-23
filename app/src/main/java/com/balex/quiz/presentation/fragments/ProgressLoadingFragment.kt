@@ -51,6 +51,8 @@ class ProgressLoadingFragment : Fragment() {
             viewModel = gameViewModel
             lifecycleOwner = viewLifecycleOwner
         }
+        //gameViewModel.setIsImagesDownloaded(false)
+        gameViewModel.resetNewTestData()
         observeViewModel()
 
         with (gameViewModel){

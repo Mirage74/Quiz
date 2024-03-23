@@ -65,8 +65,7 @@
         tools:layout="@layout/choose_level">
         <action
             android:id="@+id/action_chooseLevelFragment_to_progressLoadingFragment"
-            app:destination="@id/progressLoadingFragment"
-            app:popUpTo="@id/userLoggedTrueMenu" />
+            app:destination="@id/progressLoadingFragment" />
     </fragment>
 
     <fragment

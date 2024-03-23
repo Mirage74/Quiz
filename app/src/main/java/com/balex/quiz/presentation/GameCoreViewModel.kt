@@ -56,6 +56,11 @@ class GameCoreViewModel(
 
     var lockButtons = false
 
+    fun setIsImagesDownloaded(newValue: Boolean) {
+        _isImagesDownloaded.value = newValue
+    }
+
+
     private var timer: CountDownTimer? = null
 
     private val _formattedTime = MutableLiveData<String>()
