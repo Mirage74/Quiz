@@ -7,20 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.balex.quiz.databinding.ProgressBarBinding
-import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
-import java.util.Collections
 
 class ProgressLoadingFragment : Fragment() {
-    private val args by navArgs<ProgressLoadingFragmentArgs>()
     private val gameViewModelFactory by lazy {
 
-        GameCoreModelFactory(requireActivity().application, args.levelEnum)
+        GameCoreModelFactory(requireActivity().application)
     }
 
     private val gameViewModel by lazy {
@@ -51,7 +47,6 @@ class ProgressLoadingFragment : Fragment() {
             viewModel = gameViewModel
             lifecycleOwner = viewLifecycleOwner
         }
-        //gameViewModel.setIsImagesDownloaded(false)
         gameViewModel.resetNewTestData()
         observeViewModel()
 
@@ -69,17 +64,17 @@ class ProgressLoadingFragment : Fragment() {
     private fun observeViewModel() {
         gameViewModel.isImagesDownloaded.observe(viewLifecycleOwner) {
             if (it) {
-                gameViewModel.resetNewTestData()
-                launchGameFragment(args.levelEnum)
+                //gameViewModel.resetNewTestData()
+                launchGameFragment()
             }
 
         }
     }
 
-    private fun launchGameFragment(level: Level) {
+    private fun launchGameFragment() {
         gameViewModel.userAnswers.clear()
         findNavController().navigate(
-            ProgressLoadingFragmentDirections.actionProgressLoadingFragmentToGameCoreFragment(level)
+            ProgressLoadingFragmentDirections.actionProgressLoadingFragmentToGameCoreFragment()
         )
     }
 

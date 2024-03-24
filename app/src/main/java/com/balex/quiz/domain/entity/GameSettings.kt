@@ -13,4 +13,10 @@ data class GameSettings(
     val pointsMax: Int,
     val pointsMedium: Int,
     val pointsMin: Int
-) : Parcelable
+) : Parcelable {
+    companion object {
+        fun getEmptyInstance(): GameSettings {
+            return GameSettings(0, 0, 0, 0, 0, 0, 0)
+        }
+    }
+}

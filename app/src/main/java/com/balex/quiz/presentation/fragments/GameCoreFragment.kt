@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.balex.quiz.R
 import com.balex.quiz.databinding.CoreTestBinding
 import com.balex.quiz.presentation.App
@@ -18,15 +17,6 @@ import com.balex.quiz.presentation.GameCoreViewModel
 
 class GameCoreFragment : Fragment() {
     private val TAG = "GameCoreFragment"
-    private val args by navArgs<GameCoreFragmentArgs>()
-//    private val gameViewModelFactory by lazy {
-//
-//        GameCoreModelFactory(requireActivity().application, args.levelEnum)
-//    }
-//
-//    private val gameViewModel by lazy {
-//        ViewModelProvider(requireActivity(), gameViewModelFactory)[GameCoreViewModel::class.java]
-//    }
 
     private lateinit var gameViewModel: GameCoreViewModel
 
@@ -41,7 +31,7 @@ class GameCoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = CoreTestBinding.inflate(inflater, container, false)
-        gameViewModel = ViewModelProvider(requireActivity(), GameCoreModelFactory(requireActivity().application, args.levelEnum))[GameCoreViewModel::class.java]
+        gameViewModel = ViewModelProvider(requireActivity(), GameCoreModelFactory(requireActivity().application))[GameCoreViewModel::class.java]
 
         return binding.root
     }

@@ -13,6 +13,7 @@ import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.BitmapWithIndex
 import com.balex.quiz.domain.entity.Country
+import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.entity.UserAnswer
@@ -31,8 +32,7 @@ import java.util.stream.Collectors
 import kotlin.concurrent.Volatile
 
 class GameCoreViewModel(
-    private val application: Application,
-    private val level: Level
+    private val application: Application
 ) : ViewModel() {
 
     val TAG = "GameCoreViewModel"
@@ -44,6 +44,7 @@ class GameCoreViewModel(
 
     var currentQuestionNumber = MutableLiveData<Int>()
 
+    var level = Level.EASY
 
     var currentScore = 0
     var isRoundInProgress = false
@@ -55,10 +56,6 @@ class GameCoreViewModel(
     val isQuizFinished = MutableLiveData(false)
 
     var lockButtons = false
-
-    fun setIsImagesDownloaded(newValue: Boolean) {
-        _isImagesDownloaded.value = newValue
-    }
 
 
     private var timer: CountDownTimer? = null
@@ -91,8 +88,7 @@ class GameCoreViewModel(
     val generateQuestionUseCase = GenerateQuestionUseCase(repository)
     val getGameSettingsUseCase = GetGameSettingsUseCase(repository)
 
-    var gameSettings = getGameSettingsUseCase(level)
-
+    var gameSettings = GameSettings.getEmptyInstance()
 
     var countriesFullList = mutableListOf<Country>()
 
@@ -104,6 +100,10 @@ class GameCoreViewModel(
     private var bitmapImagesListIndex = mutableListOf<Int>()
 
     private val compositeDisposable = CompositeDisposable()
+
+    fun setGameSettings(level: Level) {
+        gameSettings = getGameSettingsUseCase(level)
+    }
 
     fun resetNewTestData() {
         _countOfBitmapLoaded.value = 0
@@ -205,7 +205,7 @@ class GameCoreViewModel(
         val success_update = Toast.makeText(application, UPDATE_USER_SUCCESS, Toast.LENGTH_SHORT)
         val userName = App.loadUserNameFromPrefsCapitalized(application).trim()
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d(TAG, "UserAnswer.serializeListOfInstances(userAnswers): ${UserAnswer.serializeListOfInstances(userAnswers)}")
+            //Log.d(TAG, "UserAnswer.serializeListOfInstances(userAnswers): ${UserAnswer.serializeListOfInstances(userAnswers)}")
             compositeDisposable.add(
 
                 ApiFactory.apiService.updateUser(
@@ -329,7 +329,7 @@ class GameCoreViewModel(
     }
 
 
-    private fun setIsImagesLoaded(newValue: Boolean) {
+    fun setIsImagesLoaded(newValue: Boolean) {
         _isImagesDownloaded.value = newValue
 
     }

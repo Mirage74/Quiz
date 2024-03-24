@@ -73,9 +73,6 @@
         android:name="com.balex.quiz.presentation.fragments.ProgressLoadingFragment"
         android:label="ProgressLoadingFragment"
         tools:layout="@layout/progress_bar">
-        <argument
-            android:name="levelEnum"
-            app:argType="com.balex.quiz.domain.entity.Level" />
         <action
             android:id="@+id/action_progressLoadingFragment_to_gameCoreFragment"
             app:destination="@id/gameCoreFragment"
@@ -87,9 +84,6 @@
         android:name="com.balex.quiz.presentation.fragments.GameCoreFragment"
         android:label="GameCoreFragment"
         tools:layout="@layout/core_test">
-        <argument
-            android:name="levelEnum"
-            app:argType="com.balex.quiz.domain.entity.Level" />
         <action
             android:id="@+id/action_gameCoreFragment_to_resultQuizFragment"
             app:destination="@id/resultQuizFragment"
