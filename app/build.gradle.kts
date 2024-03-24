@@ -71,6 +71,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
     implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
     implementation("io.reactivex.rxjava3:rxjava:3.1.5")
     implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
@@ -89,9 +90,6 @@ dependencies {
 
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.20-1.0.14")
 
-
-    val appcompatVersion = "1.6.1"
-    implementation("androidx.appcompat:appcompat:$appcompatVersion")
 
     implementation("com.google.code.gson:gson:2.10.1")
 
