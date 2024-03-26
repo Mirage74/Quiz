@@ -132,15 +132,6 @@
             app:destination="@id/viewCountryItemFragment" />
     </fragment>
     <fragment
-        android:id="@+id/viewCountryItemFragment"
-        android:name="com.balex.quiz.presentation.fragments.ViewCountryItemFragment"
-        android:label="ViewCountryItemFragment"
-        tools:layout="@layout/country_item">
-        <argument
-            android:name="country"
-            app:argType="com.balex.quiz.domain.entity.Country" />
-    </fragment>
-    <fragment
         android:id="@+id/registerUserFragment"
         android:name="com.balex.quiz.presentation.fragments.RegisterUserFragment"
         android:label="RegisterUserFragment"
@@ -148,5 +139,14 @@
         <action
             android:id="@+id/action_registerUserFragment_to_userLoggedTrueMenu"
             app:destination="@id/userLoggedTrueMenu" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewCountryItemFragment"
+        android:name="com.balex.quiz.presentation.fragments.ViewCountryItemFragment"
+        android:label="ViewCountryItemFragment"
+        tools:layout="@layout/country_item_linear">
+        <argument
+            android:name="country"
+            app:argType="com.balex.quiz.domain.entity.Country" />
     </fragment>
 </navigation>

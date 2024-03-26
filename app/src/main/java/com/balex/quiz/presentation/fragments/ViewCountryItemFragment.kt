@@ -14,7 +14,7 @@ class ViewCountryItemFragment : Fragment() {
     private val args by navArgs<ViewCountryItemFragmentArgs>()
 
     private var _binding: CountryItemLinearBinding? = null
-    private val binding: com.balex.quiz.databinding.CountryItemLinearBinding
+    private val binding: CountryItemLinearBinding
         get() = _binding ?: throw RuntimeException("ViewCountryItemFragment == null")
 
     override fun onCreateView(

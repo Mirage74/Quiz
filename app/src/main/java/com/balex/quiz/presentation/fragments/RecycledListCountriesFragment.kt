@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.RecycledListCountriesBinding
+import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.presentation.CountriesAdapter
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.SORT_MODE_BY_CAPITAL
@@ -79,15 +80,18 @@ class RecycledListCountriesFragment : Fragment() {
             adapter = countriesListAdapter
 
         }
-        countriesListAdapter.onCountryItemClickListener = {
-            binding.rbSortByCountry.isChecked = true
-            findNavController().navigate(
-                RecycledListCountriesFragmentDirections.actionRecycledListCountriesFragmentToViewCountryItemFragment(
-                    it
-                )
-            )
-        }
 
+        countriesListAdapter.onCountryItemClickListener =
+            object : CountriesAdapter.OnCountryItemClickListener {
+                override fun onCountryClick(country: Country) {
+                    binding.rbSortByCountry.isChecked = true
+                    findNavController().navigate(
+                         RecycledListCountriesFragmentDirections.actionRecycledListCountriesFragmentToViewCountryItemFragment(
+                            country
+                        )
+                    )
+                }
+            }
     }
 
     private fun setRadioListener() {
