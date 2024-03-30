@@ -1,5 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,19 +10,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.databinding.ChooseLevelBinding
 import com.balex.quiz.domain.entity.Level
-import com.balex.quiz.presentation.App
-import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
+import com.balex.quiz.presentation.QuizApp
+import com.balex.quiz.presentation.ViewModelFactory
+import javax.inject.Inject
 
 class ChooseLevelFragment : Fragment() {
 
-    private val gameViewModelFactory by lazy {
+    private lateinit var gameViewModel: GameCoreViewModel
 
-        GameCoreModelFactory(requireActivity().application)
-    }
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
-    private val gameViewModel by lazy {
-        ViewModelProvider(requireActivity(), gameViewModelFactory)[GameCoreViewModel::class.java]
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     private var userName = ""
@@ -29,6 +33,10 @@ class ChooseLevelFragment : Fragment() {
     private var _binding: ChooseLevelBinding? = null
     private val binding: ChooseLevelBinding
         get() = _binding ?: throw RuntimeException("FragmentChooseLevelBinding == null")
+
+    private val component by lazy {
+        (requireActivity().application as QuizApp).component
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,13 +50,14 @@ class ChooseLevelFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        gameViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[GameCoreViewModel::class.java]
         initViewValues()
         setClickListeners()
     }
     private fun initViewValues() {
-        userName = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
+        userName = QuizApp.loadUserNameFromPrefsCapitalized(requireActivity().application)
         val textGreeting =
-            "Hello, ${App.loadUserNameFromPrefsCapitalized(requireActivity().application)}!"
+            "Hello, ${QuizApp.loadUserNameFromPrefsCapitalized(requireActivity().application)}!"
 
         binding.tvHelloUser?.text = textGreeting
     }

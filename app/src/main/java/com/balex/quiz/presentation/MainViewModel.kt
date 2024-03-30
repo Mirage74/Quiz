@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.UserAnswer
@@ -16,13 +17,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
+import javax.inject.Inject
 
 const val SORT_MODE_BY_COUNTRY = 0
 const val SORT_MODE_BY_CAPITAL = 1
 const val SYMBOL_NOT_APPLY_FILTER = '*'
 
-class MainViewModel(application: Application) :
-    AndroidViewModel(application) {
+class MainViewModel @Inject constructor(
+    private val application: Application) :
+    ViewModel() {
     val TAG = "MainViewModel"
 
     private val LOAD_USER_INFO_FAILED = "Load user data failed"
@@ -82,7 +85,7 @@ class MainViewModel(application: Application) :
 
 
     fun initIsUserLoggedStatus() {
-        val userName = App.loadUserNameFromPrefsCapitalized(getApplication()).trim()
+        val userName = QuizApp.loadUserNameFromPrefsCapitalized(application).trim()
         if (userName != NOT_LOGGED_USER.lowercase()
                 .replaceFirstChar(Char::uppercase).trim()
         ) {
@@ -99,9 +102,9 @@ class MainViewModel(application: Application) :
 
     private fun getUserScoreFromBackend(userName: String) {
         val failed_load_user =
-            Toast.makeText(getApplication(), LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
+            Toast.makeText(application, LOAD_USER_INFO_FAILED, Toast.LENGTH_SHORT)
         val success_load_user =
-            Toast.makeText(getApplication(), LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
+            Toast.makeText(application, LOAD_USER_INFO_SUCCESS, Toast.LENGTH_SHORT)
         Log.d("USERDATA", "getUserScoreFromBackend")
         CoroutineScope(Dispatchers.IO).launch {
             compositeDisposable.add(
@@ -111,7 +114,7 @@ class MainViewModel(application: Application) :
                     .subscribe({
                         if (it.toString().indexOf("userName") >= 0) {
                             success_load_user.show()
-                            App.saveDataUser(it.userScore, getApplication())
+                            QuizApp.saveDataUser(it.userScore, application)
                         } else {
                             failed_load_user.show()
                         }

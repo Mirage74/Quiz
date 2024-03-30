@@ -12,7 +12,7 @@ import com.balex.quiz.R
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.databinding.RegisterBinding
 import com.balex.quiz.domain.entity.UserScore
-import com.balex.quiz.presentation.App
+import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -123,7 +123,7 @@ class RegisterUserFragment : Fragment() {
                     .subscribe({
                         if (it.indexOf("CODE REG_USER_01") == 0) {
                             success_register.show()
-                            App.saveDataUser(UserScore.getEmptyInstanceWithUserName(login.trim()), requireActivity())
+                            QuizApp.saveDataUser(UserScore.getEmptyInstanceWithUserName(login.trim()), requireActivity())
                             viewModel.setIsUserLogged(true)
                             launchUserLoggedTrueFragment()
                         } else {

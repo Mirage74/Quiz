@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.CoreTestBinding
-import com.balex.quiz.presentation.App
+import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
 
@@ -70,7 +70,7 @@ class GameCoreFragment : Fragment() {
         gameViewModel.isQuizFinished.value = false
         gameViewModel.lockButtons = false
         with(binding) {
-            username.text = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
+            username.text = QuizApp.loadUserNameFromPrefsCapitalized(requireActivity().application)
         }
 
     }

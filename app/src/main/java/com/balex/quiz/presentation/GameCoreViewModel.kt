@@ -29,9 +29,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
+import javax.inject.Inject
 import kotlin.concurrent.Volatile
 
-class GameCoreViewModel(
+class GameCoreViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 
@@ -203,7 +204,7 @@ class GameCoreViewModel(
     private fun updateUserBackend() {
         val failed_update = Toast.makeText(application, UPDATE_USER_FAILED, Toast.LENGTH_SHORT)
         val success_update = Toast.makeText(application, UPDATE_USER_SUCCESS, Toast.LENGTH_SHORT)
-        val userName = App.loadUserNameFromPrefsCapitalized(application).trim()
+        val userName = QuizApp.loadUserNameFromPrefsCapitalized(application).trim()
         CoroutineScope(Dispatchers.IO).launch {
             //Log.d(TAG, "UserAnswer.serializeListOfInstances(userAnswers): ${UserAnswer.serializeListOfInstances(userAnswers)}")
             compositeDisposable.add(
@@ -243,7 +244,7 @@ class GameCoreViewModel(
                     .subscribe({
                         if (it.userScore.toString().indexOf("userName=") >= 0) {
                             success_load_user.show()
-                            App.saveDataUser(it.userScore, application)
+                            QuizApp.saveDataUser(it.userScore, application)
                             isQuizFinished.value = true
                         } else {
                             failed_load_user.show()

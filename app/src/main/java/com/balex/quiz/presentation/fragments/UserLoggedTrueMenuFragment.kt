@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.StatusUserLoggedTrueBinding
-import com.balex.quiz.presentation.App
+import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 
@@ -40,7 +40,7 @@ class UserLoggedTrueMenuFragment : Fragment() {
     }
 
     private fun initViewValues() {
-        val userName = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
+        val userName = QuizApp.loadUserNameFromPrefsCapitalized(requireActivity().application)
         with(binding) {
             username.text = userName
             startTest.isEnabled = false
@@ -72,7 +72,7 @@ class UserLoggedTrueMenuFragment : Fragment() {
             }
 
             logout.setOnClickListener {
-                App.setUserNotLogged(requireActivity().application)
+                QuizApp.setUserNotLogged(requireActivity().application)
                 viewModel.setIsUserLogged(false)
                 launchUserLoggedFalseFragment()
             }

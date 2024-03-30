@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.InfoBinding
-import com.balex.quiz.presentation.App
+import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 
@@ -64,7 +64,7 @@ class InfoLoggedUserFragment : Fragment() {
 
 
     private fun initViewValues() {
-        val userName = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
+        val userName = QuizApp.loadUserNameFromPrefsCapitalized(requireActivity().application)
         with(binding) {
             tvUsername.text = userName
 

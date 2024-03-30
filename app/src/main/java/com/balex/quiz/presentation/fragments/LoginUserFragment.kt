@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.databinding.LoginBinding
-import com.balex.quiz.presentation.App
+import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -131,7 +131,7 @@ class LoginUserFragment : Fragment() {
                             failed_login.show()
                         } else {
                             success_login.show()
-                            App.saveDataUser(it.userScore,requireActivity().application)
+                            QuizApp.saveDataUser(it.userScore,requireActivity().application)
                             viewModel.setIsUserLogged(true)
                             launchUserLoggedTrueFragment()
                         }

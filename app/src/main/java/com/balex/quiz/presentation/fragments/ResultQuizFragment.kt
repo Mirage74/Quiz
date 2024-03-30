@@ -18,7 +18,7 @@ import com.balex.quiz.R
 import com.balex.quiz.databinding.QuizResultBinding
 import com.balex.quiz.domain.entity.UserAnswer
 import com.balex.quiz.domain.entity.UserScore
-import com.balex.quiz.presentation.App
+import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 import java.util.Collections
@@ -56,7 +56,7 @@ class ResultQuizFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewValues()
-        userInfo = App.loadUserScore(requireActivity())
+        userInfo = QuizApp.loadUserScore(requireActivity())
         if (userInfo.lastResultJSON.length > 0) {
             listLastScore =
                 UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON)
@@ -200,7 +200,7 @@ class ResultQuizFragment : Fragment() {
 
     private fun initViewValues() {
         with(binding) {
-            username.text = App.loadUserNameFromPrefsCapitalized(requireActivity().application)
+            username.text = QuizApp.loadUserNameFromPrefsCapitalized(requireActivity().application)
         }
 
     }

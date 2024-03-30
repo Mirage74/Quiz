@@ -2,6 +2,7 @@ package com.balex.quiz.presentation
 
 import android.app.Application
 import android.content.Context
+import com.balex.quiz.di.DaggerApplicationComponent
 import com.balex.quiz.domain.entity.UserScore
 
 const val SHARED_PREFS = "shared_prefs"
@@ -11,10 +12,12 @@ const val SHARED_PREFS_BEST_RES_CONTENT = "shared_prefs_best_res_content"
 const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
 const val NOT_LOGGED_USER = "Notloggeduser"
 
-class App : Application() {
-//    fun str(): String {
-//        return loadUserNameFromPrefsCapitalized(this)
-//    }
+class QuizApp : Application() {
+
+
+    val component by lazy {
+        DaggerApplicationComponent.factory().create(this)
+    }
 
     companion object {
 
