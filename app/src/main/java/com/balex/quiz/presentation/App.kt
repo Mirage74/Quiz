@@ -12,6 +12,9 @@ const val SHARED_PREFS_LAST_RES_CONTENT = "shared_prefs_last_res_content"
 const val NOT_LOGGED_USER = "Notloggeduser"
 
 class App : Application() {
+//    fun str(): String {
+//        return loadUserNameFromPrefsCapitalized(this)
+//    }
 
     companion object {
 

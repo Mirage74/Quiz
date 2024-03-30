@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //val s = (application as App).str()
         viewModel = ViewModelProvider(this, MainViewModelFactory(this.application))[MainViewModel::class.java]
         viewModel.isListCountriesFromBackendLoaded.observe(this) {
             if (!it) {
