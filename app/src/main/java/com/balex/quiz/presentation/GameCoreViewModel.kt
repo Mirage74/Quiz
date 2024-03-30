@@ -11,9 +11,11 @@ import androidx.lifecycle.ViewModel
 import com.balex.quiz.data.NUMBER_ANSWER_OPTIONS
 import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
+import com.balex.quiz.data.entityExt.GameSettingsExt
+import com.balex.quiz.data.entityExt.QuestionExt
+import com.balex.quiz.data.entityExt.UserAnswerExt
 import com.balex.quiz.domain.entity.BitmapWithIndex
 import com.balex.quiz.domain.entity.Country
-import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.entity.UserAnswer
@@ -89,7 +91,7 @@ class GameCoreViewModel @Inject constructor(
     val generateQuestionUseCase = GenerateQuestionUseCase(repository)
     val getGameSettingsUseCase = GetGameSettingsUseCase(repository)
 
-    var gameSettings = GameSettings.getEmptyInstance()
+    var gameSettings = GameSettingsExt.getEmptyInstance()
 
     var countriesFullList = mutableListOf<Country>()
 
@@ -161,8 +163,8 @@ class GameCoreViewModel @Inject constructor(
                     var secRest = 0
                     secLeftForAnswer.value?.let { secRest = it}
                     if (secRest > TIME_IS_EXPIRED) {
-                        answerId = questionsList[currQuestionNotNull - 1].getOptionId(numUserAnswer)
-                        if (questionsList[currQuestionNotNull - 1].isAnswerCorrect(numUserAnswer)) {
+                        answerId = QuestionExt(questionsList[currQuestionNotNull - 1]).getOptionId(numUserAnswer)
+                        if (QuestionExt(questionsList[currQuestionNotNull - 1]).isAnswerCorrect(numUserAnswer)) {
                             scoreFrame = getFrameScore(secLeftForAnswer.value ?: 0)
                             currentScore += scoreFrame
 
@@ -212,7 +214,7 @@ class GameCoreViewModel @Inject constructor(
                 ApiFactory.apiService.updateUser(
                     userName,
                     currentScore.toString(),
-                    UserAnswer.serializeListOfInstances(userAnswers)
+                    UserAnswerExt.serializeListOfInstances(userAnswers)
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

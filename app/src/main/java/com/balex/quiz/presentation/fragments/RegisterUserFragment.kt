@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.data.api.ApiFactory
+import com.balex.quiz.data.entityExt.UserScoreExt
 import com.balex.quiz.databinding.RegisterBinding
-import com.balex.quiz.domain.entity.UserScore
-import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
+import com.balex.quiz.presentation.QuizApp
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -123,7 +123,7 @@ class RegisterUserFragment : Fragment() {
                     .subscribe({
                         if (it.indexOf("CODE REG_USER_01") == 0) {
                             success_register.show()
-                            QuizApp.saveDataUser(UserScore.getEmptyInstanceWithUserName(login.trim()), requireActivity())
+                            QuizApp.saveDataUser(UserScoreExt.getEmptyInstanceWithUserName(login.trim()), requireActivity())
                             viewModel.setIsUserLogged(true)
                             launchUserLoggedTrueFragment()
                         } else {

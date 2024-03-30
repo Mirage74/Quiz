@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.balex.quiz.data.entityExt.UserAnswerExt
 import com.balex.quiz.databinding.ViewAnswerFragmentBinding
-import com.balex.quiz.domain.entity.UserAnswer
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
 
@@ -38,11 +38,11 @@ class ViewAnswerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var userAnswer = UserAnswer.getEmptyInstance()
+        var userAnswer = UserAnswerExt.getEmptyInstance()
         viewModel.currentResultItemInView.value?.let {  userAnswer = it  }
-        countryName = userAnswer.getCountryName(viewModel.countriesFullList)
-        capitalName = userAnswer.getCapitalNameRightAnswer(viewModel.countriesFullList)
-        userAnswerCapitalName = userAnswer.getCapitalNameUserAnswer(viewModel.countriesFullList)
+        countryName = UserAnswerExt(userAnswer).getCountryName(viewModel.countriesFullList)
+        capitalName = UserAnswerExt(userAnswer).getCapitalNameRightAnswer(viewModel.countriesFullList)
+        userAnswerCapitalName = UserAnswerExt(userAnswer).getCapitalNameUserAnswer(viewModel.countriesFullList)
         score = userAnswer.score.toString()
         binding.apply {
             if (userAnswer.score == 0) {

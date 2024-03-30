@@ -15,12 +15,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.balex.quiz.R
+import com.balex.quiz.data.entityExt.UserAnswerExt
+import com.balex.quiz.data.entityExt.UserScoreExt
 import com.balex.quiz.databinding.QuizResultBinding
 import com.balex.quiz.domain.entity.UserAnswer
-import com.balex.quiz.domain.entity.UserScore
-import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
 import com.balex.quiz.presentation.MainViewModelFactory
+import com.balex.quiz.presentation.QuizApp
 import java.util.Collections
 
 class ResultQuizFragment : Fragment() {
@@ -31,7 +32,7 @@ class ResultQuizFragment : Fragment() {
     private val binding: QuizResultBinding
         get() = _binding ?: throw RuntimeException("ResultQuizFragment == null")
 
-    private var userInfo = UserScore.getEmptyInstance()
+    private var userInfo = UserScoreExt.getEmptyInstance()
     private var listLastScore: MutableList<UserAnswer> = Collections.emptyList()
     private var listBestScore: MutableList<UserAnswer> = Collections.emptyList()
     private var showMode = LAST_RES_SHOW_MODE
@@ -59,13 +60,13 @@ class ResultQuizFragment : Fragment() {
         userInfo = QuizApp.loadUserScore(requireActivity())
         if (userInfo.lastResultJSON.length > 0) {
             listLastScore =
-                UserAnswer.deserializeListOfInstances(userInfo.lastResultJSON)
+                UserAnswerExt.deserializeListOfInstances(userInfo.lastResultJSON)
                     .sortedBy { it.frameNum }.toMutableList()
         }
 
         if (userInfo.bestResultJSON.length > 0) {
             listBestScore =
-                UserAnswer.deserializeListOfInstances(userInfo.bestResultJSON)
+                UserAnswerExt.deserializeListOfInstances(userInfo.bestResultJSON)
                     .sortedBy { it.frameNum }.toMutableList()
         }
 
@@ -92,7 +93,7 @@ class ResultQuizFragment : Fragment() {
             listBestScore
         }
         if (scoreList.size > 0) {
-            val s = "points: ${UserAnswer.getQuizScore(scoreList)}"
+            val s = "points: ${UserAnswerExt.getQuizScore(scoreList)}"
             binding.tvScoreSum.text = s
             viewModel.currentResultItemInView.value = scoreList[currentAnswerInView - 1]
             binding.layoutTableResult.removeAllViews()
@@ -127,7 +128,7 @@ class ResultQuizFragment : Fragment() {
         )
         tvCountryName.setGravity(Gravity.START)
         tvCountryName.setPadding(5, PADDING_VERTICAL, 0, PADDING_VERTICAL)
-        s = userAnswer.getCountryName(viewModel.countriesFullList)
+        s = UserAnswerExt(userAnswer).getCountryName(viewModel.countriesFullList)
         tvCountryName.text = s
         tvCountryName.setTextSize(TypedValue.COMPLEX_UNIT_SP, SMALL_TEXT_SIZE.toFloat())
 
