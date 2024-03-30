@@ -9,10 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.databinding.ProgressBarBinding
-import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
 import com.balex.quiz.presentation.MainViewModel
-import com.balex.quiz.presentation.MainViewModelFactory
 import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.ViewModelFactory
 import javax.inject.Inject
@@ -25,17 +23,19 @@ class ProgressLoadingFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
 
-    override fun onAttach(context: Context) {
-        component.inject(this)
-        super.onAttach(context)
+    private val component by lazy {
+        (requireActivity().application as QuizApp).component
     }
 
     private var _binding: ProgressBarBinding? = null
     private val binding: ProgressBarBinding
         get() = _binding ?: throw RuntimeException("FragmentChooseLevelBinding == null")
 
-    private val component by lazy {
-        (requireActivity().application as QuizApp).component
+
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

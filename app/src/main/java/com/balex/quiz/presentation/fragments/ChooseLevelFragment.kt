@@ -17,25 +17,26 @@ import javax.inject.Inject
 
 class ChooseLevelFragment : Fragment() {
 
+    private var userName = ""
+
     private lateinit var gameViewModel: GameCoreViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-
-    override fun onAttach(context: Context) {
-        component.inject(this)
-        super.onAttach(context)
+    private val component by lazy {
+        (requireActivity().application as QuizApp).component
     }
 
-    private var userName = ""
 
     private var _binding: ChooseLevelBinding? = null
     private val binding: ChooseLevelBinding
         get() = _binding ?: throw RuntimeException("FragmentChooseLevelBinding == null")
 
-    private val component by lazy {
-        (requireActivity().application as QuizApp).component
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(
@@ -50,10 +51,12 @@ class ChooseLevelFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gameViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[GameCoreViewModel::class.java]
+        gameViewModel =
+            ViewModelProvider(requireActivity(), viewModelFactory)[GameCoreViewModel::class.java]
         initViewValues()
         setClickListeners()
     }
+
     private fun initViewValues() {
         userName = QuizApp.loadUserNameFromPrefsCapitalized(requireActivity().application)
         val textGreeting =
@@ -61,6 +64,7 @@ class ChooseLevelFragment : Fragment() {
 
         binding.tvHelloUser?.text = textGreeting
     }
+
     private fun setClickListeners() {
         with(binding) {
             easy.setOnClickListener {

@@ -1,7 +1,7 @@
 package com.balex.quiz.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +10,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.CoreTestBinding
-import com.balex.quiz.presentation.QuizApp
-import com.balex.quiz.presentation.GameCoreModelFactory
 import com.balex.quiz.presentation.GameCoreViewModel
+import com.balex.quiz.presentation.QuizApp
+import com.balex.quiz.presentation.ViewModelFactory
+import javax.inject.Inject
 
 
 class GameCoreFragment : Fragment() {
-    private val TAG = "GameCoreFragment"
 
     private lateinit var gameViewModel: GameCoreViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as QuizApp).component
+    }
 
 
     private var _binding: CoreTestBinding? = null
@@ -26,28 +33,31 @@ class GameCoreFragment : Fragment() {
         get() = _binding ?: throw RuntimeException("GameCoreFragment == null")
 
 
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = CoreTestBinding.inflate(inflater, container, false)
-        gameViewModel = ViewModelProvider(requireActivity(), GameCoreModelFactory(requireActivity().application))[GameCoreViewModel::class.java]
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //Log.d(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
+        gameViewModel =
+            ViewModelProvider(requireActivity(), viewModelFactory)[GameCoreViewModel::class.java]
         var currQuestionNotNull = 0
         gameViewModel.currentQuestionNumber.value?.let {
             currQuestionNotNull = it
         }
         gameViewModel._currentQuestionString.value =
             "$currQuestionNotNull / ${gameViewModel.gameSettings.allQuestions}"
-        //Log.d(TAG, gameViewModel.questionsList.toString())
+
         if (currQuestionNotNull > 0 && currQuestionNotNull <= gameViewModel.gameSettings.allQuestions) {
-            Log.d(TAG, "gameViewModel.currentQuestionNumber.value: ${gameViewModel.currentQuestionNumber.value}")
             with(binding) {
                 viewModel = gameViewModel
                 lifecycleOwner = viewLifecycleOwner
