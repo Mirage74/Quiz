@@ -54,8 +54,9 @@ class GameCoreFragment : Fragment() {
         gameViewModel.currentQuestionNumber.value?.let {
             currQuestionNotNull = it
         }
-        gameViewModel._currentQuestionString.value =
+        gameViewModel.setCurrentQuestionString(
             "$currQuestionNotNull / ${gameViewModel.gameSettings.allQuestions}"
+        )
 
         if (currQuestionNotNull > 0 && currQuestionNotNull <= gameViewModel.gameSettings.allQuestions) {
             with(binding) {

@@ -3,8 +3,11 @@ package com.balex.quiz.domain.usecases
 //import com.balex.quiz.domain.entity.GameSettings
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.repository.QuizRepository
+import javax.inject.Inject
 
-class GetGameSettingsUseCase(private val quizRepository: QuizRepository) {
+class GetGameSettingsUseCase @Inject constructor(
+    private val quizRepository: QuizRepository
+) {
 //    operator fun invoke(level: Level): GameSettings {
 //        return quizRepository.getGameSettings(level)
 //    }

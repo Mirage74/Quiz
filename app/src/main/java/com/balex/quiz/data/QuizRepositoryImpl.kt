@@ -9,10 +9,13 @@ import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.repository.QuizRepository
 import java.util.Random
 import java.util.stream.Collectors
+import javax.inject.Inject
 
 const val NUMBER_ANSWER_OPTIONS = 4
 
-class QuizRepositoryImpl(private val application: Application) : QuizRepository {
+class QuizRepositoryImpl @Inject constructor(
+    private val application: Application
+) : QuizRepository {
 
 
     private val DIFFICULT_LEVEL_EASY = 0

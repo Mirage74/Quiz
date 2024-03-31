@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.balex.quiz.data.NUMBER_ANSWER_OPTIONS
-import com.balex.quiz.data.QuizRepositoryImpl
 import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.data.entityExt.GameSettingsExt
 import com.balex.quiz.data.entityExt.QuestionExt
@@ -35,7 +34,9 @@ import javax.inject.Inject
 import kotlin.concurrent.Volatile
 
 class GameCoreViewModel @Inject constructor(
-    private val application: Application
+    private val application: Application,
+    private val generateQuestionUseCase: GenerateQuestionUseCase,
+    val getGameSettingsUseCase: GetGameSettingsUseCase
 ) : ViewModel() {
 
     val TAG = "GameCoreViewModel"
@@ -76,9 +77,13 @@ class GameCoreViewModel @Inject constructor(
         get() = _currentProgressString
 
 
-    val _currentQuestionString = MutableLiveData<String>()
+    private val _currentQuestionString = MutableLiveData<String>()
     val currentQuestionString: LiveData<String>
         get() = _currentQuestionString
+
+    fun setCurrentQuestionString(s: String) {
+        _currentQuestionString.value = s
+    }
 
 
     @Volatile
@@ -86,10 +91,6 @@ class GameCoreViewModel @Inject constructor(
     val countOfBitmapLoaded: LiveData<Int>
         get() = _countOfBitmapLoaded
 
-
-    private val repository = QuizRepositoryImpl(application)
-    val generateQuestionUseCase = GenerateQuestionUseCase(repository)
-    val getGameSettingsUseCase = GetGameSettingsUseCase(repository)
 
     var gameSettings = GameSettingsExt.getEmptyInstance()
 
@@ -114,9 +115,6 @@ class GameCoreViewModel @Inject constructor(
         currentScore = 0
     }
 
-//    fun getCurrentQuestionString(): String {
-//        return "${currentQuestionNumber.value} / ${gameSettings.allQuestions}"
-//    }
 
     fun getCapitalNameById(id: Int): String {
         if (id > 0 && id <= countriesFullList.size) {
@@ -161,10 +159,15 @@ class GameCoreViewModel @Inject constructor(
 
                 if (numUserAnswer in TIME_IS_EXPIRED..NUMBER_ANSWER_OPTIONS) {
                     var secRest = 0
-                    secLeftForAnswer.value?.let { secRest = it}
+                    secLeftForAnswer.value?.let { secRest = it }
                     if (secRest > TIME_IS_EXPIRED) {
-                        answerId = QuestionExt(questionsList[currQuestionNotNull - 1]).getOptionId(numUserAnswer)
-                        if (QuestionExt(questionsList[currQuestionNotNull - 1]).isAnswerCorrect(numUserAnswer)) {
+                        answerId = QuestionExt(questionsList[currQuestionNotNull - 1]).getOptionId(
+                            numUserAnswer
+                        )
+                        if (QuestionExt(questionsList[currQuestionNotNull - 1]).isAnswerCorrect(
+                                numUserAnswer
+                            )
+                        ) {
                             scoreFrame = getFrameScore(secLeftForAnswer.value ?: 0)
                             currentScore += scoreFrame
 

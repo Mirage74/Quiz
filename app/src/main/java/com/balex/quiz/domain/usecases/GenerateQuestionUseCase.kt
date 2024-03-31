@@ -4,8 +4,11 @@ import com.balex.quiz.domain.entity.Country
 import com.balex.quiz.domain.entity.Level
 import com.balex.quiz.domain.entity.Question
 import com.balex.quiz.domain.repository.QuizRepository
+import javax.inject.Inject
 
-class GenerateQuestionUseCase(private val quizRepository: QuizRepository) {
+class GenerateQuestionUseCase @Inject constructor(
+    private val quizRepository: QuizRepository
+) {
     operator fun invoke(level: Level, questionNumber: Int, countriesListFull: List<Country>,
                         countriesListNotUsedInQuiz: List<Country>): Question {
         return quizRepository.generateQuestion(level, questionNumber, countriesListFull,

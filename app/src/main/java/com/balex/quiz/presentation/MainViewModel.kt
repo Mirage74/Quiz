@@ -3,7 +3,6 @@ package com.balex.quiz.presentation
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,7 +25,6 @@ const val SYMBOL_NOT_APPLY_FILTER = '*'
 class MainViewModel @Inject constructor(
     private val application: Application) :
     ViewModel() {
-    val TAG = "MainViewModel"
 
     private val LOAD_USER_INFO_FAILED = "Load user data failed"
     private val LOAD_USER_INFO_SUCCESS = "Load user data success"
@@ -119,7 +117,6 @@ class MainViewModel @Inject constructor(
                             failed_load_user.show()
                         }
                     }) {
-                        Log.d(TAG, "Error get user data: + $it")
                         failed_load_user.show()
                     })
         }
