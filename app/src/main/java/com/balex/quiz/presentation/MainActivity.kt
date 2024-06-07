@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProvider(this, MainViewModelFactory(this.application))[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         viewModel.isListCountriesFromBackendLoaded.observe(this) {
             if (!it) {
                 viewModel.getCountriesListFromBackend()

@@ -1,5 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,26 +10,38 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.balex.quiz.R
 import com.balex.quiz.databinding.StatusUserLoggedTrueBinding
-import com.balex.quiz.presentation.QuizApp
 import com.balex.quiz.presentation.MainViewModel
-import com.balex.quiz.presentation.MainViewModelFactory
+import com.balex.quiz.presentation.QuizApp
+import com.balex.quiz.presentation.ViewModelFactory
+import javax.inject.Inject
 
 class UserLoggedTrueMenuFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as QuizApp).component
+    }
+
     private var _binding: StatusUserLoggedTrueBinding? = null
     private val binding: StatusUserLoggedTrueBinding
         get() = _binding ?: throw RuntimeException("UserLoggedFalseMenu == null")
+
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = StatusUserLoggedTrueBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            MainViewModelFactory(requireActivity().application)
-        )[MainViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
         return binding.root
     }
 

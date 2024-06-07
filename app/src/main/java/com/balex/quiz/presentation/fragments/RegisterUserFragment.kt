@@ -1,5 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,18 +14,26 @@ import com.balex.quiz.data.api.ApiFactory
 import com.balex.quiz.data.entityExt.UserScoreExt
 import com.balex.quiz.databinding.RegisterBinding
 import com.balex.quiz.presentation.MainViewModel
-import com.balex.quiz.presentation.MainViewModelFactory
 import com.balex.quiz.presentation.QuizApp
+import com.balex.quiz.presentation.ViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class RegisterUserFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as QuizApp).component
+    }
 
     private val ERROR_ENTERED_USERNAME_MESSAGE =
         "Name length must contain 3-20 char and begin from letter; pass must be not empty"
@@ -44,12 +53,17 @@ class RegisterUserFragment : Fragment() {
     private var maxUserNameLen: Int = 0
 
 
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = RegisterBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity(), MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
 
         minUserNameLen = resources.getInteger(R.integer.minUsernameLength)
         maxUserNameLen = resources.getInteger(R.integer.maxUsernameLength)

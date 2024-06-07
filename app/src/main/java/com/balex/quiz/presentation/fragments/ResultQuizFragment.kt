@@ -1,5 +1,6 @@
 package com.balex.quiz.presentation.fragments
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
@@ -20,13 +21,21 @@ import com.balex.quiz.data.entityExt.UserScoreExt
 import com.balex.quiz.databinding.QuizResultBinding
 import com.balex.quiz.domain.entity.UserAnswer
 import com.balex.quiz.presentation.MainViewModel
-import com.balex.quiz.presentation.MainViewModelFactory
 import com.balex.quiz.presentation.QuizApp
+import com.balex.quiz.presentation.ViewModelFactory
 import java.util.Collections
+import javax.inject.Inject
 
 class ResultQuizFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as QuizApp).component
+    }
 
     private var _binding: QuizResultBinding? = null
     private val binding: QuizResultBinding
@@ -41,15 +50,17 @@ class ResultQuizFragment : Fragment() {
     private var currentAnswerInView = 1
 
 
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = QuizResultBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            MainViewModelFactory(requireActivity().application)
-        )[MainViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
 
         return binding.root
     }

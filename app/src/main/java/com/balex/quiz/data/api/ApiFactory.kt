@@ -32,5 +32,5 @@ object ApiFactory {
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
-    val apiService: ApiService = retrofit.create(ApiService::class.java)
+        val apiService: ApiService = retrofit.create(ApiService::class.java)
 }
